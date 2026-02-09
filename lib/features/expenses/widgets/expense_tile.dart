@@ -40,6 +40,28 @@ class ExpenseTile extends ConsumerWidget {
       onDismissed: (direction) {
         _onDismissed(ref, context);
       },
+      confirmDismiss: (direction) async {
+        return await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Delete Expense'),
+            content: const Text(
+              'Are you sure you want to delete this expense?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                style: TextButton.styleFrom(foregroundColor: Colors.red),
+                child: const Text('Delete'),
+              ),
+            ],
+          ),
+        );
+      },
       child: ListTile(
         leading: CircleAvatar(child: Text(expense.category[0].toUpperCase())),
         title: Text(expense.category),

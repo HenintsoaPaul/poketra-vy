@@ -7,6 +7,7 @@ class ExpenseParser {
     'rent',
     'fun',
     'shopping',
+    'misc',
   ];
 
   // Public getter for categories
