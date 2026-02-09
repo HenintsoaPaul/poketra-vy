@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/services/speech_service.dart';
 import '../../../core/services/expense_parser.dart';
 import '../providers/expenses_provider.dart';
+import '../widgets/expense_validation_dialog.dart';
 
 class VoiceExpenseScreen extends ConsumerStatefulWidget {
   const VoiceExpenseScreen({super.key});
@@ -35,17 +36,19 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen> {
     if (_isListening) {
       await _speechService.stopListening();
       setState(() => _isListening = false);
-      
+
       if (_text == 'Listening...' || _text.isEmpty) {
-         if (mounted) {
-           ScaffoldMessenger.of(context).showSnackBar(
-             const SnackBar(content: Text('No speech detected. Please try again.')),
-           );
-         }
-         setState(() => _text = 'Press the mic to start');
-         return;
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('No speech detected. Please try again.'),
+            ),
+          );
+        }
+        setState(() => _text = 'Press the mic to start');
+        return;
       }
-      
+
       _processText(_text);
     } else {
       bool available = await _speechService.init();
@@ -54,38 +57,70 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen> {
           _isListening = true;
           _text = 'Listening...';
         });
-        await _speechService.startListening(onResult: (result) {
-          setState(() => _text = result);
-        });
+        await _speechService.startListening(
+          onResult: (result) {
+            setState(() => _text = result);
+          },
+        );
       } else {
         if (mounted) {
-           ScaffoldMessenger.of(context).showSnackBar(
-             const SnackBar(content: Text('Microphone permission denied or speech unavailable.')),
-           );
-           setState(() => _text = 'Speech unavailable');
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Microphone permission denied or speech unavailable.',
+              ),
+            ),
+          );
+          setState(() => _text = 'Speech unavailable');
         }
       }
     }
   }
-  
-  void _processText(String text) {
+
+  Future<void> _processText(String text) async {
     setState(() => _isProcessing = true);
-    
+
     final expense = ExpenseParser.parse(text);
     if (expense != null) {
-      ref.read(expensesProvider.notifier).addExpense(expense);
+      setState(() => _isProcessing = false);
+
+      // Show validation dialog
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Added: ${expense.description} - ${expense.amount}')),
-        );
-        context.pop();
+        final confirmed = await ExpenseValidationDialog.show(context, expense);
+
+        if (confirmed == true) {
+          // User confirmed, save the expense
+          await ref.read(expensesProvider.notifier).addExpense(expense);
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Added: ${expense.description} - ${expense.amount}',
+                ),
+              ),
+            );
+            context.pop();
+          }
+        } else if (confirmed == false) {
+          // User wants to retry
+          setState(() {
+            _text = 'Press the mic to start';
+            _isListening = false;
+            _isProcessing = false;
+          });
+        }
+        // If confirmed is null (dialog dismissed), do nothing
       }
     } else {
-       if (mounted) {
+      setState(() => _isProcessing = false);
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not understand expense. Try extracting amount and category.')),
+          const SnackBar(
+            content: Text(
+              'Could not understand expense. Try extracting amount and category.',
+            ),
+          ),
         );
-         setState(() => _isProcessing = false);
       }
     }
   }
