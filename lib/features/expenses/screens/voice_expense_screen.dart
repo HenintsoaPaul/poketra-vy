@@ -99,7 +99,7 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen> {
                 ),
               ),
             );
-            context.pop();
+            context.go('/expenses');
           }
         } else if (confirmed == false) {
           // User wants to retry

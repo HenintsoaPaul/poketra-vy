@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../providers/expenses_provider.dart';
 import '../providers/expense_filter_provider.dart';
 import '../widgets/expense_tile.dart';
@@ -57,10 +56,6 @@ class ExpensesListScreen extends ConsumerWidget {
                   ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push('/voice'),
-        child: const Icon(Icons.mic),
       ),
     );
   }
