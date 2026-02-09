@@ -1,17 +1,42 @@
 import 'package:go_router/go_router.dart';
+import 'features/home/screens/home_screen.dart';
 import 'features/expenses/screens/expenses_list_screen.dart';
 import 'features/expenses/screens/voice_expense_screen.dart';
+import 'core/navigation/main_shell_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
   routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const ExpensesListScreen(),
-    ),
-    GoRoute(
-      path: '/voice',
-      builder: (context, state) => const VoiceExpenseScreen(),
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        return ScaffoldWithNavBar(navigationShell: navigationShell);
+      },
+      branches: [
+        // Home branch
+        StatefulShellBranch(
+          routes: [
+            GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
+          ],
+        ),
+        // Record branch
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/record',
+              builder: (context, state) => const VoiceExpenseScreen(),
+            ),
+          ],
+        ),
+        // Expenses branch
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/expenses',
+              builder: (context, state) => const ExpensesListScreen(),
+            ),
+          ],
+        ),
+      ],
     ),
   ],
 );

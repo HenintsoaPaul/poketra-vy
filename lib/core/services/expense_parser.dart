@@ -6,8 +6,12 @@ class ExpenseParser {
     'transport',
     'rent',
     'fun',
-    'shopping'
+    'shopping',
+    'misc',
   ];
+
+  // Public getter for categories
+  static List<String> get categories => _categories;
 
   static Expense? parse(String text) {
     if (text.isEmpty) return null;
@@ -18,7 +22,7 @@ class ExpenseParser {
     String category = 'misc'; // Miscellaneous
 
     DateTime date = DateTime.now();
-    
+
     // 1. Extract Amount (First number)
     // Simple heuristic: find first token that parses to double
     for (var word in words) {
@@ -41,8 +45,6 @@ class ExpenseParser {
         break; // Take first matching category
       }
     }
-
-    if (category == null) return null;
 
     // 3. Extract Date
     if (lowerText.contains('yesterday')) {
