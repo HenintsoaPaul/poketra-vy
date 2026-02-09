@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app_router.dart';
+import 'core/services/hive_service.dart';
+import 'features/expenses/providers/expenses_provider.dart';
 
-void main() {
-  runApp(const ProviderScope(child: MyApp()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Hive
+  final hiveService = HiveService();
+  await hiveService.init();
+
+  runApp(
+    ProviderScope(
+      overrides: [hiveServiceProvider.overrideWithValue(hiveService)],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
