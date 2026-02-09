@@ -116,7 +116,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       children: [
         Expanded(
           child: DropdownButtonFormField<int>(
-            value: _selectedMonth,
+            initialValue: _selectedMonth,
             decoration: const InputDecoration(labelText: 'Month'),
             items: List.generate(12, (index) => index + 1).map((month) {
               return DropdownMenuItem(
@@ -132,7 +132,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         const SizedBox(width: 16),
         Expanded(
           child: DropdownButtonFormField<int>(
-            value: _selectedYear,
+            initialValue: _selectedYear,
             decoration: const InputDecoration(labelText: 'Year'),
             items: List.generate(5, (index) => DateTime.now().year - index).map(
               (year) {
