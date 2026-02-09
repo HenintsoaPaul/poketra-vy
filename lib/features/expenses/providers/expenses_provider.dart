@@ -24,6 +24,14 @@ class ExpensesNotifier extends StateNotifier<List<Expense>> {
     state = [...state, expense];
   }
 
+  Future<void> updateExpense(Expense expense) async {
+    await _hiveService.saveExpense(expense);
+    state = [
+      for (final e in state)
+        if (e.id == expense.id) expense else e,
+    ];
+  }
+
   Future<void> deleteExpense(String id) async {
     await _hiveService.deleteExpense(id);
     state = state.where((expense) => expense.id != id).toList();
