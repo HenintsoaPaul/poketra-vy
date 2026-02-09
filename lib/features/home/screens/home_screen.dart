@@ -1,21 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import '../../expenses/providers/expenses_provider.dart';
 import '../../expenses/widgets/expense_tile.dart';
+import '../widgets/expense_pie_chart.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  late int _selectedMonth;
+  late int _selectedYear;
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _selectedMonth = now.month;
+    _selectedYear = now.year;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final expenses = ref.watch(expensesProvider);
 
-    // Calculate Total Expenses
-    final totalAmount = expenses.fold(0.0, (sum, item) => sum + item.amount);
+    // Calculate total amount for all time
+    final allTimeTotal = expenses.fold(0.0, (sum, item) => sum + item.amount);
+
+    // Filter expenses for selected month/year for the chart
+    final filteredForChart = expenses.where((e) {
+      return e.date.month == _selectedMonth && e.date.year == _selectedYear;
+    }).toList();
 
     // Calculate Recent Activities (Last 5 this week)
     final now = DateTime.now();
-    // Monday as start of week
     final weekStart = now.subtract(Duration(days: now.weekday - 1));
     final weekStartTime = DateTime(
       weekStart.year,
@@ -43,8 +65,8 @@ class HomeScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Analytics Section
-              _buildAnalyticsSection(context, totalAmount),
+              // Analytics Section (All Time)
+              _buildAnalyticsSummary(context, allTimeTotal),
               const SizedBox(height: 32),
 
               // Recent Activities Section
@@ -71,6 +93,17 @@ class HomeScreen extends ConsumerWidget {
                     return ExpenseTile(expense: expense);
                   },
                 ),
+              const SizedBox(height: 32),
+
+              // Charts Section
+              Text(
+                'Category Breakdown',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 16),
+              _buildMonthYearSelectors(),
+              const SizedBox(height: 16),
+              ExpensePieChart(expenses: filteredForChart),
             ],
           ),
         ),
@@ -78,7 +111,47 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildAnalyticsSection(BuildContext context, double totalAmount) {
+  Widget _buildMonthYearSelectors() {
+    return Row(
+      children: [
+        Expanded(
+          child: DropdownButtonFormField<int>(
+            value: _selectedMonth,
+            decoration: const InputDecoration(labelText: 'Month'),
+            items: List.generate(12, (index) => index + 1).map((month) {
+              return DropdownMenuItem(
+                value: month,
+                child: Text(DateFormat('MMMM').format(DateTime(2024, month))),
+              );
+            }).toList(),
+            onChanged: (val) {
+              if (val != null) setState(() => _selectedMonth = val);
+            },
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: DropdownButtonFormField<int>(
+            value: _selectedYear,
+            decoration: const InputDecoration(labelText: 'Year'),
+            items: List.generate(5, (index) => DateTime.now().year - index).map(
+              (year) {
+                return DropdownMenuItem(
+                  value: year,
+                  child: Text(year.toString()),
+                );
+              },
+            ).toList(),
+            onChanged: (val) {
+              if (val != null) setState(() => _selectedYear = val);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAnalyticsSummary(BuildContext context, double totalAmount) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -106,13 +179,13 @@ class HomeScreen extends ConsumerWidget {
           Row(
             children: [
               Icon(
-                Icons.analytics,
+                Icons.account_balance_wallet,
                 size: 28,
                 color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(width: 12),
               Text(
-                'Analytics',
+                'Total Balance Spent',
                 style: Theme.of(
                   context,
                 ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -120,8 +193,6 @@ class HomeScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 20),
-          Text('Total Expenses', style: Theme.of(context).textTheme.bodyLarge),
-          const SizedBox(height: 4),
           Text(
             '${totalAmount.toStringAsFixed(0)} Ar',
             style: Theme.of(context).textTheme.headlineLarge?.copyWith(
