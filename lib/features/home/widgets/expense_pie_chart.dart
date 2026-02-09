@@ -50,22 +50,17 @@ class ExpensePieChart extends StatelessWidget {
   }
 
   Color _getCategoryColor(String category) {
-    switch (category.toLowerCase()) {
-      case 'food':
-        return Colors.orange;
-      case 'transport':
-        return Colors.blue;
-      case 'rent':
-        return Colors.purple;
-      case 'fun':
-        return Colors.green;
-      case 'shopping':
-        return Colors.pink;
-      case 'misc':
-        return Colors.grey;
-      default:
-        return Colors.teal;
-    }
+    final colors = {
+      'food': Colors.orange,
+      'transport': Colors.blue,
+      'rent': Colors.purple,
+      'fun': Colors.green,
+      'shopping': Colors.pink,
+      'misc': Colors.grey,
+    };
+
+    return colors[category.toLowerCase()] ??
+        Colors.primaries[category.length % Colors.primaries.length];
   }
 }
 

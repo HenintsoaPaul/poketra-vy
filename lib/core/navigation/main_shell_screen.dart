@@ -35,6 +35,11 @@ class ScaffoldWithNavBar extends StatelessWidget {
             selectedIcon: Icon(Icons.list_alt),
             label: 'Expenses',
           ),
+          NavigationDestination(
+            icon: Icon(Icons.settings_outlined),
+            selectedIcon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
         ],
       ),
     );

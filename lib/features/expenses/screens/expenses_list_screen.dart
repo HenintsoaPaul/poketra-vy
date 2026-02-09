@@ -13,6 +13,7 @@ class ExpensesListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final expenses = ref.watch(filteredExpensesProvider);
     final selectedCategory = ref.watch(selectedCategoryProvider);
+    final allCategories = ref.watch(availableCategoriesProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Expenses')),

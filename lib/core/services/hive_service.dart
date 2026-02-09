@@ -3,7 +3,10 @@ import '../models/expense.dart';
 
 class HiveService {
   static const String _expensesBoxName = 'expenses';
+  static const String _settingsBoxName = 'settings';
+  static const String _categoriesKey = 'categories';
   Box<Expense>? _expensesBox;
+  Box? _settingsBox;
 
   /// Initialize Hive and open the expenses box
   Future<void> init() async {
@@ -15,6 +18,19 @@ class HiveService {
     }
 
     _expensesBox = await Hive.openBox<Expense>(_expensesBoxName);
+    _settingsBox = await Hive.openBox(_settingsBoxName);
+
+    // Initialize default categories if empty
+    if (_settingsBox!.get(_categoriesKey) == null) {
+      await _settingsBox!.put(_categoriesKey, [
+        'food',
+        'transport',
+        'rent',
+        'fun',
+        'shopping',
+        'misc',
+      ]);
+    }
   }
 
   /// Get all expenses from the database
@@ -39,6 +55,24 @@ class HiveService {
       throw Exception('HiveService not initialized. Call init() first.');
     }
     await _expensesBox!.delete(id);
+  }
+
+  /// Get all categories from settings
+  List<String> getCategories() {
+    if (_settingsBox == null) {
+      throw Exception('HiveService not initialized. Call init() first.');
+    }
+    return List<String>.from(
+      _settingsBox!.get(_categoriesKey, defaultValue: []),
+    );
+  }
+
+  /// Save categories to settings
+  Future<void> saveCategories(List<String> categories) async {
+    if (_settingsBox == null) {
+      throw Exception('HiveService not initialized. Call init() first.');
+    }
+    await _settingsBox!.put(_categoriesKey, categories);
   }
 
   /// Clear all expenses (useful for testing)

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/models/expense.dart';
 import '../providers/expenses_provider.dart';
-import '../../../../core/services/expense_parser.dart'; // To get categories
+import '../../settings/providers/categories_provider.dart';
 
 class EditExpenseSheet extends ConsumerStatefulWidget {
   final Expense expense;
@@ -69,8 +69,8 @@ class _EditExpenseSheetState extends ConsumerState<EditExpenseSheet> {
 
   @override
   Widget build(BuildContext context) {
-    // Categories from ExpenseParser
-    final categories = ExpenseParser.categories;
+    // Categories from categoriesProvider
+    final categories = ref.watch(categoriesProvider);
 
     return Padding(
       padding: EdgeInsets.only(
