@@ -5,6 +5,8 @@ class HiveService {
   static const String _expensesBoxName = 'expenses';
   static const String _settingsBoxName = 'settings';
   static const String _categoriesKey = 'categories';
+  static const String _onboardingCompleteKey = 'onboarding_complete';
+
   Box<Expense>? _expensesBox;
   Box? _settingsBox;
 
@@ -73,6 +75,22 @@ class HiveService {
       throw Exception('HiveService not initialized. Call init() first.');
     }
     await _settingsBox!.put(_categoriesKey, categories);
+  }
+
+  /// Get onboarding status
+  bool isOnboardingComplete() {
+    if (_settingsBox == null) {
+      throw Exception('HiveService not initialized. Call init() first.');
+    }
+    return _settingsBox!.get(_onboardingCompleteKey, defaultValue: false);
+  }
+
+  /// Save onboarding status
+  Future<void> setOnboardingComplete(bool complete) async {
+    if (_settingsBox == null) {
+      throw Exception('HiveService not initialized. Call init() first.');
+    }
+    await _settingsBox!.put(_onboardingCompleteKey, complete);
   }
 
   /// Clear all expenses (useful for testing)
