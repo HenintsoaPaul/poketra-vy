@@ -38,10 +38,13 @@ flutter_launcher_icons:
 
 flutter_native_splash:
   color: "#edf5ff"
-  image: "assets/poketra-vy-high-resolution-logo-transparent.png"
+  image: "assets/poketra-vy-high-resolution-logo.png"
+  android_gravity: center
+
   android_12:
-    image: "assets/poketra-vy-high-resolution-logo-transparent.png"
+    image: "assets/poketra-vy-high-resolution-logo.png"
     color: "#edf5ff"
+    # icon_background_color: "#edf5ff"
 
 flutter:
   uses-material-design: true
