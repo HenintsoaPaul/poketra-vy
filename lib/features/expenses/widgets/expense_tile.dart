@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/models/expense.dart';
-import '../../../../core/utils/date_utils.dart';
 import '../providers/expenses_provider.dart';
 import 'edit_expense_sheet.dart';
 
@@ -65,9 +64,7 @@ class ExpenseTile extends ConsumerWidget {
       child: ListTile(
         leading: CircleAvatar(child: Text(expense.category[0].toUpperCase())),
         title: Text(expense.category),
-        subtitle: Text(
-          '${expense.description} • ${DateUtilsHelper.format(expense.date)}',
-        ),
+        subtitle: Text(expense.description),
         trailing: Text(
           '${expense.amount.toStringAsFixed(0)} $currency',
           style: Theme.of(context).textTheme.titleMedium,

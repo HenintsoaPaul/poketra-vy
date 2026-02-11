@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/services/speech_service.dart';
 import '../../../core/services/expense_parser.dart';
+import '../../settings/providers/categories_provider.dart';
 import '../providers/expenses_provider.dart';
 import '../widgets/expense_validation_dialog.dart';
 
@@ -80,7 +81,8 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen> {
   Future<void> _processText(String text) async {
     setState(() => _isProcessing = true);
 
-    final expense = ExpenseParser.parse(text);
+    final categories = ref.read(categoriesProvider);
+    final expense = ExpenseParser.parse(text, categories);
     if (expense != null) {
       setState(() => _isProcessing = false);
 

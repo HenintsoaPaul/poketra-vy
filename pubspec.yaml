@@ -20,14 +20,36 @@ dependencies:
   hive_flutter: ^1.1.0
   path_provider: ^2.1.1
   uuid: ^4.5.1
+  fl_chart: ^1.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.4
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/poketra-vy-high-resolution-logo-transparent.png"
+  min_sdk_android: 21
+
+flutter_native_splash:
+  color: "#edf5ff"
+  image: "assets/poketra-vy-high-resolution-logo.png"
+  android_gravity: center
+
+  android_12:
+    image: "assets/poketra-vy-high-resolution-logo.png"
+    color: "#edf5ff"
+    # icon_background_color: "#edf5ff"
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/
+
 
 

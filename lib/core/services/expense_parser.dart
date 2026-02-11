@@ -1,19 +1,9 @@
 import '../models/expense.dart';
 
 class ExpenseParser {
-  static final List<String> _categories = [
-    'food',
-    'transport',
-    'rent',
-    'fun',
-    'shopping',
-    'misc',
-  ];
+  const ExpenseParser();
 
-  // Public getter for categories
-  static List<String> get categories => _categories;
-
-  static Expense? parse(String text) {
+  static Expense? parse(String text, List<String> categories) {
     if (text.isEmpty) return null;
     final lowerText = text.toLowerCase();
     final words = lowerText.split(' ');
@@ -39,8 +29,8 @@ class ExpenseParser {
     if (amount == null) return null; // Amount is mandatory for an expense
 
     // 2. Extract Category
-    for (var cat in _categories) {
-      if (lowerText.contains(cat)) {
+    for (var cat in categories) {
+      if (lowerText.contains(cat.toLowerCase())) {
         category = cat;
         break; // Take first matching category
       }
