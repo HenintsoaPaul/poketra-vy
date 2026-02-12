@@ -4,8 +4,8 @@ import '../../settings/providers/categories_provider.dart';
 // State provider for selected category filter
 final selectedCategoryProvider = StateProvider<String>((ref) => 'All');
 
-// Provider for all available categories (adds 'All' to the dynamic categories)
+// Provider for all available categories names (adds 'All' to the dynamic categories)
 final availableCategoriesProvider = Provider<List<String>>((ref) {
   final dynamicCategories = ref.watch(categoriesProvider);
-  return ['All', ...dynamicCategories];
+  return ['All', ...dynamicCategories.map((c) => c.name)];
 });

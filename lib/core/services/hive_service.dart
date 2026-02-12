@@ -1,5 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/expense.dart';
+import '../models/category.dart';
+import 'package:flutter/material.dart';
 
 class HiveService {
   static const String _expensesBoxName = 'expenses';
@@ -18,6 +20,9 @@ class HiveService {
     if (!Hive.isAdapterRegistered(0)) {
       Hive.registerAdapter(ExpenseAdapter());
     }
+    if (!Hive.isAdapterRegistered(2)) {
+      Hive.registerAdapter(CategoryAdapter());
+    }
 
     _expensesBox = await Hive.openBox<Expense>(_expensesBoxName);
     _settingsBox = await Hive.openBox(_settingsBoxName);
@@ -25,12 +30,18 @@ class HiveService {
     // Initialize default categories if empty
     if (_settingsBox!.get(_categoriesKey) == null) {
       await _settingsBox!.put(_categoriesKey, [
-        'food',
-        'transport',
-        'rent',
-        'fun',
-        'shopping',
-        'misc',
+        Category(name: 'food', iconCodePoint: Icons.restaurant.codePoint),
+        Category(
+          name: 'transport',
+          iconCodePoint: Icons.directions_car.codePoint,
+        ),
+        Category(name: 'rent', iconCodePoint: Icons.home.codePoint),
+        Category(name: 'fun', iconCodePoint: Icons.sports_esports.codePoint),
+        Category(
+          name: 'shopping',
+          iconCodePoint: Icons.shopping_cart.codePoint,
+        ),
+        Category(name: 'misc', iconCodePoint: Icons.category.codePoint),
       ]);
     }
   }
@@ -60,17 +71,30 @@ class HiveService {
   }
 
   /// Get all categories from settings
-  List<String> getCategories() {
+  List<Category> getCategories() {
     if (_settingsBox == null) {
       throw Exception('HiveService not initialized. Call init() first.');
     }
-    return List<String>.from(
-      _settingsBox!.get(_categoriesKey, defaultValue: []),
-    );
+    final rawCategories = _settingsBox!.get(_categoriesKey);
+    if (rawCategories is List) {
+      // Handle migration or initial state
+      if (rawCategories.isNotEmpty && rawCategories.first is String) {
+        return rawCategories
+            .map(
+              (name) => Category(
+                name: name as String,
+                iconCodePoint: Icons.category.codePoint,
+              ),
+            )
+            .toList();
+      }
+      return List<Category>.from(rawCategories);
+    }
+    return [];
   }
 
   /// Save categories to settings
-  Future<void> saveCategories(List<String> categories) async {
+  Future<void> saveCategories(List<Category> categories) async {
     if (_settingsBox == null) {
       throw Exception('HiveService not initialized. Call init() first.');
     }
