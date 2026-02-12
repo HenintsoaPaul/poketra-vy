@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/models/expense.dart';
+import '../../../../core/models/category.dart';
 import '../../../../core/providers/formatter_provider.dart';
 import '../providers/expenses_provider.dart';
 import '../../settings/providers/categories_provider.dart';
@@ -21,7 +22,10 @@ class ExpenseTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final categories = ref.watch(categoriesProvider);
-    final category = categories.firstWhere((c) => c.id == expense.categoryId);
+    final category = categories.firstWhere(
+      (c) => c.id == expense.categoryId,
+      orElse: () => Category(name: "Unknown", iconCodePoint: 0),
+    );
 
     return Dismissible(
       key: Key(expense.id),

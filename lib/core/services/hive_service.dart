@@ -2,7 +2,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../models/expense.dart';
 import '../models/category.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 
 class HiveService {
   static const String _expensesBoxName = 'expenses';
@@ -57,19 +56,12 @@ class HiveService {
     final List<Category> categories = [];
     bool categoriesUpdated = false;
 
-    // 1. Migrate Categories: Ensure every category has an ID
+    // 1. Migrate Categories: Ensure all entries are Category objects
     for (final raw in rawCategories) {
       if (raw is Category) {
-        // Category constructor now ensures ID, but if it came from old adapter it might be null if we didn't handle it in read()
-        // Our updated CategoryAdapter handles fields[2] as String?, so it might be null.
-        if (raw.id.isEmpty) {
-          categories.add(raw.copyWith(id: const Uuid().v4()));
-          categoriesUpdated = true;
-        } else {
-          categories.add(raw);
-        }
+        categories.add(raw);
       } else if (raw is String) {
-        // Older migration: String to Category object
+        // Migration from String (old version) to Category object
         categories.add(
           Category(name: raw, iconCodePoint: Icons.category.codePoint),
         );
@@ -81,21 +73,33 @@ class HiveService {
       await _settingsBox!.put(_categoriesKey, categories);
     }
 
-    // 2. Migrate Expenses: Map name to ID
+    // 2. Migrate Expenses: Link expenses to category IDs instead of names
     final expenses = _expensesBox!.values.toList();
 
     for (final expense in expenses) {
-      // Check if categoryId is actually an ID or a name
-      // E.g. categoryId == 'food'
-      final matchingCategory = categories.firstWhere(
-        (c) => c.name == expense.categoryId,
-      );
+      // Check if categoryId already matches an existing category ID
+      final isAlreadyId = categories.any((c) => c.id == expense.categoryId);
+      if (isAlreadyId) continue;
 
-      if (expense.categoryId != matchingCategory.id) {
+      // If it's not a known ID, assume it's an old category name and try to map it
+      final Category? matchingCategory = categories
+          .where(
+            (c) => c.name.toLowerCase() == expense.categoryId.toLowerCase(),
+          )
+          .firstOrNull;
+
+      if (matchingCategory != null &&
+          expense.categoryId != matchingCategory.id) {
         await _expensesBox!.put(
           expense.id,
           expense.copyWith(categoryId: matchingCategory.id),
         );
+      }
+
+      // Remove old expenses with invalid category IDs
+      if (expense.categoryId.isEmpty || expense.categoryId == "tractor") {
+        await _expensesBox!.delete(expense.id);
+        continue;
       }
     }
   }
