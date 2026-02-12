@@ -51,7 +51,127 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-  List<Widget> _buildAppInfo() {
+  // void _updateCategory(Category category) {
+  //   final name = _categoryController.text.trim();
+  //   if (name.isNotEmpty) {
+  //     ref
+  //         .read(categoriesProvider.notifier)
+  //         .updateCategory(category.id, category.copyWith(name: name));
+  //     _categoryController.clear();
+  //     setState(() {
+  //       _selectedIconCode = Icons.category.codePoint;
+  //     });
+  //     FocusScope.of(context).unfocus();
+  //   }
+  // }
+
+  void _showEditCategoryDialog(Category category) {
+    final editController = TextEditingController(text: category.name);
+    int selectedEditIconCode = category.iconCodePoint;
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Edit Category'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              /// Category Name
+              TextField(
+                controller: editController,
+                decoration: const InputDecoration(
+                  labelText: 'Category Name',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+
+              /// Spacer
+              const SizedBox(height: 24),
+
+              /// Category Icon
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Choose Icon:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(height: 12),
+              _buildIconsInput(selectedEditIconCode),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final newName = editController.text.trim();
+                if (newName.isNotEmpty) {
+                  ref
+                      .read(categoriesProvider.notifier)
+                      .updateCategory(
+                        category.id,
+                        category.copyWith(
+                          name: newName,
+                          iconCodePoint: selectedEditIconCode,
+                        ),
+                      );
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIconsInput(int selectedIconCode) {
+    return SizedBox(
+      height: 50,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: _iconPresets.length,
+        itemBuilder: (context, index) {
+          final icon = _iconPresets[index];
+          final isSelected = selectedIconCode == icon.codePoint;
+          return Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: InkWell(
+              onTap: () => setState(() => selectedIconCode = icon.codePoint),
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                width: 50,
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.primaryContainer
+                      : Colors.transparent,
+                  border: Border.all(
+                    color: isSelected
+                        ? Theme.of(context).colorScheme.primary
+                        : Colors.grey.shade300,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  icon,
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.primary
+                      : Colors.grey.shade600,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  List<Widget> _buildAppInfoSection() {
     return [
       Text(
         'App Information',
@@ -91,44 +211,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       const SizedBox(height: 24),
       const Text('Choose Icon:', style: TextStyle(fontWeight: FontWeight.bold)),
       const SizedBox(height: 12),
-      SizedBox(
-        height: 50,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: _iconPresets.length,
-          itemBuilder: (context, index) {
-            final icon = _iconPresets[index];
-            final isSelected = _selectedIconCode == icon.codePoint;
-            return Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: InkWell(
-                onTap: () => setState(() => _selectedIconCode = icon.codePoint),
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  width: 50,
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? Theme.of(context).colorScheme.primaryContainer
-                        : Colors.transparent,
-                    border: Border.all(
-                      color: isSelected
-                          ? Theme.of(context).colorScheme.primary
-                          : Colors.grey.shade300,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    icon,
-                    color: isSelected
-                        ? Theme.of(context).colorScheme.primary
-                        : Colors.grey.shade600,
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
+      _buildIconsInput(_selectedIconCode),
       const SizedBox(height: 12),
       Row(
         children: [
@@ -153,32 +236,44 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ],
       ),
       const SizedBox(height: 32),
-      Expanded(
-        child: ListView.separated(
-          itemCount: categories.length,
-          separatorBuilder: (context, index) => const Divider(),
-          itemBuilder: (context, index) {
-            final category = categories[index];
-            return ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                child: Icon(
-                  IconData(category.iconCodePoint, fontFamily: 'MaterialIcons'),
-                  color: Theme.of(context).colorScheme.primary,
+      ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: categories.length,
+        separatorBuilder: (context, index) => const Divider(),
+        itemBuilder: (context, index) {
+          final category = categories[index];
+          return ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              child: Icon(
+                IconData(category.iconCodePoint, fontFamily: 'MaterialIcons'),
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            title: Text(category.name),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.edit_outlined,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  onPressed: () => _showEditCategoryDialog(category),
                 ),
-              ),
-              title: Text(category.name),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete_outline, color: Colors.red),
-                onPressed: () {
-                  ref
-                      .read(categoriesProvider.notifier)
-                      .removeCategory(category.name);
-                },
-              ),
-            );
-          },
-        ),
+                IconButton(
+                  icon: const Icon(Icons.delete_outline, color: Colors.red),
+                  onPressed: () {
+                    ref
+                        .read(categoriesProvider.notifier)
+                        .removeCategory(category.id);
+                  },
+                ),
+              ],
+            ),
+          );
+        },
       ),
     ];
   }
@@ -189,12 +284,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ..._buildAppInfo(),
+            ..._buildAppInfoSection(),
 
             const Divider(height: 48),
 
