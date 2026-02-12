@@ -6,6 +6,8 @@ import '../../expenses/providers/expenses_provider.dart';
 import '../../expenses/widgets/expense_tile.dart';
 import '../widgets/expense_pie_chart.dart';
 
+import '../../../core/widgets/glass_container.dart';
+
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -56,51 +58,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             .toList()
           ..sort((a, b) => b.date.compareTo(a.date));
 
-    final displayActivities = recentActivities.take(5).toList();
+    final nbRecentToShow = 3;
+    final displayActivities = recentActivities.take(nbRecentToShow).toList();
 
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Analytics Section (All Time)
             _buildAnalyticsSummary(context, allTimeTotal),
 
-            /// Spacer
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
 
             // Recent Activities Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
-                'Recent Activities (This Week)',
+                'Recent Activities',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).primaryColor,
                 ),
               ),
             ),
-            const SizedBox(height: 12),
-            Card(
-              elevation: 0,
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+            const SizedBox(height: 16),
+            GlassContainer(
+              opacity: 0.1,
+              blur: 10,
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: displayActivities.isEmpty
                   ? const Center(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20),
+                        padding: EdgeInsets.symmetric(vertical: 32),
                         child: Text('No activities this week'),
                       ),
                     )
                   : ListView.separated(
                       shrinkWrap: true,
+                      padding: EdgeInsets.zero,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: displayActivities.length,
-                      separatorBuilder: (context, index) =>
-                          const Divider(height: 1, indent: 16, endIndent: 16),
+                      separatorBuilder: (context, index) => Divider(
+                        height: 1,
+                        color: Theme.of(
+                          context,
+                        ).primaryColor.withValues(alpha: 0.1),
+                        indent: 16,
+                        endIndent: 16,
+                      ),
                       itemBuilder: (context, index) {
                         final expense = displayActivities[index];
                         return ExpenseTile(expense: expense);
@@ -108,36 +115,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
             ),
 
-            /// Spacer
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
 
             // Charts Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
-                'Category Breakdown',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Categorized Spent',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 12),
-            Card(
-              elevation: 0,
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    _buildMonthYearSelectors(),
-                    const SizedBox(height: 16),
-                    ExpensePieChart(expenses: filteredForChart),
-                  ],
-                ),
+            const SizedBox(height: 16),
+            GlassContainer(
+              opacity: 0.1,
+              blur: 10,
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  _buildMonthYearSelectors(),
+                  const SizedBox(height: 24),
+                  ExpensePieChart(expenses: filteredForChart),
+                ],
               ),
             ),
           ],
@@ -187,19 +193,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildAnalyticsSummary(BuildContext context, double totalAmount) {
-    return Container(
+    return GlassContainer(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
-          ),
-        ],
+      color: Theme.of(context).primaryColor,
+      opacity: 0.9,
+      blur: 10,
+      borderRadius: 24,
+      border: Border.all(
+        color: Colors.white.withValues(alpha: 0.2),
+        width: 1.5,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,7 +210,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Text(
             'Total Balance Spent',
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.8),
+              color: Colors.white.withValues(alpha: 0.7),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),

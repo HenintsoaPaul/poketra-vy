@@ -6,6 +6,7 @@ import '../../../core/models/expense.dart';
 import '../providers/expenses_provider.dart';
 import '../providers/expense_filter_provider.dart';
 import '../widgets/expense_tile.dart';
+import '../../../core/widgets/glass_container.dart';
 
 class ExpensesListScreen extends ConsumerWidget {
   const ExpensesListScreen({super.key});
@@ -19,37 +20,48 @@ class ExpensesListScreen extends ConsumerWidget {
     return Column(
       children: [
         // Category filter chips
-        Container(
-          height: 60,
-          color: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: allCategories.length,
-            itemBuilder: (context, index) {
-              final category = allCategories[index];
-              final isSelected = category == selectedCategory;
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          child: GlassContainer(
+            height: 60,
+            opacity: 0.1,
+            blur: 8,
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: allCategories.length,
+              itemBuilder: (context, index) {
+                final category = allCategories[index];
+                final isSelected = category == selectedCategory;
 
-              return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: ChoiceChip(
-                  label: Text(category.name),
-                  selected: isSelected,
-                  selectedColor: Theme.of(context).primaryColor,
-                  labelStyle: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black87,
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: ChoiceChip(
+                    label: Text(category.name),
+                    selected: isSelected,
+                    selectedColor: Theme.of(context).primaryColor,
+                    backgroundColor: Colors.transparent,
+                    side: BorderSide(
+                      color: Theme.of(
+                        context,
+                      ).primaryColor.withValues(alpha: 0.2),
+                    ),
+                    labelStyle: TextStyle(
+                      color: isSelected ? Colors.white : Colors.black87,
+                      fontSize: 13,
+                    ),
+                    onSelected: (selected) {
+                      ref.read(selectedCategoryProvider.notifier).state =
+                          category;
+                    },
                   ),
-                  onSelected: (selected) {
-                    ref.read(selectedCategoryProvider.notifier).state =
-                        category;
-                  },
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
-        const Divider(height: 1),
+
         // Expenses list
         Expanded(
           child: expenses.isEmpty
@@ -76,6 +88,7 @@ class ExpensesListScreen extends ConsumerWidget {
 
     return ListView.builder(
       itemCount: dateKeys.length,
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 120),
       itemBuilder: (context, index) {
         final dateKey = dateKeys[index];
         final groupExpenses = grouped[dateKey]!;
@@ -86,26 +99,42 @@ class ExpensesListScreen extends ConsumerWidget {
           children: [
             // Date Header
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+              padding: const EdgeInsets.fromLTRB(8, 24, 8, 12),
               child: Text(
-                DateFormat('EEEE, MMM dd, yyyy').format(date),
+                DateFormat('EEEE, MMM dd').format(date),
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
+                  color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
                 ),
               ),
             ),
-            // Items in this group
-            ...groupExpenses.map((expense) => ExpenseTile(expense: expense)),
-            // Group separator (box + divider) if not the last group
-            if (index < dateKeys.length - 1) ...[
-              const SizedBox(height: 16),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Divider(),
+            // Items in this group wrapped in Glass
+            GlassContainer(
+              opacity: 0.08,
+              blur: 10,
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Column(
+                children: groupExpenses.asMap().entries.map((entry) {
+                  final expense = entry.value;
+                  final isLast = entry.key == groupExpenses.length - 1;
+                  return Column(
+                    children: [
+                      ExpenseTile(expense: expense),
+                      if (!isLast)
+                        Divider(
+                          height: 1,
+                          color: Theme.of(
+                            context,
+                          ).primaryColor.withValues(alpha: 0.05),
+                          indent: 72,
+                          endIndent: 16,
+                        ),
+                    ],
+                  );
+                }).toList(),
               ),
-              const SizedBox(height: 16),
-            ],
+            ),
           ],
         );
       },
