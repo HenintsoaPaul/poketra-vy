@@ -16,45 +16,47 @@ class ExpensesListScreen extends ConsumerWidget {
     final Category selectedCategory = ref.watch(selectedCategoryProvider);
     final List<Category> allCategories = ref.watch(availableCategoriesProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Expenses')),
-      body: Column(
-        children: [
-          // Category filter chips
-          Container(
-            height: 60,
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: allCategories.length,
-              itemBuilder: (context, index) {
-                final category = allCategories[index];
-                final isSelected = category == selectedCategory;
+    return Column(
+      children: [
+        // Category filter chips
+        Container(
+          height: 60,
+          color: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: allCategories.length,
+            itemBuilder: (context, index) {
+              final category = allCategories[index];
+              final isSelected = category == selectedCategory;
 
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: FilterChip(
-                    label: Text(category.name),
-                    selected: isSelected,
-                    onSelected: (selected) {
-                      ref.read(selectedCategoryProvider.notifier).state =
-                          category;
-                    },
+              return Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: ChoiceChip(
+                  label: Text(category.name),
+                  selected: isSelected,
+                  selectedColor: Theme.of(context).primaryColor,
+                  labelStyle: TextStyle(
+                    color: isSelected ? Colors.white : Colors.black87,
                   ),
-                );
-              },
-            ),
+                  onSelected: (selected) {
+                    ref.read(selectedCategoryProvider.notifier).state =
+                        category;
+                  },
+                ),
+              );
+            },
           ),
-          const Divider(height: 1),
-          // Expenses list
-          Expanded(
-            child: expenses.isEmpty
-                ? const Center(child: Text('No expenses yet'))
-                : _buildGroupedListView(expenses),
-          ),
-        ],
-      ),
+        ),
+        const Divider(height: 1),
+        // Expenses list
+        Expanded(
+          child: expenses.isEmpty
+              ? const Center(child: Text('No expenses yet'))
+              : _buildGroupedListView(expenses),
+        ),
+      ],
     );
   }
 
