@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/models/category.dart';
 import '../../../../core/models/expense.dart';
+import '../../../../core/providers/formatter_provider.dart';
 import '../providers/expenses_provider.dart';
 import '../../settings/providers/categories_provider.dart';
 import 'edit_expense_sheet.dart';
@@ -81,7 +82,7 @@ class ExpenseTile extends ConsumerWidget {
         title: Text(expense.category),
         subtitle: Text(expense.description),
         trailing: Text(
-          '${expense.amount.toStringAsFixed(0)} $currency',
+          ref.watch(currencyFormatterProvider).format(expense.amount),
           style: Theme.of(context).textTheme.titleMedium,
         ),
         onTap: () {

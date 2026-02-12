@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../core/models/expense.dart';
+import '../../../core/providers/formatter_provider.dart';
 
-class ExpenseValidationDialog extends StatelessWidget {
+class ExpenseValidationDialog extends ConsumerWidget {
   final Expense expense;
 
   const ExpenseValidationDialog({super.key, required this.expense});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final dateFormat = DateFormat('MMM dd, yyyy');
 
     return AlertDialog(
@@ -22,7 +24,10 @@ class ExpenseValidationDialog extends StatelessWidget {
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 16),
-          _buildInfoRow('Amount:', '${expense.amount.toStringAsFixed(0)} Ar'),
+          _buildInfoRow(
+            'Amount:',
+            ref.watch(currencyFormatterProvider).format(expense.amount),
+          ),
           const SizedBox(height: 8),
           _buildInfoRow('Category:', expense.category),
           const SizedBox(height: 8),

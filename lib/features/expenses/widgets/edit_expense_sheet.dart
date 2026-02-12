@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/models/category.dart';
 import '../../../../core/models/expense.dart';
+import '../../../../core/providers/formatter_provider.dart';
 import '../providers/expenses_provider.dart';
 import '../../settings/providers/categories_provider.dart';
 
@@ -25,7 +26,7 @@ class _EditExpenseSheetState extends ConsumerState<EditExpenseSheet> {
   void initState() {
     super.initState();
     _amountController = TextEditingController(
-      text: widget.expense.amount.toStringAsFixed(0),
+      text: ref.read(numberFormatterProvider).format(widget.expense.amount),
     );
     _descriptionController = TextEditingController(
       text: widget.expense.description,
@@ -92,9 +93,9 @@ class _EditExpenseSheetState extends ConsumerState<EditExpenseSheet> {
           const SizedBox(height: 16),
           TextField(
             controller: _amountController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Amount',
-              suffixText: 'Ar',
+              suffixText: ref.watch(currencyFormatterProvider).currencySymbol,
             ),
             keyboardType: TextInputType.number,
           ),
