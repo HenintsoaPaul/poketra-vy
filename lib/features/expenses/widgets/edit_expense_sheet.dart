@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../../../core/models/category.dart';
 import '../../../../core/models/expense.dart';
 import '../providers/expenses_provider.dart';
 import '../../settings/providers/categories_provider.dart';
@@ -105,10 +106,21 @@ class _EditExpenseSheetState extends ConsumerState<EditExpenseSheet> {
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             initialValue: _selectedCategory,
-            items: categories.map((String category) {
+            items: categories.map((Category category) {
               return DropdownMenuItem<String>(
-                value: category,
-                child: Text(category),
+                value: category.name,
+                child: Row(
+                  children: [
+                    Icon(
+                      IconData(
+                        category.iconCodePoint,
+                        fontFamily: 'MaterialIcons',
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(category.name),
+                  ],
+                ),
               );
             }).toList(),
             onChanged: (String? value) {

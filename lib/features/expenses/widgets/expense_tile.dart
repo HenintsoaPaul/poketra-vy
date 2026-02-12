@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/models/category.dart';
 import '../../../../core/models/expense.dart';
 import '../providers/expenses_provider.dart';
+import '../../settings/providers/categories_provider.dart';
 import 'edit_expense_sheet.dart';
 
 class ExpenseTile extends ConsumerWidget {
   final Expense expense;
-
-  // TODO: set to global variable
-  final String currency = 'Ar';
 
   const ExpenseTile({super.key, required this.expense});
 
@@ -62,7 +61,23 @@ class ExpenseTile extends ConsumerWidget {
         );
       },
       child: ListTile(
-        leading: CircleAvatar(child: Text(expense.category[0].toUpperCase())),
+        leading: Consumer(
+          builder: (context, ref, child) {
+            final categories = ref.watch(categoriesProvider);
+            final category = categories.firstWhere(
+              (c) => c.name == expense.category,
+              orElse: () => Category(
+                name: expense.category,
+                iconCodePoint: Icons.category.codePoint,
+              ),
+            );
+            return CircleAvatar(
+              child: Icon(
+                IconData(category.iconCodePoint, fontFamily: 'MaterialIcons'),
+              ),
+            );
+          },
+        ),
         title: Text(expense.category),
         subtitle: Text(expense.description),
         trailing: Text(
