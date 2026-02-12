@@ -5,6 +5,8 @@ import '../../../core/models/category.dart';
 import '../../../core/providers/onboarding_provider.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/widgets/glass_container.dart';
+
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -12,55 +14,80 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final categories = ref.watch(categoriesProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Settings'), centerTitle: true),
-      body: CustomScrollView(
-        slivers: [
-          SliverPadding(
-            padding: const EdgeInsets.all(24),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                /// App Information Section
-                const _SettingsSection(
-                  title: 'App Information',
-                  children: [_OnboardingListTile()],
-                ),
+    return CustomScrollView(
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 24, 16, 120),
+          sliver: SliverList(
+            delegate: SliverChildListDelegate([
+              /// App Information Section
+              const _SettingsSection(
+                title: 'App Overview',
+                children: [
+                  GlassContainer(
+                    opacity: 0.1,
+                    blur: 8,
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: _OnboardingListTile(),
+                  ),
+                ],
+              ),
 
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Divider(),
-                ),
+              /// Spacer
+              const SizedBox(height: 32),
 
-                /// Category Management Section
-                _SettingsSection(
-                  title: 'Manage Categories',
-                  subtitle: 'Add or remove categories for your expenses.',
-                  children: [
-                    const _AddCategoryForm(),
-                    const SizedBox(height: 32),
-                    if (categories.isEmpty)
-                      const Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 32),
-                          child: Text('No categories added yet.'),
-                        ),
-                      )
-                    else
-                      ListView.separated(
+              /// Category Management Section
+              _SettingsSection(
+                title: 'Expense Categories',
+                subtitle: 'Personalize your expense tracking categories.',
+                children: [
+                  /// Add Category
+                  const GlassContainer(
+                    opacity: 0.1,
+                    blur: 8,
+                    padding: EdgeInsets.all(16.0),
+                    child: _AddCategoryForm(),
+                  ),
+
+                  /// Spacer
+                  const SizedBox(height: 24),
+
+                  /// List of Categories
+                  if (categories.isEmpty)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 32),
+                        child: Text('No categories added yet.'),
+                      ),
+                    )
+                  else
+                    GlassContainer(
+                      opacity: 0.1,
+                      blur: 8,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: ListView.separated(
                         shrinkWrap: true,
+                        padding: EdgeInsets.zero,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: categories.length,
-                        separatorBuilder: (context, index) => const Divider(),
+                        separatorBuilder: (context, index) => Divider(
+                          height: 1,
+                          color: Theme.of(
+                            context,
+                          ).primaryColor.withValues(alpha: 0.05),
+                          indent: 72,
+                          endIndent: 16,
+                        ),
                         itemBuilder: (context, index) =>
                             _CategoryListItem(category: categories[index]),
                       ),
-                  ],
-                ),
-              ]),
-            ),
+                    ),
+                ],
+              ),
+            ]),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -168,29 +195,42 @@ class _AddCategoryFormState extends ConsumerState<_AddCategoryForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        /// Choose Icon
         const Text(
           'Choose Icon',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+
+        /// Spacer
         const SizedBox(height: 12),
+
+        /// Icon Grid
         _IconGrid(
           selectedIconCode: _selectedIconCode,
           onIconSelected: (code) => setState(() => _selectedIconCode = code),
         ),
+
+        /// Spacer
         const SizedBox(height: 16),
+
+        /// Category Name
         Row(
           children: [
             Expanded(
               child: TextField(
                 controller: _controller,
                 decoration: const InputDecoration(
-                  hintText: 'Category name (e.g., Gym)',
+                  hintText: 'Category name (e.g. Gym)',
                   border: OutlineInputBorder(),
                 ),
                 onSubmitted: (_) => _submit(),
               ),
             ),
+
+            /// Spacer
             const SizedBox(width: 12),
+
+            /// Add Button
             ElevatedButton(
               onPressed: _submit,
               style: ElevatedButton.styleFrom(

@@ -6,6 +6,8 @@ import '../../expenses/providers/expenses_provider.dart';
 import '../../expenses/widgets/expense_tile.dart';
 import '../widgets/expense_pie_chart.dart';
 
+import '../../../core/widgets/glass_container.dart';
+
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
@@ -56,57 +58,95 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             .toList()
           ..sort((a, b) => b.date.compareTo(a.date));
 
-    final displayActivities = recentActivities.take(5).toList();
+    final nbRecentToShow = 3;
+    final displayActivities = recentActivities.take(nbRecentToShow).toList();
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Analytics Section (All Time)
-              _buildAnalyticsSummary(context, allTimeTotal),
-              const SizedBox(height: 32),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Analytics Section (All Time)
+            _buildAnalyticsSummary(context, allTimeTotal),
 
-              // Recent Activities Section
-              Text(
-                'Recent Activities (This Week)',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 16),
-              if (displayActivities.isEmpty)
-                const Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Text('No activities this week'),
-                  ),
-                )
-              else
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: displayActivities.length,
-                  separatorBuilder: (context, index) => const Divider(),
-                  itemBuilder: (context, index) {
-                    final expense = displayActivities[index];
-                    return ExpenseTile(expense: expense);
-                  },
+            const SizedBox(height: 32),
+
+            // Recent Activities Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                'Recent Activities',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
                 ),
-              const SizedBox(height: 32),
-
-              // Charts Section
-              Text(
-                'Category Breakdown',
-                style: Theme.of(context).textTheme.titleLarge,
               ),
-              const SizedBox(height: 16),
-              _buildMonthYearSelectors(),
-              const SizedBox(height: 16),
-              ExpensePieChart(expenses: filteredForChart),
-            ],
-          ),
+            ),
+            const SizedBox(height: 16),
+            GlassContainer(
+              opacity: 0.1,
+              blur: 10,
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: displayActivities.isEmpty
+                  ? const Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 32),
+                        child: Text('No activities this week'),
+                      ),
+                    )
+                  : ListView.separated(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: displayActivities.length,
+                      separatorBuilder: (context, index) => Divider(
+                        height: 1,
+                        color: Theme.of(
+                          context,
+                        ).primaryColor.withValues(alpha: 0.1),
+                        indent: 16,
+                        endIndent: 16,
+                      ),
+                      itemBuilder: (context, index) {
+                        final expense = displayActivities[index];
+                        return ExpenseTile(expense: expense);
+                      },
+                    ),
+            ),
+
+            const SizedBox(height: 32),
+
+            // Charts Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Categorized Spent',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            GlassContainer(
+              opacity: 0.1,
+              blur: 10,
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  _buildMonthYearSelectors(),
+                  const SizedBox(height: 24),
+                  ExpensePieChart(expenses: filteredForChart),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -153,52 +193,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildAnalyticsSummary(BuildContext context, double totalAmount) {
-    return Container(
+    return GlassContainer(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Theme.of(context).colorScheme.primaryContainer,
-            Theme.of(context).colorScheme.secondaryContainer,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+      padding: const EdgeInsets.all(24),
+      color: Theme.of(context).primaryColor,
+      opacity: 0.9,
+      blur: 10,
+      borderRadius: 24,
+      border: Border.all(
+        color: Colors.white.withValues(alpha: 0.2),
+        width: 1.5,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(
-                Icons.account_balance_wallet,
-                size: 28,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(width: 12),
-              Text(
-                'Total Balance Spent',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-              ),
-            ],
+          Text(
+            'Total Balance Spent',
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.7),
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 8),
           Text(
             ref.watch(currencyFormatterProvider).format(totalAmount),
-            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
             ),
           ),
         ],

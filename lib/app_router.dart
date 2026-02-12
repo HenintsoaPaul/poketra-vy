@@ -19,7 +19,7 @@ final appRouter = GoRouter(
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         return _OnboardingWrapper(
-          child: ScaffoldWithNavBar(navigationShell: navigationShell),
+          child: AppShell(navigationShell: navigationShell),
         );
       },
       branches: [

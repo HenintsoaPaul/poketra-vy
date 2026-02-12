@@ -7,6 +7,8 @@ import '../../settings/providers/categories_provider.dart';
 import '../providers/expenses_provider.dart';
 import '../widgets/expense_validation_dialog.dart';
 
+import '../../../core/widgets/glass_container.dart';
+
 class VoiceExpenseScreen extends ConsumerStatefulWidget {
   const VoiceExpenseScreen({super.key});
 
@@ -129,30 +131,64 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Voice Entry')),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                _text,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: 48),
-              if (_isProcessing)
-                const CircularProgressIndicator()
-              else
-                FloatingActionButton.large(
-                  onPressed: _toggleListening,
-                  child: Icon(_isListening ? Icons.stop : Icons.mic),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 120),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: GlassContainer(
+              width: double.infinity,
+              opacity: 0.1,
+              blur: 15,
+              padding: const EdgeInsets.all(32),
+              child: Center(
+                child: Text(
+                  _text,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w400,
+                    height: 1.5,
+                  ),
                 ),
-            ],
+              ),
+            ),
           ),
-        ),
+          const SizedBox(height: 48),
+          if (_isProcessing)
+            const CircularProgressIndicator()
+          else
+            GestureDetector(
+              onTap: _toggleListening,
+              child: GlassContainer(
+                width: 140,
+                height: 140,
+                borderRadius: 70,
+                color: Theme.of(context).primaryColor,
+                opacity: 0.9,
+                blur: 10,
+                padding: EdgeInsets.zero,
+                child: Center(
+                  child: Icon(
+                    _isListening ? Icons.stop_rounded : Icons.mic_rounded,
+                    color: Colors.white,
+                    size: 64,
+                  ),
+                ),
+              ),
+            ),
+          const SizedBox(height: 32),
+          Text(
+            _isListening ? 'LISTENING NOW' : 'TAP TO RECORD EXPENSE',
+            style: TextStyle(
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
+              fontWeight: FontWeight.bold,
+              letterSpacing: 2,
+              fontSize: 12,
+            ),
+          ),
+        ],
       ),
     );
   }

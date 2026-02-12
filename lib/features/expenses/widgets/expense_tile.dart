@@ -68,23 +68,51 @@ class ExpenseTile extends ConsumerWidget {
         );
       },
       child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+
         /// Expense Category Icon
         leading: CircleAvatar(
+          backgroundColor: Theme.of(
+            context,
+          ).primaryColor.withValues(alpha: 0.1),
+          foregroundColor: Theme.of(context).primaryColor,
           child: Icon(
             IconData(category.iconCodePoint, fontFamily: 'MaterialIcons'),
+            size: 20,
           ),
         ),
 
-        /// Expense Category
-        title: Text(category.name),
-
         /// Expense Description
-        subtitle: Text(expense.description),
+        title: Text(
+          expense.description,
+          style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
+        ),
+
+        /// Expense Category & Date
+        subtitle: Row(
+          children: [
+            Text(
+              category.name,
+              style: TextStyle(color: Colors.grey[600], fontSize: 13),
+            ),
+            const SizedBox(width: 8),
+            Text("•", style: TextStyle(color: Colors.grey[400], fontSize: 13)),
+            const SizedBox(width: 8),
+            Text(
+              "${expense.date.day}/${expense.date.month}/${expense.date.year}",
+              style: TextStyle(color: Colors.grey[600], fontSize: 13),
+            ),
+          ],
+        ),
 
         /// Expense Amount
         trailing: Text(
           ref.watch(currencyFormatterProvider).format(expense.amount),
-          style: Theme.of(context).textTheme.titleMedium,
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
         ),
 
         /// On Tap
