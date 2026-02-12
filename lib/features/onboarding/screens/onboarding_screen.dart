@@ -141,7 +141,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             Icon(
               icon,
               size: 150,
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.8),
             ),
           const SizedBox(height: 48),
           Text(

@@ -5,6 +5,7 @@ import 'package:poketra_vy/core/models/expense.dart';
 import 'package:poketra_vy/features/expenses/providers/expenses_provider.dart';
 import 'package:poketra_vy/features/expenses/screens/expenses_list_screen.dart';
 import 'package:poketra_vy/features/expenses/widgets/expense_tile.dart';
+import 'package:poketra_vy/core/models/category.dart';
 import 'package:poketra_vy/core/services/hive_service.dart';
 
 void main() {
@@ -25,15 +26,17 @@ void main() {
   });
 
   testWidgets('ExpensesListScreen shows list of expenses', (tester) async {
+    final category = Category(id: 'food_id', name: 'food', iconCodePoint: 0);
+
     final expense = Expense(
       amount: 5000,
-      category: 'food',
+      categoryId: category.id,
       date: DateTime.now(),
       description: 'Lunch',
     );
 
     // Create a mock HiveService
-    final mockHiveService = _MockHiveService([expense]);
+    final mockHiveService = _MockHiveService([expense], [category]);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -48,15 +51,17 @@ void main() {
     expect(find.text('No expenses yet'), findsNothing);
     expect(find.byType(ExpenseTile), findsOneWidget);
     // Category appears in both filter chip and expense tile, so we check the tile exists
-    expect(find.text('5000 Ar'), findsOneWidget);
+    expect(find.textContaining('5,000'), findsOneWidget);
+    expect(find.textContaining('Ar'), findsWidgets);
   });
 }
 
 // Mock HiveService for testing
 class _MockHiveService extends HiveService {
   final List<Expense> _expenses;
+  final List<Category> _categories;
 
-  _MockHiveService(this._expenses);
+  _MockHiveService(this._expenses, [this._categories = const []]);
 
   @override
   Future<void> init() async {
@@ -77,8 +82,16 @@ class _MockHiveService extends HiveService {
   }
 
   @override
-  Future<void> clearAll() async {
-    _expenses.clear();
+  List<Category> getCategories() => _categories.isNotEmpty
+      ? _categories
+      : [
+          Category(id: 'food_id', name: 'food', iconCodePoint: 0),
+          Category(id: 'transport_id', name: 'transport', iconCodePoint: 0),
+        ];
+
+  @override
+  Future<void> saveCategories(List<Category> categories) async {
+    // No-op for testing
   }
 
   @override

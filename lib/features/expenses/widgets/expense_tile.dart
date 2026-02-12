@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/models/expense.dart';
+import '../../../../core/models/category.dart';
+import '../../../../core/providers/formatter_provider.dart';
 import '../providers/expenses_provider.dart';
+import '../../settings/providers/categories_provider.dart';
 import 'edit_expense_sheet.dart';
 
 class ExpenseTile extends ConsumerWidget {
   final Expense expense;
-
-  // TODO: set to global variable
-  final String currency = 'Ar';
 
   const ExpenseTile({super.key, required this.expense});
 
@@ -21,6 +21,12 @@ class ExpenseTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final categories = ref.watch(categoriesProvider);
+    final category = categories.firstWhere(
+      (c) => c.id == expense.categoryId,
+      orElse: () => Category(name: "Unknown", iconCodePoint: 0),
+    );
+
     return Dismissible(
       key: Key(expense.id),
       direction: DismissDirection.horizontal,
@@ -62,13 +68,26 @@ class ExpenseTile extends ConsumerWidget {
         );
       },
       child: ListTile(
-        leading: CircleAvatar(child: Text(expense.category[0].toUpperCase())),
-        title: Text(expense.category),
+        /// Expense Category Icon
+        leading: CircleAvatar(
+          child: Icon(
+            IconData(category.iconCodePoint, fontFamily: 'MaterialIcons'),
+          ),
+        ),
+
+        /// Expense Category
+        title: Text(category.name),
+
+        /// Expense Description
         subtitle: Text(expense.description),
+
+        /// Expense Amount
         trailing: Text(
-          '${expense.amount.toStringAsFixed(0)} $currency',
+          ref.watch(currencyFormatterProvider).format(expense.amount),
           style: Theme.of(context).textTheme.titleMedium,
         ),
+
+        /// On Tap
         onTap: () {
           showModalBottomSheet(
             context: context,

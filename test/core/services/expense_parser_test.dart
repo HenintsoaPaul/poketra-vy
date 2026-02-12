@@ -1,15 +1,23 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:poketra_vy/core/models/category.dart';
 import 'package:poketra_vy/core/services/expense_parser.dart';
 
 void main() {
-  const categories = ['food', 'transport', 'rent', 'fun', 'shopping', 'misc'];
+  final categories = [
+    Category(id: '1', name: 'food', iconCodePoint: 0),
+    Category(id: '2', name: 'transport', iconCodePoint: 0),
+    Category(id: '3', name: 'rent', iconCodePoint: 0),
+    Category(id: '4', name: 'fun', iconCodePoint: 0),
+    Category(id: '5', name: 'shopping', iconCodePoint: 0),
+    Category(id: '6', name: 'misc', iconCodePoint: 0),
+  ];
 
   group('ExpenseParser', () {
     test('parses amount and category correctly', () {
       final expense = ExpenseParser.parse('I spent 5000 on food', categories);
       expect(expense, isNotNull);
       expect(expense!.amount, 5000);
-      expect(expense.category, 'food');
+      expect(expense.categoryId, '1');
     });
 
     test('parses date keywords (today)', () {
@@ -29,7 +37,7 @@ void main() {
 
     test('defaults to misc category if unknown', () {
       final expense = ExpenseParser.parse('5000 something', categories);
-      expect(expense!.category, 'misc');
+      expect(expense!.categoryId, '6');
     });
 
     test('returns null if no amount found', () {
@@ -40,9 +48,6 @@ void main() {
     test('uses full text logic for description (heuristics)', () {
       final expense = ExpenseParser.parse('dinner 20000 food', categories);
       expect(expense!.description, contains('dinner'));
-      // Amount and category might be stripped or not depending on final implementation logic,
-      // but strict check might be brittle if I change implementation.
-      // Checking if description is not empty at least.
       expect(expense.description, isNotEmpty);
     });
   });

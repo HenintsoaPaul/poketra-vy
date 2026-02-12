@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../../core/providers/formatter_provider.dart';
 import '../../expenses/providers/expenses_provider.dart';
 import '../../expenses/widgets/expense_tile.dart';
 import '../widgets/expense_pie_chart.dart';
@@ -194,7 +195,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           const SizedBox(height: 20),
           Text(
-            '${totalAmount.toStringAsFixed(0)} Ar',
+            ref.watch(currencyFormatterProvider).format(totalAmount),
             style: Theme.of(context).textTheme.headlineLarge?.copyWith(
               fontWeight: FontWeight.bold,
               color: Theme.of(context).colorScheme.primary,

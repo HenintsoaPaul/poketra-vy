@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../settings/providers/categories_provider.dart';
 import '../../../../core/models/expense.dart';
 
-class ExpensePieChart extends StatelessWidget {
+class ExpensePieChart extends ConsumerWidget {
   final List<Expense> expenses;
 
   const ExpensePieChart({super.key, required this.expenses});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (expenses.isEmpty) {
       return const Center(child: Text('No data for this period'));
     }
 
+    final categories = ref.watch(categoriesProvider);
+
     final categoryTotals = <String, double>{};
     for (var expense in expenses) {
-      categoryTotals[expense.category] =
-          (categoryTotals[expense.category] ?? 0) + expense.amount;
+      categoryTotals[expense.categoryId] =
+          (categoryTotals[expense.categoryId] ?? 0) + expense.amount;
     }
 
     final total = categoryTotals.values.fold(0.0, (sum, val) => sum + val);
@@ -28,8 +32,12 @@ class ExpensePieChart extends StatelessWidget {
           sectionsSpace: 2,
           centerSpaceRadius: 40,
           sections: categoryTotals.entries.map((entry) {
-            final color = _getCategoryColor(entry.key);
+            final categoryId = entry.key;
+            final category = categories.firstWhere((c) => c.id == categoryId);
+
+            final color = _getCategoryColor(category.name);
             final percentage = (entry.value / total) * 100;
+
             return PieChartSectionData(
               color: color,
               value: entry.value,
@@ -40,7 +48,7 @@ class ExpensePieChart extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
-              badgeWidget: _Badge(entry.key, size: 40, borderColor: color),
+              badgeWidget: _Badge(category.name, size: 40, borderColor: color),
               badgePositionPercentageOffset: 1.3,
             );
           }).toList(),
@@ -49,7 +57,7 @@ class ExpensePieChart extends StatelessWidget {
     );
   }
 
-  Color _getCategoryColor(String category) {
+  Color _getCategoryColor(String categoryName) {
     final colors = {
       'food': Colors.orange,
       'transport': Colors.blue,
@@ -59,8 +67,8 @@ class ExpensePieChart extends StatelessWidget {
       'misc': Colors.grey,
     };
 
-    return colors[category.toLowerCase()] ??
-        Colors.primaries[category.length % Colors.primaries.length];
+    return colors[categoryName.toLowerCase()] ??
+        Colors.primaries[categoryName.length % Colors.primaries.length];
   }
 }
 

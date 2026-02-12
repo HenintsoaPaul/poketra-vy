@@ -1,15 +1,23 @@
+import '../models/category.dart';
 import '../models/expense.dart';
 
 class ExpenseParser {
   const ExpenseParser();
 
-  static Expense? parse(String text, List<String> categories) {
+  static Expense? parse(String text, List<Category> categories) {
     if (text.isEmpty) return null;
     final lowerText = text.toLowerCase();
     final words = lowerText.split(' ');
 
     double? amount;
-    String category = 'misc'; // Miscellaneous
+    // Default to 'misc' category ID if found, else first available, else empty String (will be migrated/fixed)
+    final miscCategory = categories.firstWhere(
+      (c) => c.name.toLowerCase() == 'misc',
+      orElse: () => categories.isNotEmpty
+          ? categories.first
+          : Category(name: 'misc', iconCodePoint: 0),
+    );
+    String categoryId = miscCategory.id;
 
     DateTime date = DateTime.now();
 
@@ -30,8 +38,8 @@ class ExpenseParser {
 
     // 2. Extract Category
     for (var cat in categories) {
-      if (lowerText.contains(cat.toLowerCase())) {
-        category = cat;
+      if (lowerText.contains(cat.name.toLowerCase())) {
+        categoryId = cat.id;
         break; // Take first matching category
       }
     }
@@ -44,7 +52,7 @@ class ExpenseParser {
 
     return Expense(
       amount: amount,
-      category: category,
+      categoryId: categoryId,
       date: date,
       description: text,
     );

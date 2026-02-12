@@ -12,7 +12,7 @@ class Expense {
   final double amount;
 
   @HiveField(2)
-  final String category;
+  final String categoryId;
 
   @HiveField(3)
   final DateTime date;
@@ -23,7 +23,7 @@ class Expense {
   Expense({
     String? id,
     required this.amount,
-    required this.category,
+    required this.categoryId,
     required this.date,
     required this.description,
   }) : id = id ?? const Uuid().v4();
@@ -32,7 +32,7 @@ class Expense {
     return {
       'id': id,
       'amount': amount,
-      'category': category,
+      'categoryId': categoryId,
       'date': date.toIso8601String(),
       'description': description,
     };
@@ -42,7 +42,7 @@ class Expense {
     return Expense(
       id: json['id'] as String,
       amount: (json['amount'] as num).toDouble(),
-      category: json['category'] as String,
+      categoryId: json['categoryId'] as String,
       date: DateTime.parse(json['date'] as String),
       description: json['description'] as String,
     );
@@ -51,14 +51,14 @@ class Expense {
   Expense copyWith({
     String? id,
     double? amount,
-    String? category,
+    String? categoryId,
     DateTime? date,
     String? description,
   }) {
     return Expense(
       id: id ?? this.id,
       amount: amount ?? this.amount,
-      category: category ?? this.category,
+      categoryId: categoryId ?? this.categoryId,
       date: date ?? this.date,
       description: description ?? this.description,
     );

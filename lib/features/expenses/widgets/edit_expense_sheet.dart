@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../../../core/models/category.dart';
 import '../../../../core/models/expense.dart';
+import '../../../../core/providers/formatter_provider.dart';
 import '../providers/expenses_provider.dart';
 import '../../settings/providers/categories_provider.dart';
 
@@ -24,13 +26,13 @@ class _EditExpenseSheetState extends ConsumerState<EditExpenseSheet> {
   void initState() {
     super.initState();
     _amountController = TextEditingController(
-      text: widget.expense.amount.toStringAsFixed(0),
+      text: ref.read(numberFormatterProvider).format(widget.expense.amount),
     );
     _descriptionController = TextEditingController(
       text: widget.expense.description,
     );
     _selectedDate = widget.expense.date;
-    _selectedCategory = widget.expense.category;
+    _selectedCategory = widget.expense.categoryId;
   }
 
   @override
@@ -59,7 +61,7 @@ class _EditExpenseSheetState extends ConsumerState<EditExpenseSheet> {
     final updatedExpense = widget.expense.copyWith(
       amount: amount,
       description: _descriptionController.text,
-      category: _selectedCategory,
+      categoryId: _selectedCategory,
       date: _selectedDate,
     );
 
@@ -91,9 +93,9 @@ class _EditExpenseSheetState extends ConsumerState<EditExpenseSheet> {
           const SizedBox(height: 16),
           TextField(
             controller: _amountController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Amount',
-              suffixText: 'Ar',
+              suffixText: ref.watch(currencyFormatterProvider).currencySymbol,
             ),
             keyboardType: TextInputType.number,
           ),
@@ -105,10 +107,21 @@ class _EditExpenseSheetState extends ConsumerState<EditExpenseSheet> {
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             initialValue: _selectedCategory,
-            items: categories.map((String category) {
+            items: categories.map((Category category) {
               return DropdownMenuItem<String>(
-                value: category,
-                child: Text(category),
+                value: category.id,
+                child: Row(
+                  children: [
+                    Icon(
+                      IconData(
+                        category.iconCodePoint,
+                        fontFamily: 'MaterialIcons',
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(category.name),
+                  ],
+                ),
               );
             }).toList(),
             onChanged: (String? value) {
