@@ -129,29 +129,55 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Voice Entry')),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                _text,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium,
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              _text,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                color: Theme.of(context).primaryColor,
+                fontWeight: FontWeight.w300,
               ),
-              const SizedBox(height: 48),
-              if (_isProcessing)
-                const CircularProgressIndicator()
-              else
-                FloatingActionButton.large(
-                  onPressed: _toggleListening,
-                  child: Icon(_isListening ? Icons.stop : Icons.mic),
+            ),
+            const SizedBox(height: 64),
+            if (_isProcessing)
+              const CircularProgressIndicator()
+            else
+              GestureDetector(
+                onTap: _toggleListening,
+                child: Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(
+                          context,
+                        ).primaryColor.withValues(alpha: 0.3),
+                        blurRadius: 20,
+                        spreadRadius: 5,
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    _isListening ? Icons.stop : Icons.mic,
+                    color: Colors.white,
+                    size: 48,
+                  ),
                 ),
-            ],
-          ),
+              ),
+            const SizedBox(height: 24),
+            Text(
+              _isListening ? 'Listening...' : 'Tap the mic to speak',
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+          ],
         ),
       ),
     );

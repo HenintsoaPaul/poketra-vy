@@ -27,9 +27,22 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Voice Expense Tracker',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF244B73),
+          primary: const Color(0xFF244B73),
+          onPrimary: Colors.white,
+          surface: Colors.white,
+          onSurface: const Color(0xFF244B73),
+        ),
+        scaffoldBackgroundColor: const Color(0xFFEDF5FF),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF244B73),
+          foregroundColor: Colors.white,
+          elevation: 0,
+        ),
         useMaterial3: true,
       ),
+      themeMode: ThemeMode.light,
       routerConfig: appRouter,
     );
   }
