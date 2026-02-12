@@ -2,6 +2,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../models/expense.dart';
 import '../models/category.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class HiveService {
   static const String _expensesBoxName = 'expenses';
@@ -27,6 +28,9 @@ class HiveService {
     _expensesBox = await Hive.openBox<Expense>(_expensesBoxName);
     _settingsBox = await Hive.openBox(_settingsBoxName);
 
+    // MIGRATION LOGIC
+    await _migrateToCategoryIds();
+
     // Initialize default categories if empty
     if (_settingsBox!.get(_categoriesKey) == null) {
       await _settingsBox!.put(_categoriesKey, [
@@ -43,6 +47,56 @@ class HiveService {
         ),
         Category(name: 'misc', iconCodePoint: Icons.category.codePoint),
       ]);
+    }
+  }
+
+  Future<void> _migrateToCategoryIds() async {
+    final rawCategories = _settingsBox!.get(_categoriesKey);
+    if (rawCategories is! List) return;
+
+    final List<Category> categories = [];
+    bool categoriesUpdated = false;
+
+    // 1. Migrate Categories: Ensure every category has an ID
+    for (final raw in rawCategories) {
+      if (raw is Category) {
+        // Category constructor now ensures ID, but if it came from old adapter it might be null if we didn't handle it in read()
+        // Our updated CategoryAdapter handles fields[2] as String?, so it might be null.
+        if (raw.id.isEmpty) {
+          categories.add(raw.copyWith(id: const Uuid().v4()));
+          categoriesUpdated = true;
+        } else {
+          categories.add(raw);
+        }
+      } else if (raw is String) {
+        // Older migration: String to Category object
+        categories.add(
+          Category(name: raw, iconCodePoint: Icons.category.codePoint),
+        );
+        categoriesUpdated = true;
+      }
+    }
+
+    if (categoriesUpdated) {
+      await _settingsBox!.put(_categoriesKey, categories);
+    }
+
+    // 2. Migrate Expenses: Map name to ID
+    final expenses = _expensesBox!.values.toList();
+
+    for (final expense in expenses) {
+      // Check if categoryId is actually an ID or a name
+      // E.g. categoryId == 'food'
+      final matchingCategory = categories.firstWhere(
+        (c) => c.name == expense.categoryId,
+      );
+
+      if (expense.categoryId != matchingCategory.id) {
+        await _expensesBox!.put(
+          expense.id,
+          expense.copyWith(categoryId: matchingCategory.id),
+        );
+      }
     }
   }
 
