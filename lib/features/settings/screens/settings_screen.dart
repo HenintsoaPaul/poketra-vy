@@ -12,32 +12,43 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final categories = ref.watch(categoriesProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Settings'), centerTitle: true),
-      body: CustomScrollView(
+    return Container(
+      color: const Color(0xFFEDF5FF),
+      child: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 /// App Information Section
                 const _SettingsSection(
-                  title: 'App Information',
-                  children: [_OnboardingListTile()],
+                  title: 'App Overview',
+                  children: [
+                    Card(
+                      elevation: 0,
+                      color: Colors.white,
+                      child: _OnboardingListTile(),
+                    ),
+                  ],
                 ),
 
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Divider(),
-                ),
+                /// Spacer
+                const SizedBox(height: 24),
 
                 /// Category Management Section
                 _SettingsSection(
-                  title: 'Manage Categories',
-                  subtitle: 'Add or remove categories for your expenses.',
+                  title: 'Expense Categories',
+                  subtitle: 'Personalize your expense tracking categories.',
                   children: [
-                    const _AddCategoryForm(),
-                    const SizedBox(height: 32),
+                    const Card(
+                      elevation: 0,
+                      color: Colors.white,
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: _AddCategoryForm(),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
                     if (categories.isEmpty)
                       const Center(
                         child: Padding(
@@ -46,13 +57,21 @@ class SettingsScreen extends ConsumerWidget {
                         ),
                       )
                     else
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: categories.length,
-                        separatorBuilder: (context, index) => const Divider(),
-                        itemBuilder: (context, index) =>
-                            _CategoryListItem(category: categories[index]),
+                      Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: categories.length,
+                          separatorBuilder: (context, index) => const Divider(
+                            height: 1,
+                            indent: 56,
+                            endIndent: 16,
+                          ),
+                          itemBuilder: (context, index) =>
+                              _CategoryListItem(category: categories[index]),
+                        ),
                       ),
                   ],
                 ),
