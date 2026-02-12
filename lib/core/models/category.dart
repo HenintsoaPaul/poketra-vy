@@ -1,13 +1,17 @@
 import 'package:hive/hive.dart';
+import 'package:uuid/uuid.dart';
 
 class Category {
+  final String id;
   final String name;
   final int iconCodePoint;
 
-  Category({required this.name, required this.iconCodePoint});
+  Category({String? id, required this.name, required this.iconCodePoint})
+    : id = id ?? const Uuid().v4();
 
-  Category copyWith({String? name, int? iconCodePoint}) {
+  Category copyWith({String? id, String? name, int? iconCodePoint}) {
     return Category(
+      id: id ?? this.id,
       name: name ?? this.name,
       iconCodePoint: iconCodePoint ?? this.iconCodePoint,
     );
@@ -16,12 +20,10 @@ class Category {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Category &&
-          runtimeType == other.runtimeType &&
-          name == other.name;
+      other is Category && runtimeType == other.runtimeType && id == other.id;
 
   @override
-  int get hashCode => name.hashCode;
+  int get hashCode => id.hashCode;
 }
 
 class CategoryAdapter extends TypeAdapter<Category> {
@@ -34,17 +36,23 @@ class CategoryAdapter extends TypeAdapter<Category> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Category(name: fields[0] as String, iconCodePoint: fields[1] as int);
+    return Category(
+      id: fields[2] as String?,
+      name: fields[0] as String,
+      iconCodePoint: fields[1] as int,
+    );
   }
 
   @override
   void write(BinaryWriter writer, Category obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.iconCodePoint);
+      ..write(obj.iconCodePoint)
+      ..writeByte(2)
+      ..write(obj.id);
   }
 
   @override
