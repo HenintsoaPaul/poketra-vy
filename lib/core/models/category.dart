@@ -6,6 +6,13 @@ class Category {
 
   Category({required this.name, required this.iconCodePoint});
 
+  Category copyWith({String? name, int? iconCodePoint}) {
+    return Category(
+      name: name ?? this.name,
+      iconCodePoint: iconCodePoint ?? this.iconCodePoint,
+    );
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
