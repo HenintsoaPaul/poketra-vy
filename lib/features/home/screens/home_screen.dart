@@ -58,55 +58,89 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final displayActivities = recentActivities.take(5).toList();
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Analytics Section (All Time)
-              _buildAnalyticsSummary(context, allTimeTotal),
-              const SizedBox(height: 32),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Analytics Section (All Time)
+            _buildAnalyticsSummary(context, allTimeTotal),
 
-              // Recent Activities Section
-              Text(
+            /// Spacer
+            const SizedBox(height: 24),
+
+            // Recent Activities Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
                 'Recent Activities (This Week)',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 16),
-              if (displayActivities.isEmpty)
-                const Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Text('No activities this week'),
-                  ),
-                )
-              else
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: displayActivities.length,
-                  separatorBuilder: (context, index) => const Divider(),
-                  itemBuilder: (context, index) {
-                    final expense = displayActivities[index];
-                    return ExpenseTile(expense: expense);
-                  },
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
                 ),
-              const SizedBox(height: 32),
-
-              // Charts Section
-              Text(
-                'Category Breakdown',
-                style: Theme.of(context).textTheme.titleLarge,
               ),
-              const SizedBox(height: 16),
-              _buildMonthYearSelectors(),
-              const SizedBox(height: 16),
-              ExpensePieChart(expenses: filteredForChart),
-            ],
-          ),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              elevation: 0,
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: displayActivities.isEmpty
+                  ? const Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: Text('No activities this week'),
+                      ),
+                    )
+                  : ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: displayActivities.length,
+                      separatorBuilder: (context, index) =>
+                          const Divider(height: 1, indent: 16, endIndent: 16),
+                      itemBuilder: (context, index) {
+                        final expense = displayActivities[index];
+                        return ExpenseTile(expense: expense);
+                      },
+                    ),
+            ),
+
+            /// Spacer
+            const SizedBox(height: 24),
+
+            // Charts Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                'Category Breakdown',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              elevation: 0,
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    _buildMonthYearSelectors(),
+                    const SizedBox(height: 16),
+                    ExpensePieChart(expenses: filteredForChart),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -155,50 +189,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _buildAnalyticsSummary(BuildContext context, double totalAmount) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Theme.of(context).colorScheme.primaryContainer,
-            Theme.of(context).colorScheme.secondaryContainer,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(
-                Icons.account_balance_wallet,
-                size: 28,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(width: 12),
-              Text(
-                'Total Balance Spent',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-              ),
-            ],
+          Text(
+            'Total Balance Spent',
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.8),
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 8),
           Text(
             ref.watch(currencyFormatterProvider).format(totalAmount),
-            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
             ),
           ),
         ],
