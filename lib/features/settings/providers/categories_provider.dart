@@ -30,42 +30,21 @@ class CategoriesNotifier extends StateNotifier<List<Category>> {
     await _hiveService.saveCategories(newState);
   }
 
-  Future<void> updateCategory(
-    String oldName,
-    Category updatedCategory,
-    WidgetRef ref,
-  ) async {
+  Future<void> updateCategory(String id, Category updatedCategory) async {
     final cleanNewName = updatedCategory.name.trim().toLowerCase();
 
-    // 1. If name changed, update all expenses
-    if (oldName != cleanNewName) {
-      final expensesNotifier = ref.read(expensesProvider.notifier);
-      final expenses = _hiveService.getExpenses();
-
-      for (final expense in expenses) {
-        if (expense.category == oldName) {
-          await expensesNotifier.updateExpense(
-            expense.copyWith(category: cleanNewName),
-          );
-        }
-      }
-    }
-
-    // 2. Update state
+    // 1. Update state
     state = [
       for (final c in state)
-        if (c.name == oldName)
-          updatedCategory.copyWith(name: cleanNewName)
-        else
-          c,
+        if (c.id == id) updatedCategory.copyWith(name: cleanNewName) else c,
     ];
 
-    // 3. Save categories
+    // 2. Save categories
     await _hiveService.saveCategories(state);
   }
 
-  Future<void> removeCategory(String categoryName) async {
-    final newState = state.where((c) => c.name != categoryName).toList();
+  Future<void> removeCategory(String id) async {
+    final newState = state.where((c) => c.id != id).toList();
     state = newState;
     await _hiveService.saveCategories(newState);
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../core/models/expense.dart';
+import '../../settings/providers/categories_provider.dart';
 import '../../../core/providers/formatter_provider.dart';
 
 class ExpenseValidationDialog extends ConsumerWidget {
@@ -12,6 +13,9 @@ class ExpenseValidationDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dateFormat = DateFormat('MMM dd, yyyy');
+
+    final categories = ref.watch(categoriesProvider);
+    final category = categories.firstWhere((c) => c.id == expense.categoryId);
 
     return AlertDialog(
       title: const Text('Confirm Expense'),
@@ -29,7 +33,7 @@ class ExpenseValidationDialog extends ConsumerWidget {
             ref.watch(currencyFormatterProvider).format(expense.amount),
           ),
           const SizedBox(height: 8),
-          _buildInfoRow('Category:', expense.category),
+          _buildInfoRow('Category:', category.name),
           const SizedBox(height: 8),
           _buildInfoRow('Date:', dateFormat.format(expense.date)),
           const SizedBox(height: 8),

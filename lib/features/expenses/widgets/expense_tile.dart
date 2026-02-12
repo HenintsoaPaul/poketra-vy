@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/models/category.dart';
 import '../../../../core/models/expense.dart';
 import '../../../../core/providers/formatter_provider.dart';
 import '../providers/expenses_provider.dart';
@@ -21,6 +20,9 @@ class ExpenseTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final categories = ref.watch(categoriesProvider);
+    final category = categories.firstWhere((c) => c.id == expense.categoryId);
+
     return Dismissible(
       key: Key(expense.id),
       direction: DismissDirection.horizontal,
@@ -62,29 +64,26 @@ class ExpenseTile extends ConsumerWidget {
         );
       },
       child: ListTile(
-        leading: Consumer(
-          builder: (context, ref, child) {
-            final categories = ref.watch(categoriesProvider);
-            final category = categories.firstWhere(
-              (c) => c.name == expense.category,
-              orElse: () => Category(
-                name: expense.category,
-                iconCodePoint: Icons.category.codePoint,
-              ),
-            );
-            return CircleAvatar(
-              child: Icon(
-                IconData(category.iconCodePoint, fontFamily: 'MaterialIcons'),
-              ),
-            );
-          },
+        /// Expense Category Icon
+        leading: CircleAvatar(
+          child: Icon(
+            IconData(category.iconCodePoint, fontFamily: 'MaterialIcons'),
+          ),
         ),
-        title: Text(expense.category),
+
+        /// Expense Category
+        title: Text(category.name),
+
+        /// Expense Description
         subtitle: Text(expense.description),
+
+        /// Expense Amount
         trailing: Text(
           ref.watch(currencyFormatterProvider).format(expense.amount),
           style: Theme.of(context).textTheme.titleMedium,
         ),
+
+        /// On Tap
         onTap: () {
           showModalBottomSheet(
             context: context,

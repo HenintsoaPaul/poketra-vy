@@ -32,7 +32,7 @@ class _EditExpenseSheetState extends ConsumerState<EditExpenseSheet> {
       text: widget.expense.description,
     );
     _selectedDate = widget.expense.date;
-    _selectedCategory = widget.expense.category;
+    _selectedCategory = widget.expense.categoryId;
   }
 
   @override
@@ -61,7 +61,7 @@ class _EditExpenseSheetState extends ConsumerState<EditExpenseSheet> {
     final updatedExpense = widget.expense.copyWith(
       amount: amount,
       description: _descriptionController.text,
-      category: _selectedCategory,
+      categoryId: _selectedCategory,
       date: _selectedDate,
     );
 
@@ -109,7 +109,7 @@ class _EditExpenseSheetState extends ConsumerState<EditExpenseSheet> {
             initialValue: _selectedCategory,
             items: categories.map((Category category) {
               return DropdownMenuItem<String>(
-                value: category.name,
+                value: category.id,
                 child: Row(
                   children: [
                     Icon(

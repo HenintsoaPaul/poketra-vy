@@ -82,10 +82,7 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen> {
     setState(() => _isProcessing = true);
 
     final categories = ref.read(categoriesProvider);
-    final expense = ExpenseParser.parse(
-      text,
-      categories.map((c) => c.name).toList(),
-    );
+    final expense = ExpenseParser.parse(text, categories);
     if (expense != null) {
       setState(() => _isProcessing = false);
 

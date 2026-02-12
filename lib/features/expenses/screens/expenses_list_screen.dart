@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:poketra_vy/core/models/category.dart';
 import '../../../core/models/expense.dart';
 import '../providers/expenses_provider.dart';
 import '../providers/expense_filter_provider.dart';
@@ -12,8 +13,8 @@ class ExpensesListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final expenses = ref.watch(filteredExpensesProvider);
-    final selectedCategory = ref.watch(selectedCategoryProvider);
-    final allCategories = ref.watch(availableCategoriesProvider);
+    final Category selectedCategory = ref.watch(selectedCategoryProvider);
+    final List<Category> allCategories = ref.watch(availableCategoriesProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Expenses')),
@@ -34,7 +35,7 @@ class ExpensesListScreen extends ConsumerWidget {
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: FilterChip(
-                    label: Text(category),
+                    label: Text(category.name),
                     selected: isSelected,
                     onSelected: (selected) {
                       ref.read(selectedCategoryProvider.notifier).state =
