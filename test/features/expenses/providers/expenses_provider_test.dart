@@ -23,7 +23,7 @@ void main() {
       );
       final expense = Expense(
         amount: 100,
-        category: 'food',
+        categoryId: 'test_cat_id',
         date: DateTime.now(),
         description: 'test desc',
       );

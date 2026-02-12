@@ -26,15 +26,17 @@ void main() {
   });
 
   testWidgets('ExpensesListScreen shows list of expenses', (tester) async {
+    final category = Category(id: 'food_id', name: 'food', iconCodePoint: 0);
+
     final expense = Expense(
       amount: 5000,
-      category: 'food',
+      categoryId: category.id,
       date: DateTime.now(),
       description: 'Lunch',
     );
 
     // Create a mock HiveService
-    final mockHiveService = _MockHiveService([expense]);
+    final mockHiveService = _MockHiveService([expense], [category]);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -57,8 +59,9 @@ void main() {
 // Mock HiveService for testing
 class _MockHiveService extends HiveService {
   final List<Expense> _expenses;
+  final List<Category> _categories;
 
-  _MockHiveService(this._expenses);
+  _MockHiveService(this._expenses, [this._categories = const []]);
 
   @override
   Future<void> init() async {
@@ -79,10 +82,12 @@ class _MockHiveService extends HiveService {
   }
 
   @override
-  List<Category> getCategories() => [
-    Category(name: 'food', iconCodePoint: 0),
-    Category(name: 'transport', iconCodePoint: 0),
-  ];
+  List<Category> getCategories() => _categories.isNotEmpty
+      ? _categories
+      : [
+          Category(id: 'food_id', name: 'food', iconCodePoint: 0),
+          Category(id: 'transport_id', name: 'transport', iconCodePoint: 0),
+        ];
 
   @override
   Future<void> saveCategories(List<Category> categories) async {
