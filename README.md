@@ -4,29 +4,37 @@ A smart, voice-activated expense tracker built with Flutter. Record your expense
 
 ## 📸 Screenshots
 
-![splash screen](assets/images/splash-screen.jpeg)
+### 🚀 Getting Started
+<p align="center">
+  <img src="assets/images/splash-screen.jpeg" width="30%" alt="Splash Screen" />
+  <img src="assets/images/onboarding-screen-page-1.jpeg" width="30%" alt="Onboarding 1" />
+  <img src="assets/images/onboarding-screen-page-2.jpeg" width="30%" alt="Onboarding 2" />
+</p>
 
-![onboarding screen 1](assets/images/onboarding-screen-1.jpeg)
+### 📊 Dashboard & Recent Entries & Chart
+<p align="center">
+  <img src="assets/images/home-screen-1.jpeg" width="45%" alt="Home Screen" />
+  <img src="assets/images/home-screen-2.jpeg" width="45%" alt="Stats View" />
+</p>
 
-![onboarding screen 2](assets/images/onboarding-screen-2.jpeg)
+### 🎙️ Voice Entry Flow
+<p align="center">
+  <img src="assets/images/voice-entry-screen-1.jpeg" width="30%" alt="Voice Entry 1" />
+  <img src="assets/images/voice-entry-screen-2.jpeg" width="30%" alt="Voice Entry 2" />
+  <img src="assets/images/voice-entry-screen-3.jpeg" width="30%" alt="Voice Entry 3" />
+</p>
 
-![home screen 1](assets/images/home-screen-1.jpeg)
+### 📋 Expenses List
+<p align="center">
+  <img src="assets/images/expenses-list-all-filter.jpeg" width="23%" alt="All Expenses" />
+  <img src="assets/images/expenses-list-food-filter.jpeg" width="23%" alt="Filtered Expenses" />
+</p>
 
-![home screen 2](assets/images/home-screen-2.jpeg)
-
-![voice entry screen 1](assets/images/voice-entry-screen-1.jpeg)
-
-![voice entry screen 2](assets/images/voice-entry-screen-2.jpeg)
-
-![voice entry screen 3](assets/images/voice-entry-screen-3.jpeg)
-
-![expense list all filter](assets/images/expense-list-all-filter.jpeg)
-
-![expense list food filter](assets/images/expense-list-food-filter.jpeg)
-
-![settings screen 1](assets/images/settings-screen-1.jpeg)
-
-![settings screen 2](assets/images/settings-screen-2.jpeg)
+### 📋 Settings
+<p align="center">
+  <img src="assets/images/settings-screen-1.jpeg" width="23%" alt="Settings Main" />
+  <img src="assets/images/settings-screen-3.jpeg" width="23%" alt="Category Edit" />
+</p>
 
 ## ✨ Features
 
