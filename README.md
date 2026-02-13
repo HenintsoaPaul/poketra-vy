@@ -2,6 +2,32 @@
 
 A smart, voice-activated expense tracker built with Flutter. Record your expenses naturally using your voice, visualize your spending with interactive charts, and keep your data local and secure.
 
+## 📸 Screenshots
+
+![splash screen](assets/images/splash-screen.jpeg)
+
+![onboarding screen 1](assets/images/onboarding-screen-1.jpeg)
+
+![onboarding screen 2](assets/images/onboarding-screen-2.jpeg)
+
+![home screen 1](assets/images/home-screen-1.jpeg)
+
+![home screen 2](assets/images/home-screen-2.jpeg)
+
+![voice entry screen 1](assets/images/voice-entry-screen-1.jpeg)
+
+![voice entry screen 2](assets/images/voice-entry-screen-2.jpeg)
+
+![voice entry screen 3](assets/images/voice-entry-screen-3.jpeg)
+
+![expense list all filter](assets/images/expense-list-all-filter.jpeg)
+
+![expense list food filter](assets/images/expense-list-food-filter.jpeg)
+
+![settings screen 1](assets/images/settings-screen-1.jpeg)
+
+![settings screen 2](assets/images/settings-screen-2.jpeg)
+
 ## ✨ Features
 
 - **🎙️ Voice Expense Entry**: Simply say "10000 for lunch" or "5000 for transport yesterday" to record expenses effortlessly.
