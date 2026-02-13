@@ -15,11 +15,15 @@ A smart, voice-activated expense tracker built with Flutter. Record your expense
     - **Date Grouping**: Expenses are neatly grouped by date with clear headers and dividers.
     - **Dynamic Category Filters**: Filter your history using horizontal chips that reflect your custom categories.
 - **⚙️ Settings & Customization**:
-    - **Manage Categories**: Add or remove expense categories to suit your personal needs.
+    - **Robust Category Management**: Add, edit, and remove categories with unique icons.
+    - **ID-Based Linking**: Renaming categories preserves links to all existing expenses.
+    - **Revisit Onboarding**: Option to restart the welcome tour anytime.
 - **✏️ Manage with Ease**:
-    - **Swipe-to-Delete**: Quickly remove expenses with a swipe (includes confirmation to prevent accidents).
-    - **In-place Editing**: Tap any expense to update its details via a modern bottom sheet.
-- **🚀 Modern Navigation**: Persistent bottom navigation for seamless switching between Home, Recording, and History.
+    - **Swipe-to-Delete**: Quickly remove expenses with a swipe (includes confirmation).
+    - **Bottom Sheet Editing**: Tap any expense to update its details instantly.
+- **🚀 Modern UI/UX**:
+    - **Clean Interface**: Premium dark-mode ready design with smooth transitions.
+    - **Micro-interactions**: Subtle animations for better user feedback.
 - **💾 Local Persistence**: Fast and secure NoSQL storage using Hive—your data never leaves your device.
 
 ## 🛠️ Technology Stack
