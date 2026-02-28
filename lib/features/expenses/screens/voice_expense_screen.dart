@@ -8,6 +8,7 @@ import '../providers/expenses_provider.dart';
 import '../widgets/expense_validation_dialog.dart';
 
 import '../../../core/widgets/glass_container.dart';
+import '../widgets/voice_visualizer.dart';
 
 class VoiceExpenseScreen extends ConsumerStatefulWidget {
   const VoiceExpenseScreen({super.key});
@@ -21,6 +22,7 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen> {
   String _text = 'Press the mic to start';
   bool _isListening = false;
   bool _isProcessing = false;
+  double _soundLevel = 0;
 
   @override
   void initState() {
@@ -63,6 +65,9 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen> {
         await _speechService.startListening(
           onResult: (result) {
             setState(() => _text = result);
+          },
+          onSoundLevelChange: (level) {
+            setState(() => _soundLevel = level);
           },
         );
       } else {
@@ -136,35 +141,45 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          /// Text + Voice visualizer
           Expanded(
             child: GlassContainer(
               width: double.infinity,
               opacity: 0.1,
               blur: 15,
               padding: const EdgeInsets.all(32),
-              child: Center(
-                child: Text(
-                  _text,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.w400,
-                    height: 1.5,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    _text,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.w400,
+                      height: 1.5,
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 32),
+                  VoiceVisualizer(
+                    soundLevel: _soundLevel,
+                    isListening: _isListening,
+                  ),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: 48),
+          const SizedBox(height: 32),
           if (_isProcessing)
             const CircularProgressIndicator()
           else
+            /// IconButton
             GestureDetector(
               onTap: _toggleListening,
               child: GlassContainer(
-                width: 140,
-                height: 140,
-                borderRadius: 70,
+                width: 120,
+                height: 120,
+                borderRadius: 60,
                 color: Theme.of(context).primaryColor,
                 opacity: 0.9,
                 blur: 10,
@@ -173,21 +188,11 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen> {
                   child: Icon(
                     _isListening ? Icons.stop_rounded : Icons.mic_rounded,
                     color: Colors.white,
-                    size: 64,
+                    size: 56,
                   ),
                 ),
               ),
             ),
-          const SizedBox(height: 32),
-          Text(
-            _isListening ? 'LISTENING NOW' : 'TAP TO RECORD EXPENSE',
-            style: TextStyle(
-              color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
-              fontWeight: FontWeight.bold,
-              letterSpacing: 2,
-              fontSize: 12,
-            ),
-          ),
         ],
       ),
     );

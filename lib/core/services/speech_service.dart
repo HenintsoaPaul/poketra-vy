@@ -9,11 +9,17 @@ class SpeechService {
     return _isEnabled;
   }
 
-  Future<void> startListening({required Function(String) onResult}) async {
+  Future<void> startListening({
+    required Function(String) onResult,
+    Function(double)? onSoundLevelChange,
+  }) async {
     if (!_isEnabled) return;
-    await _speechToText.listen(onResult: (result) {
-      onResult(result.recognizedWords);
-    });
+    await _speechToText.listen(
+      onResult: (result) {
+        onResult(result.recognizedWords);
+      },
+      onSoundLevelChange: onSoundLevelChange,
+    );
   }
 
   Future<void> stopListening() async {
