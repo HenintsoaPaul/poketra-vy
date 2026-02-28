@@ -141,6 +141,7 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          /// Text + Voice visualizer
           Expanded(
             child: GlassContainer(
               width: double.infinity,
@@ -172,6 +173,7 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen> {
           if (_isProcessing)
             const CircularProgressIndicator()
           else
+            /// IconButton
             GestureDetector(
               onTap: _toggleListening,
               child: GlassContainer(
@@ -191,16 +193,6 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen> {
                 ),
               ),
             ),
-          const SizedBox(height: 32),
-          Text(
-            _isListening ? 'LISTENING NOW' : 'TAP TO RECORD EXPENSE',
-            style: TextStyle(
-              color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
-              fontWeight: FontWeight.bold,
-              letterSpacing: 2,
-              fontSize: 12,
-            ),
-          ),
         ],
       ),
     );
