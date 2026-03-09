@@ -535,6 +535,15 @@ class _RemindersTileState extends ConsumerState<_RemindersTile> {
         final TimeOfDay? picked = await showTimePicker(
           context: context,
           initialTime: time,
+          // 12-hour format with AM/PM
+          builder: (BuildContext context, Widget? child) {
+            return MediaQuery(
+              data: MediaQuery.of(
+                context,
+              ).copyWith(alwaysUse24HourFormat: false),
+              child: child!,
+            );
+          },
         );
 
         if (picked != null &&
