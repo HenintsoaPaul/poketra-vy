@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/categories_provider.dart';
 import '../../../core/models/category.dart';
 import '../../../core/providers/onboarding_provider.dart';
+import '../../../core/services/notification_service.dart';
+import '../../expenses/providers/expenses_provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/widgets/glass_container.dart';
 
@@ -29,6 +32,22 @@ class SettingsScreen extends ConsumerWidget {
                     blur: 8,
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: _OnboardingListTile(),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 32),
+
+              /// Reminders Section
+              const _SettingsSection(
+                title: 'Reminders',
+                subtitle: 'Set a daily reminder to log your expenses.',
+                children: [
+                  GlassContainer(
+                    opacity: 0.1,
+                    blur: 8,
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: _RemindersTile(),
                   ),
                 ],
               ),
@@ -471,6 +490,70 @@ class _IconGrid extends StatelessWidget {
             ),
           ),
         );
+      },
+    );
+  }
+}
+
+class _RemindersTile extends ConsumerStatefulWidget {
+  const _RemindersTile();
+
+  @override
+  ConsumerState<_RemindersTile> createState() => _RemindersTileState();
+}
+
+class _RemindersTileState extends ConsumerState<_RemindersTile> {
+  @override
+  Widget build(BuildContext context) {
+    final hiveService = ref.watch(hiveServiceProvider);
+    final notificationTime = hiveService.getNotificationTime();
+    final hour = notificationTime['hour']!;
+    final minute = notificationTime['minute']!;
+
+    final time = TimeOfDay(hour: hour, minute: minute);
+    final formattedTime = DateFormat.jm().format(
+      DateTime(2022, 1, 1, hour, minute),
+    );
+
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(
+          Icons.notifications_active_outlined,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      ),
+      title: const Text('Daily Reminder'),
+      subtitle: Text('Current time: $formattedTime'),
+      trailing: const Icon(Icons.access_time),
+      onTap: () async {
+        final TimeOfDay? picked = await showTimePicker(
+          context: context,
+          initialTime: time,
+        );
+
+        if (picked != null &&
+            (picked.hour != hour || picked.minute != minute)) {
+          await hiveService.setNotificationTime(picked.hour, picked.minute);
+          await NotificationService().rescheduleDailyNotification(hiveService);
+
+          setState(() {});
+
+          if (mounted) {
+            final formattedPicked = picked.format(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Reminder rescheduled for $formattedPicked'),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          }
+        }
       },
     );
   }

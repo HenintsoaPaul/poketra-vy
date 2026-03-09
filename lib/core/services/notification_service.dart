@@ -3,6 +3,7 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'dart:io';
+import 'hive_service.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -18,8 +19,16 @@ class NotificationService {
     tz.initializeTimeZones();
 
     try {
-      final String timeZoneName = (await FlutterTimezone.getLocalTimezone())
+      String timeZoneName = (await FlutterTimezone.getLocalTimezone())
           .toString();
+
+      // If it's in the format "TimezoneInfo(ID, ...)", extract the ID
+      final regex = RegExp(r'TimezoneInfo\(([^,]+)');
+      final match = regex.firstMatch(timeZoneName);
+      if (match != null) {
+        timeZoneName = match.group(1)!;
+      }
+
       tz.setLocalLocation(tz.getLocation(timeZoneName));
     } catch (e) {
       tz.setLocalLocation(tz.getLocation('UTC'));
@@ -41,7 +50,6 @@ class NotificationService {
           iOS: initializationSettingsDarwin,
         );
 
-    // In v20, initialize might use named parameters according to lint errors
     await flutterLocalNotificationsPlugin.initialize(
       settings: initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
@@ -72,6 +80,18 @@ class NotificationService {
     return false;
   }
 
+  /// Reschedule the daily notification using settings from Hive
+  Future<void> rescheduleDailyNotification(HiveService hiveService) async {
+    final settings = hiveService.getNotificationTime();
+    await scheduleDailyNotification(
+      id: 0,
+      title: 'Poketra Vy Reminder 💰',
+      body: "Don't forget to log your expenses today!",
+      hour: settings['hour']!,
+      minute: settings['minute']!,
+    );
+  }
+
   Future<void> scheduleDailyNotification({
     required int id,
     required String title,
@@ -79,7 +99,6 @@ class NotificationService {
     required int hour,
     required int minute,
   }) async {
-    // For v20+, using named parameters for zonedSchedule as indicated by lints
     await flutterLocalNotificationsPlugin.zonedSchedule(
       id: id,
       title: title,

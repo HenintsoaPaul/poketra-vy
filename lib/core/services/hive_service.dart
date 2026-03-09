@@ -8,6 +8,8 @@ class HiveService {
   static const String _settingsBoxName = 'settings';
   static const String _categoriesKey = 'categories';
   static const String _onboardingCompleteKey = 'onboarding_complete';
+  static const String _notificationHourKey = 'notification_hour';
+  static const String _notificationMinuteKey = 'notification_minute';
 
   Box<Expense>? _expensesBox;
   Box? _settingsBox;
@@ -173,6 +175,28 @@ class HiveService {
       throw Exception('HiveService not initialized. Call init() first.');
     }
     await _settingsBox!.put(_onboardingCompleteKey, complete);
+  }
+
+  /// Get notification time (defaults to 9:00 AM)
+  Map<String, int> getNotificationTime() {
+    if (_settingsBox == null) {
+      throw Exception('HiveService not initialized. Call init() first.');
+    }
+    final int hour = _settingsBox!.get(_notificationHourKey, defaultValue: 9);
+    final int minute = _settingsBox!.get(
+      _notificationMinuteKey,
+      defaultValue: 0,
+    );
+    return {'hour': hour, 'minute': minute};
+  }
+
+  /// Save notification time
+  Future<void> setNotificationTime(int hour, int minute) async {
+    if (_settingsBox == null) {
+      throw Exception('HiveService not initialized. Call init() first.');
+    }
+    await _settingsBox!.put(_notificationHourKey, hour);
+    await _settingsBox!.put(_notificationMinuteKey, minute);
   }
 
   /// Clear all expenses (useful for testing)

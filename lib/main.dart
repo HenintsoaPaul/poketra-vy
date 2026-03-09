@@ -17,14 +17,8 @@ void main() async {
   await notificationService.init();
   await notificationService.requestPermissions();
 
-  // Schedule Daily Reminder at 9:00 AM
-  await notificationService.scheduleDailyNotification(
-    id: 0,
-    title: 'Poketra Vy Reminder 💰',
-    body: "Don't forget to log your expenses today!",
-    hour: 4,
-    minute: 40,
-  );
+  // Schedule Daily Reminder using settings from Hive
+  await notificationService.rescheduleDailyNotification(hiveService);
 
   runApp(
     ProviderScope(
