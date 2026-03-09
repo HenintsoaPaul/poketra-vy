@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app_router.dart';
 import 'core/services/hive_service.dart';
+import 'core/services/notification_service.dart';
 import 'features/expenses/providers/expenses_provider.dart';
 
 void main() async {
@@ -10,6 +11,20 @@ void main() async {
   // Initialize Hive
   final hiveService = HiveService();
   await hiveService.init();
+
+  // Initialize Notifications
+  final notificationService = NotificationService();
+  await notificationService.init();
+  await notificationService.requestPermissions();
+
+  // Schedule Daily Reminder at 9:00 AM
+  await notificationService.scheduleDailyNotification(
+    id: 0,
+    title: 'Poketra Vy Reminder 💰',
+    body: "Don't forget to log your expenses today!",
+    hour: 4,
+    minute: 40,
+  );
 
   runApp(
     ProviderScope(
@@ -25,7 +40,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Voice Expense Tracker',
+      title: 'Poketra Vy',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF244B73),
