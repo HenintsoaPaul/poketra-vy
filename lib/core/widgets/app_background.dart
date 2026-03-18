@@ -9,13 +9,13 @@ class AppBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // Dark deep background
+      // Light fresh background
       decoration: const BoxDecoration(
-        color: Color(0xFF0B0E14),
+        color: Color(0xFFEDF5FF),
       ),
       child: Stack(
         children: [
-          // Purple glow circle top right
+          // Blue glow circle top right
           Positioned(
             top: -50,
             right: -100,
@@ -24,11 +24,11 @@ class AppBackground extends StatelessWidget {
               height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF7B2CBF).withValues(alpha: 0.4),
+                color: const Color(0xFF244B73).withValues(alpha: 0.15),
               ),
             ),
           ),
-          // Deep Blue glow circle bottom left
+          // Soft Cyan glow circle bottom left
           Positioned(
             bottom: -50,
             left: -50,
@@ -37,27 +37,27 @@ class AppBackground extends StatelessWidget {
               height: 250,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF0077B6).withValues(alpha: 0.3),
+                color: const Color(0xFF00F5D4).withValues(alpha: 0.1),
               ),
             ),
           ),
-          // Cyan glow circle bottom right
+          // Another blue glow center right
           Positioned(
-            bottom: 100,
+            bottom: 200,
             right: -50,
             child: Container(
               width: 200,
               height: 200,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF00F5D4).withValues(alpha: 0.15),
+                color: const Color(0xFF244B73).withValues(alpha: 0.1),
               ),
             ),
           ),
           // Backdrop filter to blur the circles smoothly
           Positioned.fill(
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 80, sigmaY: 80),
+              filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
               child: Container(
                 color: Colors.transparent,
               ),

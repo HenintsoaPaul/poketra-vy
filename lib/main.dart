@@ -38,23 +38,23 @@ class MyApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Poketra Vy',
       theme: ThemeData(
-        brightness: Brightness.dark,
-        colorScheme: const ColorScheme.dark(
-          primary: Color(0xFF00F5D4), // Cyan/Teal accent
-          onPrimary: Colors.black,
-          surface: Colors.transparent, // Let custom background show through
-          onSurface: Colors.white,
-          outline: Colors.white54,
+        brightness: Brightness.light,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF244B73),
+          primary: const Color(0xFF244B73),
+          onPrimary: Colors.white,
+          surface: Colors.white,
+          onSurface: const Color(0xFF244B73),
         ),
         scaffoldBackgroundColor: Colors.transparent,
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.transparent,
-          foregroundColor: Colors.white,
+          foregroundColor: Color(0xFF244B73),
           elevation: 0,
         ),
         useMaterial3: true,
       ),
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       routerConfig: router,
     );
   }
