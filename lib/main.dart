@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app_router.dart';
 import 'core/services/hive_service.dart';
+import 'core/services/notification_service.dart';
 import 'features/expenses/providers/expenses_provider.dart';
 
 void main() async {
@@ -11,6 +12,14 @@ void main() async {
   final hiveService = HiveService();
   await hiveService.init();
 
+  // Initialize Notifications
+  final notificationService = NotificationService();
+  await notificationService.init();
+  await notificationService.requestPermissions();
+
+  // Schedule Daily Reminder using settings from Hive
+  await notificationService.rescheduleDailyNotification(hiveService);
+
   runApp(
     ProviderScope(
       overrides: [hiveServiceProvider.overrideWithValue(hiveService)],
@@ -19,14 +28,17 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
+
     return MaterialApp.router(
-      title: 'Voice Expense Tracker',
+      title: 'Poketra Vy',
       theme: ThemeData(
+        brightness: Brightness.light,
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF244B73),
           primary: const Color(0xFF244B73),
@@ -34,16 +46,16 @@ class MyApp extends StatelessWidget {
           surface: Colors.white,
           onSurface: const Color(0xFF244B73),
         ),
-        scaffoldBackgroundColor: const Color(0xFFEDF5FF),
+        scaffoldBackgroundColor: Colors.transparent,
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF244B73),
-          foregroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
+          foregroundColor: Color(0xFF244B73),
           elevation: 0,
         ),
         useMaterial3: true,
       ),
       themeMode: ThemeMode.light,
-      routerConfig: appRouter,
+      routerConfig: router,
     );
   }
 }

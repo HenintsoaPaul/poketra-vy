@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/expenses/providers/expenses_provider.dart';
 import '../../core/providers/formatter_provider.dart';
 import '../widgets/glass_container.dart';
+import '../widgets/app_background.dart';
 
 /// Widget that wraps screens with a drawer and FAB
 class AppShell extends ConsumerWidget {
@@ -37,36 +38,32 @@ class AppShell extends ConsumerWidget {
     return Scaffold(
       extendBody: true,
 
-      /// AppBar with glass container
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight + 10),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: GlassContainer(
-            borderRadius: 16,
-            opacity: 0.1,
-            blur: 10,
-            child: AppBar(
-              title: Text(
-                _getTitle(navigationShell.currentIndex),
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              centerTitle: true,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              foregroundColor: Theme.of(context).primaryColor,
-              actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.search_outlined),
-                ),
-              ],
+      /// Transparent AppBar
+      appBar: AppBar(
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.account_balance_wallet,
+              color: Theme.of(context).primaryColor,
             ),
-          ),
+            const SizedBox(width: 8),
+            Text(
+              _getTitle(navigationShell.currentIndex),
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        foregroundColor: Theme.of(context).primaryColor,
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.search_outlined)),
+        ],
       ),
 
       /// Drawer
@@ -123,14 +120,16 @@ class AppShell extends ConsumerWidget {
         ),
       ),
 
-      /// Body with smooth transition
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        switchInCurve: Curves.easeInOut,
-        switchOutCurve: Curves.easeInOut,
-        child: KeyedSubtree(
-          key: ValueKey(navigationShell.currentIndex),
-          child: navigationShell,
+      /// Body with smooth transition inside AppBackground
+      body: AppBackground(
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          switchInCurve: Curves.easeInOut,
+          switchOutCurve: Curves.easeInOut,
+          child: KeyedSubtree(
+            key: ValueKey(navigationShell.currentIndex),
+            child: navigationShell,
+          ),
         ),
       ),
 
@@ -141,38 +140,67 @@ class AppShell extends ConsumerWidget {
           child: GlassContainer(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
             borderRadius: 32,
-            opacity: 0.15,
-            blur: 20,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _NavButton(
-                  icon: Icons.dashboard_rounded,
-                  label: 'Home',
-                  isSelected: navigationShell.currentIndex == 0,
-                  onTap: () => navigationShell.goBranch(0),
-                ),
-                _NavButton(
-                  icon: Icons.mic_rounded,
-                  label: 'Voice',
-                  isSelected: navigationShell.currentIndex == 1,
-                  onTap: () {
-                    navigationShell.goBranch(1);
-                  },
-                ),
-                _NavButton(
-                  icon: Icons.list_alt_rounded,
-                  label: 'List',
-                  isSelected: navigationShell.currentIndex == 2,
-                  onTap: () => navigationShell.goBranch(2),
-                ),
-                _NavButton(
-                  icon: Icons.settings_rounded,
-                  label: 'Settings',
-                  isSelected: navigationShell.currentIndex == 3,
-                  onTap: () => navigationShell.goBranch(3),
-                ),
-              ],
+            opacity: 0.3,
+            blur: 25,
+            color: Colors.white,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final itemWidth = constraints.maxWidth / 4;
+                return Stack(
+                  children: [
+                    // Sliding Indicator
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.elasticOut,
+                      left: navigationShell.currentIndex * itemWidth,
+                      top: 4,
+                      bottom: 4,
+                      child: Container(
+                        width: itemWidth,
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).primaryColor.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _NavItem(
+                          icon: Icons.dashboard_rounded,
+                          label: 'Home',
+                          isSelected: navigationShell.currentIndex == 0,
+                          onTap: () => navigationShell.goBranch(0),
+                          width: itemWidth,
+                        ),
+                        _NavItem(
+                          icon: Icons.mic_rounded,
+                          label: 'Voice',
+                          isSelected: navigationShell.currentIndex == 1,
+                          onTap: () => navigationShell.goBranch(1),
+                          width: itemWidth,
+                        ),
+                        _NavItem(
+                          icon: Icons.list_alt_rounded,
+                          label: 'List',
+                          isSelected: navigationShell.currentIndex == 2,
+                          onTap: () => navigationShell.goBranch(2),
+                          width: itemWidth,
+                        ),
+                        _NavItem(
+                          icon: Icons.settings_rounded,
+                          label: 'Settings',
+                          isSelected: navigationShell.currentIndex == 3,
+                          onTap: () => navigationShell.goBranch(3),
+                          width: itemWidth,
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),
@@ -181,46 +209,46 @@ class AppShell extends ConsumerWidget {
   }
 }
 
-class _NavButton extends StatelessWidget {
+class _NavItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
+  final double width;
 
-  const _NavButton({
+  const _NavItem({
     required this.icon,
     required this.label,
     required this.isSelected,
     required this.onTap,
+    required this.width,
   });
 
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
+    final inactiveColor = primaryColor.withValues(alpha: 0.4);
+
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? primaryColor.withValues(alpha: 0.1)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(24),
-        ),
+      child: SizedBox(
+        width: width,
+        height: 56,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              color: isSelected
-                  ? primaryColor
-                  : primaryColor.withValues(alpha: 0.4),
-              size: 24,
+            AnimatedScale(
+              scale: isSelected ? 1.1 : 1.0,
+              duration: const Duration(milliseconds: 200),
+              child: Icon(
+                icon,
+                color: isSelected ? primaryColor : inactiveColor,
+                size: 26,
+              ),
             ),
             if (isSelected) ...[
-              const SizedBox(height: 4),
+              const SizedBox(height: 2),
               Text(
                 label,
                 style: TextStyle(
