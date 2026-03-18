@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/expenses/providers/expenses_provider.dart';
 import '../../core/providers/formatter_provider.dart';
 import '../widgets/glass_container.dart';
+import '../widgets/app_background.dart';
 
 /// Widget that wraps screens with a drawer and FAB
 class AppShell extends ConsumerWidget {
@@ -37,36 +38,32 @@ class AppShell extends ConsumerWidget {
     return Scaffold(
       extendBody: true,
 
-      /// AppBar with glass container
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight + 10),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: GlassContainer(
-            borderRadius: 16,
-            opacity: 0.1,
-            blur: 10,
-            child: AppBar(
-              title: Text(
-                _getTitle(navigationShell.currentIndex),
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
+      /// Transparent AppBar
+      appBar: AppBar(
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.account_balance_wallet, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(width: 8),
+            Text(
+              _getTitle(navigationShell.currentIndex),
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
-              centerTitle: true,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              foregroundColor: Theme.of(context).primaryColor,
-              actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.search_outlined),
-                ),
-              ],
             ),
-          ),
+          ],
         ),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search_outlined),
+          ),
+        ],
       ),
 
       /// Drawer
@@ -123,14 +120,16 @@ class AppShell extends ConsumerWidget {
         ),
       ),
 
-      /// Body with smooth transition
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        switchInCurve: Curves.easeInOut,
-        switchOutCurve: Curves.easeInOut,
-        child: KeyedSubtree(
-          key: ValueKey(navigationShell.currentIndex),
-          child: navigationShell,
+      /// Body with smooth transition inside AppBackground
+      body: AppBackground(
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          switchInCurve: Curves.easeInOut,
+          switchOutCurve: Curves.easeInOut,
+          child: KeyedSubtree(
+            key: ValueKey(navigationShell.currentIndex),
+            child: navigationShell,
+          ),
         ),
       ),
 
@@ -196,7 +195,9 @@ class _NavButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).primaryColor;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final inactiveColor = Theme.of(context).colorScheme.outline;
+    
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -205,7 +206,7 @@ class _NavButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: isSelected
-              ? primaryColor.withValues(alpha: 0.1)
+              ? primaryColor.withValues(alpha: 0.15)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(24),
         ),
@@ -214,9 +215,7 @@ class _NavButton extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: isSelected
-                  ? primaryColor
-                  : primaryColor.withValues(alpha: 0.4),
+              color: isSelected ? primaryColor : inactiveColor,
               size: 24,
             ),
             if (isSelected) ...[

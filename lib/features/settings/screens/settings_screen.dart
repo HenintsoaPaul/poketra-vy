@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/categories_provider.dart';
 import '../../../core/models/category.dart';
@@ -23,85 +24,129 @@ class SettingsScreen extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(16, 24, 16, 120),
           sliver: SliverList(
             delegate: SliverChildListDelegate([
-              /// App Information Section
-              const _SettingsSection(
-                title: 'App Overview',
-                children: [
-                  GlassContainer(
-                    opacity: 0.1,
-                    blur: 8,
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: _OnboardingListTile(),
+              /// Profile Card
+              const _ProfileCard(),
+              
+              const SizedBox(height: 32),
+
+              /// SETTINGS
+              const Padding(
+                padding: EdgeInsets.only(left: 8, bottom: 8),
+                child: Text(
+                  'SETTINGS',
+                  style: TextStyle(
+                    color: Colors.white54,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.2,
                   ),
-                ],
+                ),
+              ),
+              const GlassContainer(
+                opacity: 0.08,
+                blur: 20,
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Column(
+                  children: [
+                    _OnboardingListTile(),
+                    Divider(color: Colors.white12, height: 1, indent: 64),
+                    ListTile(
+                      leading: Icon(Icons.lock_outline, color: Colors.white),
+                      title: Text('Security', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+                      subtitle: Text('Biometrics Active', style: TextStyle(color: Colors.white54, fontSize: 13)),
+                    ),
+                    Divider(color: Colors.white12, height: 1, indent: 64),
+                    ListTile(
+                      leading: Icon(Icons.account_balance_outlined, color: Colors.white),
+                      title: Text('Linked Accounts', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+                      subtitle: Text('2 Banks Connected', style: TextStyle(color: Colors.white54, fontSize: 13)),
+                    ),
+                  ],
+                ),
               ),
 
               const SizedBox(height: 32),
 
-              /// Reminders Section
-              const _SettingsSection(
-                title: 'Reminders',
-                subtitle: 'Set a daily reminder to log your expenses.',
-                children: [
-                  GlassContainer(
-                    opacity: 0.1,
-                    blur: 8,
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: _RemindersTile(),
+              /// DAILY REMINDER SECTION
+              const Padding(
+                padding: EdgeInsets.only(left: 8, bottom: 8),
+                child: Text(
+                  'DAILY REMINDER',
+                  style: TextStyle(
+                    color: Colors.white54,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.2,
                   ),
-                ],
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                      blurRadius: 30,
+                      spreadRadius: -5,
+                    ),
+                  ],
+                ),
+                child: const GlassContainer(
+                  opacity: 0.15,
+                  blur: 25,
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  border: Border.fromBorderSide(BorderSide(color: Colors.white30, width: 1.5)),
+                  child: _RemindersTile(),
+                ),
               ),
 
-              /// Spacer
               const SizedBox(height: 32),
 
-              /// Category Management Section
-              _SettingsSection(
-                title: 'Expense Categories',
-                subtitle: 'Personalize your expense tracking categories.',
-                children: [
-                  /// Add Category
-                  const GlassContainer(
-                    opacity: 0.1,
-                    blur: 8,
-                    padding: EdgeInsets.all(16.0),
-                    child: _AddCategoryForm(),
+              /// CATEGORIES SECTION
+              const Padding(
+                padding: EdgeInsets.only(left: 8, bottom: 8),
+                child: Text(
+                  'EXPENSE CATEGORIES',
+                  style: TextStyle(
+                    color: Colors.white54,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.2,
                   ),
-
-                  /// Spacer
-                  const SizedBox(height: 24),
-
-                  /// List of Categories
-                  if (categories.isEmpty)
-                    const Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 32),
-                        child: Text('No categories added yet.'),
-                      ),
-                    )
-                  else
-                    GlassContainer(
-                      opacity: 0.1,
-                      blur: 8,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: ListView.separated(
+                ),
+              ),
+              GlassContainer(
+                opacity: 0.08,
+                blur: 20,
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const _AddCategoryForm(),
+                    const SizedBox(height: 24),
+                    if (categories.isEmpty)
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 24),
+                          child: Text('No categories added yet.', style: TextStyle(color: Colors.white54)),
+                        ),
+                      )
+                    else
+                      ListView.separated(
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: categories.length,
-                        separatorBuilder: (context, index) => Divider(
+                        separatorBuilder: (context, index) => const Divider(
+                          color: Colors.white12,
                           height: 1,
-                          color: Theme.of(
-                            context,
-                          ).primaryColor.withValues(alpha: 0.05),
-                          indent: 72,
-                          endIndent: 16,
+                          indent: 56,
                         ),
                         itemBuilder: (context, index) =>
                             _CategoryListItem(category: categories[index]),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ]),
           ),
@@ -111,40 +156,61 @@ class SettingsScreen extends ConsumerWidget {
   }
 }
 
-class _SettingsSection extends StatelessWidget {
-  final String title;
-  final String? subtitle;
-  final List<Widget> children;
-
-  const _SettingsSection({
-    required this.title,
-    this.subtitle,
-    required this.children,
-  });
+class _ProfileCard extends StatelessWidget {
+  const _ProfileCard();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-        ),
-        if (subtitle != null) ...[
-          const SizedBox(height: 4),
-          Text(
-            subtitle!,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.outline,
+    return GlassContainer(
+      opacity: 0.1,
+      blur: 20,
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+                  const Color(0xFF7B2CBF).withValues(alpha: 0.8),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: const Center(
+              child: Text(
+                'A.R.',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Andry Rakoto',
+                  style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'Edit Profile\nAccount Settings',
+                  style: TextStyle(color: Colors.white54, fontSize: 13, height: 1.3),
+                ),
+              ],
             ),
           ),
         ],
-        const SizedBox(height: 24),
-        ...children,
-      ],
+      ),
     );
   }
 }
@@ -155,21 +221,9 @@ class _OnboardingListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primaryContainer,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(
-          Icons.info_outline,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-      ),
-      title: const Text('Show Onboarding'),
-      subtitle: const Text('Revisit the welcome tour'),
-      trailing: const Icon(Icons.chevron_right),
+      leading: const Icon(Icons.notifications_none, color: Colors.white),
+      title: const Text('Notifications', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+      subtitle: const Text('Show Onboarding Tour', style: TextStyle(color: Colors.white54, fontSize: 13)),
       onTap: () {
         ref.read(onboardingProvider.notifier).resetOnboarding();
         context.go('/onboarding');
@@ -198,9 +252,7 @@ class _AddCategoryFormState extends ConsumerState<_AddCategoryForm> {
   void _submit() {
     final name = _controller.text.trim();
     if (name.isNotEmpty) {
-      ref
-          .read(categoriesProvider.notifier)
-          .addCategory(name, _selectedIconCode);
+      ref.read(categoriesProvider.notifier).addCategory(name, _selectedIconCode);
       _controller.clear();
       setState(() {
         _selectedIconCode = Icons.category.codePoint;
@@ -214,49 +266,43 @@ class _AddCategoryFormState extends ConsumerState<_AddCategoryForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        /// Choose Icon
         const Text(
           'Choose Icon',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
-
-        /// Spacer
         const SizedBox(height: 12),
-
-        /// Icon Grid
         _IconGrid(
           selectedIconCode: _selectedIconCode,
           onIconSelected: (code) => setState(() => _selectedIconCode = code),
         ),
-
-        /// Spacer
         const SizedBox(height: 16),
-
-        /// Category Name
         Row(
           children: [
             Expanded(
               child: TextField(
                 controller: _controller,
-                decoration: const InputDecoration(
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
                   hintText: 'Category name (e.g. Gym)',
-                  border: OutlineInputBorder(),
+                  hintStyle: const TextStyle(color: Colors.white30),
+                  filled: true,
+                  fillColor: Colors.white.withValues(alpha: 0.05),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
                 onSubmitted: (_) => _submit(),
               ),
             ),
-
-            /// Spacer
             const SizedBox(width: 12),
-
-            /// Add Button
             ElevatedButton(
               onPressed: _submit,
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 20,
-                ),
+                backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                foregroundColor: Theme.of(context).colorScheme.primary,
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
               child: const Icon(Icons.add),
             ),
@@ -276,26 +322,27 @@ class _CategoryListItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: CircleAvatar(
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(8),
+        ),
         child: Icon(
           IconData(category.iconCodePoint, fontFamily: 'MaterialIcons'),
           color: Theme.of(context).colorScheme.primary,
         ),
       ),
-      title: Text(category.name),
+      title: Text(category.name, style: const TextStyle(color: Colors.white)),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            icon: Icon(
-              Icons.edit_outlined,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+            icon: const Icon(Icons.edit_outlined, color: Colors.white70),
             onPressed: () => _showEditDialog(context, ref),
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline, color: Colors.red),
+            icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
             onPressed: () => _showDeleteConfirmation(context, ref),
           ),
         ],
@@ -314,22 +361,24 @@ class _CategoryListItem extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Category?'),
+        backgroundColor: const Color(0xFF151B2B),
+        title: const Text('Delete Category?', style: TextStyle(color: Colors.white)),
         content: Text(
           'Are you sure you want to delete "${category.name}"? '
           'Expenses in this category will remain, but their category will appear as unknown.',
+          style: const TextStyle(color: Colors.white70),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: const Text('Cancel', style: TextStyle(color: Colors.white)),
           ),
           TextButton(
             onPressed: () {
               ref.read(categoriesProvider.notifier).removeCategory(category.id);
               Navigator.pop(context);
             },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
             child: const Text('Delete'),
           ),
         ],
@@ -344,8 +393,7 @@ class _EditCategoryDialog extends ConsumerStatefulWidget {
   const _EditCategoryDialog({required this.category});
 
   @override
-  ConsumerState<_EditCategoryDialog> createState() =>
-      _EditCategoryDialogState();
+  ConsumerState<_EditCategoryDialog> createState() => _EditCategoryDialogState();
 }
 
 class _EditCategoryDialogState extends ConsumerState<_EditCategoryDialog> {
@@ -368,7 +416,8 @@ class _EditCategoryDialogState extends ConsumerState<_EditCategoryDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Edit Category'),
+      backgroundColor: const Color(0xFF151B2B),
+      title: const Text('Edit Category', style: TextStyle(color: Colors.white)),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -376,21 +425,22 @@ class _EditCategoryDialogState extends ConsumerState<_EditCategoryDialog> {
           children: [
             TextField(
               controller: _controller,
+              style: const TextStyle(color: Colors.white),
               decoration: const InputDecoration(
                 labelText: 'Category Name',
+                labelStyle: TextStyle(color: Colors.white70),
                 border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 24),
             const Text(
               'Choose Icon:',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
             const SizedBox(height: 12),
             _IconGrid(
               selectedIconCode: _selectedIconCode,
-              onIconSelected: (code) =>
-                  setState(() => _selectedIconCode = code),
+              onIconSelected: (code) => setState(() => _selectedIconCode = code),
             ),
           ],
         ),
@@ -398,15 +448,13 @@ class _EditCategoryDialogState extends ConsumerState<_EditCategoryDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: const Text('Cancel', style: TextStyle(color: Colors.white)),
         ),
         ElevatedButton(
           onPressed: () {
             final name = _controller.text.trim();
             if (name.isNotEmpty) {
-              ref
-                  .read(categoriesProvider.notifier)
-                  .updateCategory(
+              ref.read(categoriesProvider.notifier).updateCategory(
                     widget.category.id,
                     widget.category.copyWith(
                       name: name,
@@ -473,20 +521,18 @@ class _IconGrid extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               color: isSelected
-                  ? Theme.of(context).colorScheme.primaryContainer
+                  ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.2)
                   : Colors.transparent,
               border: Border.all(
                 color: isSelected
                     ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.outlineVariant,
+                    : Colors.white24,
               ),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
               icon,
-              color: isSelected
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.onSurfaceVariant,
+              color: isSelected ? Theme.of(context).colorScheme.primary : Colors.white70,
             ),
           ),
         );
@@ -503,6 +549,8 @@ class _RemindersTile extends ConsumerStatefulWidget {
 }
 
 class _RemindersTileState extends ConsumerState<_RemindersTile> {
+  bool _isReminderActive = true;
+
   @override
   Widget build(BuildContext context) {
     final hiveService = ref.watch(hiveServiceProvider);
@@ -516,38 +564,60 @@ class _RemindersTileState extends ConsumerState<_RemindersTile> {
     );
 
     return ListTile(
-      contentPadding: EdgeInsets.zero,
       leading: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primaryContainer,
-          borderRadius: BorderRadius.circular(8),
+          color: Colors.white.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(
-          Icons.notifications_active_outlined,
-          color: Theme.of(context).colorScheme.primary,
+        child: const Icon(
+          Icons.access_time,
+          color: Colors.white,
         ),
       ),
-      title: const Text('Daily Reminder'),
-      subtitle: Text('Current time: $formattedTime'),
-      trailing: const Icon(Icons.access_time),
+      title: const Text(
+        'Daily Reminder',
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+        ),
+      ),
+      subtitle: Text(
+        'Current time: $formattedTime',
+        style: const TextStyle(color: Colors.white70),
+      ),
+      trailing: CupertinoSwitch(
+        value: _isReminderActive,
+        activeColor: Theme.of(context).colorScheme.primary, // The bright cyan
+        trackColor: Colors.white24,
+        onChanged: (val) {
+          setState(() {
+            _isReminderActive = val;
+          });
+        },
+      ),
       onTap: () async {
         final TimeOfDay? picked = await showTimePicker(
           context: context,
           initialTime: time,
-          // 12-hour format with AM/PM
           builder: (BuildContext context, Widget? child) {
             return MediaQuery(
-              data: MediaQuery.of(
-                context,
-              ).copyWith(alwaysUse24HourFormat: false),
-              child: child!,
+              data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+              child: Theme(
+                data: ThemeData.dark().copyWith(
+                  colorScheme: ColorScheme.dark(
+                    primary: Theme.of(context).colorScheme.primary,
+                    surface: const Color(0xFF151B2B),
+                  ),
+                ),
+                child: child!,
+              ),
             );
           },
         );
 
-        if (picked != null &&
-            (picked.hour != hour || picked.minute != minute)) {
+        if (picked != null && (picked.hour != hour || picked.minute != minute)) {
           await hiveService.setNotificationTime(picked.hour, picked.minute);
           await NotificationService().rescheduleDailyNotification(hiveService);
 
@@ -559,6 +629,7 @@ class _RemindersTileState extends ConsumerState<_RemindersTile> {
               SnackBar(
                 content: Text('Reminder rescheduled for $formattedPicked'),
                 behavior: SnackBarBehavior.floating,
+                backgroundColor: const Color(0xFF0B0E14),
               ),
             );
           }
