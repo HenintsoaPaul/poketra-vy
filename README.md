@@ -60,6 +60,34 @@ A smart, voice-activated expense tracker built with Flutter. Record your expense
     - **Micro-interactions**: Subtle animations for better user feedback.
 - **💾 Local Persistence**: Fast and secure NoSQL storage using Hive—your data never leaves your device.
 
+## 🎙️ Voice Parser Logic
+
+The Poketra-Vy voice parser uses a heuristic-based approach to extract expense details from natural language or text input.
+
+### Processing Rules
+
+- **💰 Amount**: The parser identifies the **first** numeric value in the string.
+    - *Example*: "Spent 5000 on food but paid 100 for bag" extracts **5000**.
+- **📁 Category**: It performs a case-insensitive search for your defined category names.
+    - The **first match** found in the text is assigned.
+    - If no match is found, it defaults to the **"misc"** category.
+- **📅 Date**:
+    - If the word **"yesterday"** is present, the expense is dated to the previous day.
+    - Otherwise, it defaults to **today**.
+- **📝 Description**: The full input text is preserved as the expense description.
+
+### Expected Processing Cases
+
+| Input                  | Amount | Category       | Date      | Result         |
+| :--------------------- | :----- | :------------- | :-------- | :------------- |
+| "I spent 5000 on food" | 5000   | food           | Today     | ✅ Success      |
+| "5000 food yesterday"  | 5000   | food           | Yesterday | ✅ Success      |
+| "5000 something"       | 5000   | misc (default) | Today     | ✅ Success      |
+| "10000"                | 10000  | misc (default) | Today     | ✅ Success      |
+| "dinner 20000 food"    | 20000  | food           | Today     | ✅ Success      |
+| "food today"           | None   | N/A            | N/A       | ❌ Fails (Null) |
+| "" (Empty)             | None   | N/A            | N/A       | ❌ Fails (Null) |
+
 ## 🛠️ Technology Stack
 
 - **Framework**: [Flutter](https://flutter.dev)
@@ -69,6 +97,7 @@ A smart, voice-activated expense tracker built with Flutter. Record your expense
 - **Voice Recognition**: [speech_to_text](https://pub.dev/packages/speech_to_text)
 - **Charts**: [fl_chart](https://pub.dev/packages/fl_chart)
 - **Utilities**: [intl](https://pub.dev/packages/intl), [uuid](https://pub.dev/packages/uuid)
+- **Testing**: [flutter_test](https://pub.dev/packages/flutter_test)
 
 ## 🏗️ Project Structure
 
