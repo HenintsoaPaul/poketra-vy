@@ -50,5 +50,26 @@ void main() {
       expect(expense!.description, contains('dinner'));
       expect(expense.description, isNotEmpty);
     });
+
+    test('picks the first number when multiple are present', () {
+      final expense = ExpenseParser.parse('Spent 5000 on food but paid 100 for bag', categories);
+      expect(expense!.amount, 5000);
+    });
+
+    test('fallbacks to misc if no category matches', () {
+      final expense = ExpenseParser.parse('5000 unknowncategory', categories);
+      expect(expense!.categoryId, '6'); // '6' is misc in our setup
+    });
+
+    test('parses correctly with only a number', () {
+      final expense = ExpenseParser.parse('10000', categories);
+      expect(expense!.amount, 10000);
+      expect(expense.categoryId, '6');
+    });
+
+    test('handles empty text', () {
+      final expense = ExpenseParser.parse('', categories);
+      expect(expense, isNull);
+    });
   });
 }
