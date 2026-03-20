@@ -2,28 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/models/expense.dart';
-import '../../../settings/providers/categories_provider.dart';
+import '../../settings/providers/categories_provider.dart';
 
-class ExpenseValidationDialog extends ConsumerStatefulWidget {
+class ExpenseFormDialog extends ConsumerStatefulWidget {
   final Expense expense;
+  final String title;
+  final String? subtitle;
+  final String confirmLabel;
+  final String cancelLabel;
 
-  const ExpenseValidationDialog({super.key, required this.expense});
+  const ExpenseFormDialog({
+    super.key,
+    required this.expense,
+    required this.title,
+    this.subtitle,
+    this.confirmLabel = 'Confirm',
+    this.cancelLabel = 'Cancel',
+  });
 
   @override
-  ConsumerState<ExpenseValidationDialog> createState() =>
-      _ExpenseValidationDialogState();
+  ConsumerState<ExpenseFormDialog> createState() => _ExpenseFormDialogState();
 
-  /// Show the validation dialog and return the updated Expense if confirmed, null otherwise
-  static Future<Expense?> show(BuildContext context, Expense expense) {
+  /// Show the form dialog and return the updated Expense if confirmed, null otherwise
+  static Future<Expense?> show(
+    BuildContext context,
+    Expense expense, {
+    required String title,
+    String? subtitle,
+    String confirmLabel = 'Confirm',
+    String cancelLabel = 'Cancel',
+  }) {
     return showDialog<Expense>(
       context: context,
-      builder: (context) => ExpenseValidationDialog(expense: expense),
+      builder: (context) => ExpenseFormDialog(
+        expense: expense,
+        title: title,
+        subtitle: subtitle,
+        confirmLabel: confirmLabel,
+        cancelLabel: cancelLabel,
+      ),
     );
   }
 }
 
-class _ExpenseValidationDialogState
-    extends ConsumerState<ExpenseValidationDialog> {
+class _ExpenseFormDialogState extends ConsumerState<ExpenseFormDialog> {
   late TextEditingController _amountController;
   late TextEditingController _descriptionController;
   late DateTime _selectedDate;
@@ -69,17 +91,19 @@ class _ExpenseValidationDialogState
     final dateFormat = DateFormat('MMM dd, yyyy');
 
     return AlertDialog(
-      title: const Text('Confirm Expense'),
+      title: Text(widget.title),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Please review the parsed expense:',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 16),
+            if (widget.subtitle != null) ...[
+              Text(
+                widget.subtitle!,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 16),
+            ],
             TextField(
               controller: _amountController,
               keyboardType: TextInputType.number,
@@ -91,7 +115,7 @@ class _ExpenseValidationDialogState
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-              value: _selectedCategoryId,
+              initialValue: _selectedCategoryId,
               decoration: const InputDecoration(
                 labelText: 'Category',
                 prefixIcon: Icon(Icons.category),
@@ -134,7 +158,7 @@ class _ExpenseValidationDialogState
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(null),
-          child: const Text('Cancel'),
+          child: Text(widget.cancelLabel),
         ),
         FilledButton(
           onPressed: () {
@@ -147,7 +171,7 @@ class _ExpenseValidationDialogState
             );
             Navigator.of(context).pop(updatedExpense);
           },
-          child: const Text('Confirm'),
+          child: Text(widget.confirmLabel),
         ),
       ],
     );

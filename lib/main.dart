@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app_router.dart';
 import 'core/services/hive_service.dart';
 import 'core/services/notification_service.dart';
-import 'features/expenses/providers/expenses_provider.dart';
+import 'features/expenses/providers/expense_list_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

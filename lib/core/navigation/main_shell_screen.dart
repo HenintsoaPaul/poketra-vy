@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../features/expenses/providers/expenses_provider.dart';
+import '../../features/expenses/providers/expense_list_provider.dart';
 import '../../core/providers/formatter_provider.dart';
 import '../widgets/glass_container.dart';
 import '../widgets/app_background.dart';
@@ -29,7 +29,7 @@ class AppShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final expenses = ref.watch(expensesProvider);
+    final expenses = ref.watch(expenseListProvider);
     final totalBalance = expenses.fold(0.0, (sum, item) => sum + item.amount);
     final formattedBalance = ref
         .watch(currencyFormatterProvider)

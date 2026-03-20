@@ -8,11 +8,11 @@ import '../../../core/services/expense_parser.dart';
 
 // Providers
 import '../../settings/providers/categories_provider.dart';
-import '../providers/expenses_provider.dart';
+import '../providers/expense_list_provider.dart';
 
 // Widgets
 import '../../../core/widgets/glass_container.dart';
-import '../widgets/voice_recording/expense_validation_dialog.dart';
+import '../widgets/expense_form_dialog.dart';
 import '../widgets/voice_recording/voice_visualizer.dart';
 
 class VoiceExpenseScreen extends ConsumerStatefulWidget {
@@ -100,11 +100,18 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen> {
 
       // Show validation dialog
       if (mounted) {
-        final editedExpense = await ExpenseValidationDialog.show(context, expense);
+        final editedExpense = await ExpenseFormDialog.show(
+          context,
+          expense,
+          title: 'Confirm Expense',
+          subtitle: 'Please review the parsed expense:',
+        );
 
         if (editedExpense != null) {
           // User confirmed, save the expense
-          await ref.read(expensesProvider.notifier).addExpense(editedExpense);
+          await ref
+              .read(expenseListProvider.notifier)
+              .addExpense(editedExpense);
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
