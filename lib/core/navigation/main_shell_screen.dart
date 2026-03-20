@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../features/expenses/providers/expense_list_provider.dart';
-import '../../core/providers/formatter_provider.dart';
 import '../widgets/glass_container.dart';
 import '../widgets/app_background.dart';
 
-/// Widget that wraps screens with a drawer and FAB
-class AppShell extends ConsumerWidget {
+/// Widget that wraps screens with a bottom nav and auto-hiding AppBar.
+class AppShell extends ConsumerStatefulWidget {
   const AppShell({required this.navigationShell, super.key});
 
   final StatefulNavigationShell navigationShell;
+
+  @override
+  ConsumerState<AppShell> createState() => _AppShellState();
+}
+
+class _AppShellState extends ConsumerState<AppShell> {
+  bool _isAppBarVisible = true;
 
   String _getTitle(int index) {
     switch (index) {
@@ -27,47 +33,112 @@ class AppShell extends ConsumerWidget {
     }
   }
 
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if (notification is UserScrollNotification) {
+      final direction = notification.direction;
+      if (direction == ScrollDirection.reverse && _isAppBarVisible) {
+        // Scrolling down → hide
+        setState(() => _isAppBarVisible = false);
+      } else if (direction == ScrollDirection.forward && !_isAppBarVisible) {
+        // Scrolling up → show
+        setState(() => _isAppBarVisible = true);
+      }
+    }
+
+    // Also show AppBar when at the top of the scroll view
+    if (notification is ScrollUpdateNotification) {
+      if (notification.metrics.pixels <= 0 && !_isAppBarVisible) {
+        setState(() => _isAppBarVisible = true);
+      }
+    }
+
+    return false; // Don't consume the notification
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final expenses = ref.watch(expenseListProvider);
-    final totalBalance = expenses.fold(0.0, (sum, item) => sum + item.amount);
-    final formattedBalance = ref
-        .watch(currencyFormatterProvider)
-        .format(totalBalance);
+  Widget build(BuildContext context) {
+    final shell = widget.navigationShell;
+    final topPadding = MediaQuery.of(context).padding.top;
+    const appBarHeight = kToolbarHeight;
 
     return Scaffold(
       extendBody: true,
+      extendBodyBehindAppBar: true,
 
-      /// Transparent AppBar
-      appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.account_balance_wallet,
-              color: Theme.of(context).primaryColor,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              _getTitle(navigationShell.currentIndex),
-              style: TextStyle(
-                color: Theme.of(context).primaryColor,
-                fontWeight: FontWeight.bold,
+      body: NotificationListener<ScrollNotification>(
+        onNotification: _handleScrollNotification,
+        child: AppBackground(
+          child: Stack(
+            children: [
+              // Main content — padding animates to fill AppBar space when hidden
+              Positioned.fill(
+                child: AnimatedPadding(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  padding: EdgeInsets.only(
+                    top: _isAppBarVisible
+                        ? topPadding + appBarHeight
+                        : topPadding,
+                  ),
+                  child: shell,
+                ),
               ),
-            ),
-          ],
-        ),
-        centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        elevation: 0,
-        foregroundColor: Theme.of(context).primaryColor,
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search_outlined)),
-        ],
-      ),
 
-      /// Body inside AppBackground
-      body: AppBackground(child: navigationShell),
+              // Animated AppBar overlay (transparent background)
+              AnimatedSlide(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                offset: _isAppBarVisible ? Offset.zero : const Offset(0, -1),
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 250),
+                  opacity: _isAppBarVisible ? 1.0 : 0.0,
+                  child: Container(
+                    color: Colors.transparent,
+                    padding: EdgeInsets.only(top: topPadding),
+                    height: topPadding + appBarHeight,
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 16),
+                        // Title area
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.account_balance_wallet,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                _getTitle(shell.currentIndex),
+                                style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Actions
+                        IconButton(
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.search_outlined,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
 
       /// Floating Glass Bottom Navigation
       bottomNavigationBar: SafeArea(
@@ -88,7 +159,7 @@ class AppShell extends ConsumerWidget {
                     AnimatedPositioned(
                       duration: const Duration(milliseconds: 400),
                       curve: Curves.elasticOut,
-                      left: navigationShell.currentIndex * itemWidth,
+                      left: shell.currentIndex * itemWidth,
                       top: 4,
                       bottom: 4,
                       child: Container(
@@ -107,29 +178,29 @@ class AppShell extends ConsumerWidget {
                         _NavItem(
                           icon: Icons.dashboard_rounded,
                           label: 'Home',
-                          isSelected: navigationShell.currentIndex == 0,
-                          onTap: () => navigationShell.goBranch(0),
+                          isSelected: shell.currentIndex == 0,
+                          onTap: () => shell.goBranch(0),
                           width: itemWidth,
                         ),
                         _NavItem(
                           icon: Icons.mic_rounded,
                           label: 'Voice',
-                          isSelected: navigationShell.currentIndex == 1,
-                          onTap: () => navigationShell.goBranch(1),
+                          isSelected: shell.currentIndex == 1,
+                          onTap: () => shell.goBranch(1),
                           width: itemWidth,
                         ),
                         _NavItem(
                           icon: Icons.list_alt_rounded,
-                          label: 'List',
-                          isSelected: navigationShell.currentIndex == 2,
-                          onTap: () => navigationShell.goBranch(2),
+                          label: 'Expenses',
+                          isSelected: shell.currentIndex == 2,
+                          onTap: () => shell.goBranch(2),
                           width: itemWidth,
                         ),
                         _NavItem(
                           icon: Icons.settings_rounded,
                           label: 'Settings',
-                          isSelected: navigationShell.currentIndex == 3,
-                          onTap: () => navigationShell.goBranch(3),
+                          isSelected: shell.currentIndex == 3,
+                          onTap: () => shell.goBranch(3),
                           width: itemWidth,
                         ),
                       ],
