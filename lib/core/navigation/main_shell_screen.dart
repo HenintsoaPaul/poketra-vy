@@ -58,7 +58,7 @@ class AppShell extends ConsumerWidget {
           ],
         ),
         centerTitle: true,
-        backgroundColor: Colors.transparent,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
         foregroundColor: Theme.of(context).primaryColor,
         actions: [
@@ -66,72 +66,8 @@ class AppShell extends ConsumerWidget {
         ],
       ),
 
-      /// Drawer
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            /// Drawer Header
-            UserAccountsDrawerHeader(
-              accountName: const Text('Paul Henintsoa'),
-              accountEmail: Text('Total Spent: $formattedBalance'),
-              currentAccountPicture: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Text(
-                  'P',
-                  style: TextStyle(
-                    fontSize: 40.0,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-              ),
-              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-            ),
-
-            /// Drawer Items
-            ListTile(
-              leading: const Icon(Icons.dashboard_outlined),
-              title: const Text('Dashboard'),
-              selected: navigationShell.currentIndex == 0,
-              onTap: () {
-                navigationShell.goBranch(0);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.list_alt_outlined),
-              title: const Text('Expenses'),
-              selected: navigationShell.currentIndex == 2,
-              onTap: () {
-                navigationShell.goBranch(2);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings_outlined),
-              title: const Text('Settings'),
-              selected: navigationShell.currentIndex == 3,
-              onTap: () {
-                navigationShell.goBranch(3);
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
-
-      /// Body with smooth transition inside AppBackground
-      body: AppBackground(
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          switchInCurve: Curves.easeInOut,
-          switchOutCurve: Curves.easeInOut,
-          child: KeyedSubtree(
-            key: ValueKey(navigationShell.currentIndex),
-            child: navigationShell,
-          ),
-        ),
-      ),
+      /// Body inside AppBackground
+      body: AppBackground(child: navigationShell),
 
       /// Floating Glass Bottom Navigation
       bottomNavigationBar: SafeArea(
