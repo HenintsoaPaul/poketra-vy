@@ -9,6 +9,8 @@ import '../../expenses/providers/expenses_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+/// Widgets
+import '../widgets/profile_card.dart';
 import '../../../core/widgets/glass_container.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -25,7 +27,7 @@ class SettingsScreen extends ConsumerWidget {
           sliver: SliverList(
             delegate: SliverChildListDelegate([
               /// Profile Card
-              const _ProfileCard(),
+              const ProfileCard(),
 
               const SizedBox(height: 32),
 
@@ -51,6 +53,7 @@ class SettingsScreen extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Column(
                   children: [
+                    /// Onboarding
                     const _OnboardingListTile(),
                     Divider(
                       color: Theme.of(
@@ -59,6 +62,8 @@ class SettingsScreen extends ConsumerWidget {
                       height: 1,
                       indent: 64,
                     ),
+
+                    /// Security
                     ListTile(
                       leading: Icon(
                         Icons.lock_outline,
@@ -83,20 +88,22 @@ class SettingsScreen extends ConsumerWidget {
                       height: 1,
                       indent: 64,
                     ),
+
+                    /// Help
                     ListTile(
                       leading: Icon(
-                        Icons.account_balance_outlined,
+                        Icons.help_outline,
                         color: Theme.of(context).primaryColor,
                       ),
                       title: Text(
-                        'Linked Accounts',
+                        'Help',
                         style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                       subtitle: Text(
-                        '2 Banks Connected',
+                        'Frequently Asked Questions',
                         style: TextStyle(color: Colors.black54, fontSize: 13),
                       ),
                     ),
@@ -206,85 +213,6 @@ class SettingsScreen extends ConsumerWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _ProfileCard extends StatelessWidget {
-  const _ProfileCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassContainer(
-      opacity: 0.1,
-      blur: 20,
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
-                  const Color(0xFF7B2CBF).withValues(alpha: 0.8),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            child: const Center(
-              child: Text(
-                'A.R.',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _ProfileNameText(),
-                SizedBox(height: 4),
-                _ProfileSubtitleText(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProfileNameText extends StatelessWidget {
-  const _ProfileNameText();
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      'Andry Rakoto',
-      style: TextStyle(
-        color: Theme.of(context).primaryColor,
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-      ),
-    );
-  }
-}
-
-class _ProfileSubtitleText extends StatelessWidget {
-  const _ProfileSubtitleText();
-  @override
-  Widget build(BuildContext context) {
-    return const Text(
-      'Edit Profile\nAccount Settings',
-      style: TextStyle(color: Colors.black54, fontSize: 13, height: 1.3),
     );
   }
 }
