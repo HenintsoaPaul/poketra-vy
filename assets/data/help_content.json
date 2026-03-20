@@ -1,0 +1,56 @@
+{
+  "sections": [
+    {
+      "title": "HOW TO USE THE APP",
+      "icon": "auto_awesome_rounded",
+      "subsections": [
+        {
+          "title": "Making a Record",
+          "description": "Tap the microphone button in the center of the navigation bar. Simply say what you spent and where. For example: \"Lunch for 5000\" or \"Spent 10000 on groceries at the market\"."
+        },
+        {
+          "title": "Modifying a Record",
+          "description": "Go to the \"Expenses\" tab, find the record you want to change, and tap the edit icon (pencil). You can update the amount, description, or category."
+        }
+      ]
+    },
+    {
+      "title": "PARSING LOGIC",
+      "icon": "psychology_outlined",
+      "subsections": [
+        {
+          "title": "Intelligent Extraction",
+          "description": "Our advanced parser automatically identifies the amount, description, and category from your voice or text input. It looks for numbers and matching keywords in your expense history and category list."
+        },
+        {
+          "title": "Refining Results",
+          "description": "If the parser isn't sure, it will show you a validation dialog where you can confirm or correct the extracted details before saving."
+        }
+      ]
+    },
+    {
+      "title": "DATA PRIVACY",
+      "icon": "security_rounded",
+      "subsections": [
+        {
+          "title": "Local Only Storage",
+          "description": "Your financial data is private and sensitive. That's why Poketra Vy stores all your records exclusively on your device. We do not use any cloud servers for your expense data."
+        },
+        {
+          "title": "No Data Sync",
+          "description": "Because your data stays on your phone, it will never be synced to a cloud account. This ensures you have full control over your information, with no risk of remote data breaches."
+        }
+      ]
+    },
+    {
+      "title": "TIPS",
+      "icon": "tips_and_updates_outlined",
+      "subsections": [
+        {
+          "title": "Check Your Daily Reminders",
+          "description": "Keep your finances on track by setting a daily reminder in the Settings screen. It helps you remember to log your expenses before you forget!"
+        }
+      ]
+    }
+  ]
+}

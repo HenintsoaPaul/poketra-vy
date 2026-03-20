@@ -1,5 +1,5 @@
 name: poketra_vy
-description: "A new Flutter project."
+description: "Voice assisted expense tracker."
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -54,6 +54,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+    - assets/data/
 
 
 

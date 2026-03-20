@@ -12,6 +12,7 @@ class ProfileCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
+          /// Avatar
           Container(
             width: 60,
             height: 60,
@@ -28,7 +29,7 @@ class ProfileCard extends StatelessWidget {
             ),
             child: const Center(
               child: Text(
-                'A.R.',
+                'H.P.',
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -38,6 +39,8 @@ class ProfileCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
+
+          /// Main content
           const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,7 +77,7 @@ class _ProfileSubtitleText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Text(
-      'Edit Profile\nAccount Settings',
+      'Edit Profile',
       style: TextStyle(color: Colors.black54, fontSize: 13, height: 1.3),
     );
   }
