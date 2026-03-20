@@ -226,7 +226,7 @@ class _HelpListTile extends ConsumerWidget {
         style: TextStyle(color: Colors.black54, fontSize: 13),
       ),
       onTap: () {
-        context.go('/help');
+        context.push('/help');
       },
     );
   }
