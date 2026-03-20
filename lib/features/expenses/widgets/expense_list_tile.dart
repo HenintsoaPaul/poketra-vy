@@ -3,17 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/models/expense.dart';
 import '../../../../core/models/category.dart';
 import '../../../../core/providers/formatter_provider.dart';
-import '../providers/expenses_provider.dart';
+import '../providers/expense_list_provider.dart';
 import '../../settings/providers/categories_provider.dart';
-import 'edit_expense_sheet.dart';
+import 'expense_form_dialog.dart';
 
-class ExpenseTile extends ConsumerWidget {
+class ExpenseListTile extends ConsumerWidget {
   final Expense expense;
 
-  const ExpenseTile({super.key, required this.expense});
+  const ExpenseListTile({super.key, required this.expense});
 
   void _onDismissed(WidgetRef ref, BuildContext context) {
-    ref.read(expensesProvider.notifier).deleteExpense(expense.id);
+    ref.read(expenseListProvider.notifier).deleteExpense(expense.id);
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text('Expense deleted')));
@@ -116,12 +116,17 @@ class ExpenseTile extends ConsumerWidget {
         ),
 
         /// On Tap
-        onTap: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            builder: (context) => EditExpenseSheet(expense: expense),
+        onTap: () async {
+          final editedExpense = await ExpenseFormDialog.show(
+            context,
+            expense,
+            title: 'Edit Expense',
+            confirmLabel: 'Save Changes',
           );
+
+          if (editedExpense != null) {
+            ref.read(expenseListProvider.notifier).updateExpense(editedExpense);
+          }
         },
       ),
     );

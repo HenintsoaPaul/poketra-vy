@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/categories_provider.dart';
 import '../../../../core/models/category.dart';
 import '../../../core/providers/onboarding_provider.dart';
-import '../../../core/services/notification_service.dart';
-import '../../expenses/providers/expenses_provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
+import 'package:poketra_vy/features/settings/widgets/reminders_tile.dart';
 
+/// Widgets
+import '../widgets/profile_card.dart';
 import '../../../core/widgets/glass_container.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -25,7 +24,7 @@ class SettingsScreen extends ConsumerWidget {
           sliver: SliverList(
             delegate: SliverChildListDelegate([
               /// Profile Card
-              const _ProfileCard(),
+              const ProfileCard(),
 
               const SizedBox(height: 32),
 
@@ -44,65 +43,7 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              GlassContainer(
-                opacity: 0.4,
-                blur: 20,
-                color: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Column(
-                  children: [
-                    const _OnboardingListTile(),
-                    Divider(
-                      color: Theme.of(
-                        context,
-                      ).primaryColor.withValues(alpha: 0.1),
-                      height: 1,
-                      indent: 64,
-                    ),
-                    ListTile(
-                      leading: Icon(
-                        Icons.lock_outline,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      title: Text(
-                        'Security',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      subtitle: Text(
-                        'Biometrics Active',
-                        style: TextStyle(color: Colors.black54, fontSize: 13),
-                      ),
-                    ),
-                    Divider(
-                      color: Theme.of(
-                        context,
-                      ).primaryColor.withValues(alpha: 0.1),
-                      height: 1,
-                      indent: 64,
-                    ),
-                    ListTile(
-                      leading: Icon(
-                        Icons.account_balance_outlined,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      title: Text(
-                        'Linked Accounts',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      subtitle: Text(
-                        '2 Banks Connected',
-                        style: TextStyle(color: Colors.black54, fontSize: 13),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              const _SettingsSection(),
 
               const SizedBox(height: 32),
 
@@ -142,7 +83,7 @@ class SettingsScreen extends ConsumerWidget {
                   border: Border.fromBorderSide(
                     BorderSide(color: Colors.white, width: 1.5),
                   ),
-                  child: _RemindersTile(),
+                  child: RemindersTile(),
                 ),
               ),
 
@@ -210,81 +151,32 @@ class SettingsScreen extends ConsumerWidget {
   }
 }
 
-class _ProfileCard extends StatelessWidget {
-  const _ProfileCard();
+class _SettingsSection extends StatelessWidget {
+  const _SettingsSection();
 
   @override
   Widget build(BuildContext context) {
     return GlassContainer(
-      opacity: 0.1,
+      opacity: 0.4,
       blur: 20,
-      padding: const EdgeInsets.all(16),
-      child: Row(
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
         children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
-                  const Color(0xFF7B2CBF).withValues(alpha: 0.8),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            child: const Center(
-              child: Text(
-                'A.R.',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-            ),
+          /// Onboarding
+          const _OnboardingListTile(),
+
+          /// Divider
+          Divider(
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            height: 1,
+            indent: 64,
           ),
-          const SizedBox(width: 16),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _ProfileNameText(),
-                SizedBox(height: 4),
-                _ProfileSubtitleText(),
-              ],
-            ),
-          ),
+
+          /// Help
+          const _HelpListTile(),
         ],
       ),
-    );
-  }
-}
-
-class _ProfileNameText extends StatelessWidget {
-  const _ProfileNameText();
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      'Andry Rakoto',
-      style: TextStyle(
-        color: Theme.of(context).primaryColor,
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-      ),
-    );
-  }
-}
-
-class _ProfileSubtitleText extends StatelessWidget {
-  const _ProfileSubtitleText();
-  @override
-  Widget build(BuildContext context) {
-    return const Text(
-      'Edit Profile\nAccount Settings',
-      style: TextStyle(color: Colors.black54, fontSize: 13, height: 1.3),
     );
   }
 }
@@ -310,6 +202,31 @@ class _OnboardingListTile extends ConsumerWidget {
       onTap: () {
         ref.read(onboardingProvider.notifier).resetOnboarding();
         context.go('/onboarding');
+      },
+    );
+  }
+}
+
+class _HelpListTile extends ConsumerWidget {
+  const _HelpListTile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ListTile(
+      leading: Icon(Icons.help_outline, color: Theme.of(context).primaryColor),
+      title: Text(
+        'Help',
+        style: TextStyle(
+          color: Theme.of(context).primaryColor,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      subtitle: const Text(
+        'Read about how to use the app',
+        style: TextStyle(color: Colors.black54, fontSize: 13),
+      ),
+      onTap: () {
+        context.push('/help');
       },
     );
   }
@@ -662,104 +579,6 @@ class _IconGrid extends StatelessWidget {
             ),
           ),
         );
-      },
-    );
-  }
-}
-
-class _RemindersTile extends ConsumerStatefulWidget {
-  const _RemindersTile();
-
-  @override
-  ConsumerState<_RemindersTile> createState() => _RemindersTileState();
-}
-
-class _RemindersTileState extends ConsumerState<_RemindersTile> {
-  bool _isReminderActive = true;
-
-  @override
-  Widget build(BuildContext context) {
-    final hiveService = ref.watch(hiveServiceProvider);
-    final notificationTime = hiveService.getNotificationTime();
-    final hour = notificationTime['hour']!;
-    final minute = notificationTime['minute']!;
-
-    final time = TimeOfDay(hour: hour, minute: minute);
-    final formattedTime = DateFormat.jm().format(
-      DateTime(2022, 1, 1, hour, minute),
-    );
-
-    return ListTile(
-      leading: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Icon(Icons.access_time, color: Theme.of(context).primaryColor),
-      ),
-      title: Text(
-        'Daily Reminder',
-        style: TextStyle(
-          color: Theme.of(context).primaryColor,
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-        ),
-      ),
-      subtitle: Text(
-        'Current time: $formattedTime',
-        style: const TextStyle(color: Colors.black54),
-      ),
-      trailing: CupertinoSwitch(
-        value: _isReminderActive,
-        activeColor: Theme.of(context).primaryColor,
-        trackColor: Colors.black12,
-        onChanged: (val) {
-          setState(() {
-            _isReminderActive = val;
-          });
-        },
-      ),
-      onTap: () async {
-        final TimeOfDay? picked = await showTimePicker(
-          context: context,
-          initialTime: time,
-          builder: (BuildContext context, Widget? child) {
-            return MediaQuery(
-              data: MediaQuery.of(
-                context,
-              ).copyWith(alwaysUse24HourFormat: false),
-              child: Theme(
-                data: ThemeData.light().copyWith(
-                  colorScheme: ColorScheme.light(
-                    primary: Theme.of(context).primaryColor,
-                    surface: Colors.white,
-                  ),
-                ),
-                child: child!,
-              ),
-            );
-          },
-        );
-
-        if (picked != null &&
-            (picked.hour != hour || picked.minute != minute)) {
-          await hiveService.setNotificationTime(picked.hour, picked.minute);
-          await NotificationService().rescheduleDailyNotification(hiveService);
-
-          setState(() {});
-
-          if (mounted) {
-            final formattedPicked = picked.format(context);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Reminder rescheduled for $formattedPicked'),
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: Theme.of(context).primaryColor,
-              ),
-            );
-          }
-        }
       },
     );
   }

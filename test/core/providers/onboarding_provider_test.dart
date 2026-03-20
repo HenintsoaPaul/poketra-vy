@@ -3,7 +3,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:poketra_vy/core/services/hive_service.dart';
 import 'package:poketra_vy/core/providers/onboarding_provider.dart';
-import 'package:poketra_vy/features/expenses/providers/expenses_provider.dart';
+import 'package:poketra_vy/features/expenses/providers/expense_list_provider.dart';
 
 class MockHiveService extends Mock implements HiveService {}
 

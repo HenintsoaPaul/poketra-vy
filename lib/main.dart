@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app_router.dart';
 import 'core/services/hive_service.dart';
 import 'core/services/notification_service.dart';
-import 'features/expenses/providers/expenses_provider.dart';
+import 'features/expenses/providers/expense_list_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +20,15 @@ void main() async {
 
   // Schedule Daily Reminder using settings from Hive
   await notificationService.rescheduleDailyNotification(hiveService);
+
+  // Edge-to-edge: transparent status bar & nav bar
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarIconBrightness: Brightness.dark,
+  ));
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   runApp(
     ProviderScope(

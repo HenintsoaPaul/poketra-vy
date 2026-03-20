@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+// Services
 import '../../../core/services/speech_service.dart';
 import '../../../core/services/expense_parser.dart';
-import '../../settings/providers/categories_provider.dart';
-import '../providers/expenses_provider.dart';
-import '../widgets/expense_validation_dialog.dart';
 
+// Providers
+import '../../settings/providers/categories_provider.dart';
+import '../providers/expense_list_provider.dart';
+
+// Widgets
 import '../../../core/widgets/glass_container.dart';
-import '../widgets/voice_visualizer.dart';
+import '../widgets/expense_form_dialog.dart';
+import '../widgets/voice_recording/voice_visualizer.dart';
 
 class VoiceExpenseScreen extends ConsumerStatefulWidget {
   const VoiceExpenseScreen({super.key});
@@ -95,30 +100,36 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen> {
 
       // Show validation dialog
       if (mounted) {
-        final confirmed = await ExpenseValidationDialog.show(context, expense);
+        final editedExpense = await ExpenseFormDialog.show(
+          context,
+          expense,
+          title: 'Confirm Expense',
+          subtitle: 'Please review the parsed expense:',
+        );
 
-        if (confirmed == true) {
+        if (editedExpense != null) {
           // User confirmed, save the expense
-          await ref.read(expensesProvider.notifier).addExpense(expense);
+          await ref
+              .read(expenseListProvider.notifier)
+              .addExpense(editedExpense);
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  'Added: ${expense.description} - ${expense.amount}',
+                  'Added: ${editedExpense.description} - ${editedExpense.amount}',
                 ),
               ),
             );
             context.go('/expenses');
           }
-        } else if (confirmed == false) {
-          // User wants to retry
+        } else {
+          // User cancelled or wants to retry
           setState(() {
             _text = 'Press the mic to start';
             _isListening = false;
             _isProcessing = false;
           });
         }
-        // If confirmed is null (dialog dismissed), do nothing
       }
     } else {
       setState(() => _isProcessing = false);

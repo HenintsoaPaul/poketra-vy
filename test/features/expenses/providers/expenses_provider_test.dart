@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:poketra_vy/core/models/expense.dart';
 import 'package:poketra_vy/core/models/category.dart';
 import 'package:poketra_vy/core/services/hive_service.dart';
-import 'package:poketra_vy/features/expenses/providers/expenses_provider.dart';
+import 'package:poketra_vy/features/expenses/providers/expense_list_provider.dart';
 import 'package:poketra_vy/features/expenses/providers/expense_filter_provider.dart';
 
 class MockHiveService extends Mock implements HiveService {}
@@ -46,15 +46,12 @@ void main() {
     mockHiveService = MockHiveService();
     // Default mock behavior
     when(() => mockHiveService.getExpenses()).thenReturn([]);
-    when(() => mockHiveService.getCategories()).thenReturn([
-      foodCategory,
-      transportCategory,
-    ]);
+    when(
+      () => mockHiveService.getCategories(),
+    ).thenReturn([foodCategory, transportCategory]);
 
     container = ProviderContainer(
-      overrides: [
-        hiveServiceProvider.overrideWithValue(mockHiveService),
-      ],
+      overrides: [hiveServiceProvider.overrideWithValue(mockHiveService)],
     );
   });
 
@@ -66,19 +63,16 @@ void main() {
     test('loads expenses on initialization', () {
       when(() => mockHiveService.getExpenses()).thenReturn(testExpenses);
 
-      when(() => mockHiveService.getCategories()).thenReturn([
-        foodCategory,
-        transportCategory,
-      ]);
+      when(
+        () => mockHiveService.getCategories(),
+      ).thenReturn([foodCategory, transportCategory]);
 
       // Re-initialize container to trigger notifier constructor
       final testContainer = ProviderContainer(
-        overrides: [
-          hiveServiceProvider.overrideWithValue(mockHiveService),
-        ],
+        overrides: [hiveServiceProvider.overrideWithValue(mockHiveService)],
       );
 
-      final expenses = testContainer.read(expensesProvider);
+      final expenses = testContainer.read(expenseListProvider);
       expect(expenses, testExpenses);
       testContainer.dispose();
     });
@@ -94,9 +88,9 @@ void main() {
         () => mockHiveService.saveExpense(any()),
       ).thenAnswer((_) async => {});
 
-      await container.read(expensesProvider.notifier).addExpense(newExpense);
+      await container.read(expenseListProvider.notifier).addExpense(newExpense);
 
-      expect(container.read(expensesProvider), contains(newExpense));
+      expect(container.read(expenseListProvider), contains(newExpense));
       verify(() => mockHiveService.saveExpense(newExpense)).called(1);
     });
 
@@ -110,9 +104,11 @@ void main() {
         () => mockHiveService.deleteExpense(any()),
       ).thenAnswer((_) async => {});
 
-      await testContainer.read(expensesProvider.notifier).deleteExpense('e1');
+      await testContainer
+          .read(expenseListProvider.notifier)
+          .deleteExpense('e1');
 
-      final state = testContainer.read(expensesProvider);
+      final state = testContainer.read(expenseListProvider);
       expect(state.length, 1);
       expect(state.first.id, 'e2');
       verify(() => mockHiveService.deleteExpense('e1')).called(1);
