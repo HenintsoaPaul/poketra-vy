@@ -11,17 +11,16 @@ A smart, voice-activated expense tracker built with Flutter. Record your expense
   <img src="assets/images/onboarding-screen-page-2.jpeg" width="30%" alt="Onboarding 2" />
 </p>
 
-### 📊 Dashboard & Recent Entries & Chart
+### 📊 Home
 <p align="center">
-  <img src="assets/images/home-screen-1.jpeg" width="45%" alt="Home Screen" />
-  <img src="assets/images/home-screen-2.jpeg" width="45%" alt="Stats View" />
+  <img src="assets/images/v1.1.0/home-screen.jpeg" width="45%" alt="Home Screen" />
 </p>
 
 ### 🎙️ Voice Entry Flow
 <p align="center">
-  <img src="assets/images/voice-entry-screen-1.jpeg" width="30%" alt="Voice Entry 1" />
-  <img src="assets/images/voice-entry-screen-2.jpeg" width="30%" alt="Voice Entry 2" />
-  <img src="assets/images/voice-entry-screen-3.jpeg" width="30%" alt="Voice Entry 3" />
+  <img src="assets/images/v1.1.0/voice-entry-1.jpeg" width="30%" alt="Voice Entry 1" />
+  <img src="assets/images/v1.1.0/voice-entry-2.jpeg" width="30%" alt="Voice Entry 2" />
+  <img src="assets/images/v1.1.0/voice-entry-3.jpeg" width="30%" alt="Voice Entry 3" />
 </p>
 
 ### 📋 Expenses List
@@ -30,10 +29,16 @@ A smart, voice-activated expense tracker built with Flutter. Record your expense
   <img src="assets/images/expenses-list-food-filter.jpeg" width="23%" alt="Filtered Expenses" />
 </p>
 
-### 📋 Settings
+### ⚙️ Settings
 <p align="center">
-  <img src="assets/images/settings-screen-1.jpeg" width="23%" alt="Settings Main" />
-  <img src="assets/images/settings-screen-3.jpeg" width="23%" alt="Category Edit" />
+  <img src="assets/images/v1.1.0/settings-screen.jpeg" width="23%" alt="Settings Main" />
+  <img src="assets/images/v1.1.0/daily-reminders-screen.jpeg" width="23%" alt="Daily Reminders Screen" />
+</p>
+
+### 🆘 Help
+<p align="center">
+  <img src="assets/images/v1.1.0/help-screen-1.jpeg" width="23%" alt="Help Screen" />
+  <img src="assets/images/v1.1.0/help-screen-2.jpeg" width="23%" alt="Help Screen" />
 </p>
 
 ## ✨ Features
