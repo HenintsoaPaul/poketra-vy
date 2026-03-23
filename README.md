@@ -39,8 +39,9 @@ A smart, voice-activated expense tracker built with Flutter. Record your expense
 ## ✨ Features
 
 - **🎙️ Voice Expense Entry**: Simply say "10000 for lunch" or "5000 for transport yesterday" to record expenses effortlessly.
+- **🎵 Live Voice Visualizer**: Real-time waveform animation while recording to give visual feedback on audio capture.
 - **🧠 Smart Parsing**: Natural language processing extracts amount, category, date, and description from your speech.
-- **✅ Confirmation Flow**: Validate parsed data before saving to ensure accuracy.
+- **✅ Confirmation & Edit Flow**: Validate parsed data before saving and edit any field directly from the confirmation dialog.
 - **📊 Interactive Analytics**:
     - **Dynamic Pie Chart**: Visualize spending by category for any specific month and year.
     - **Total Spend Tracking**: Real-time calculation of your total expenses.
@@ -52,13 +53,16 @@ A smart, voice-activated expense tracker built with Flutter. Record your expense
     - **Robust Category Management**: Add, edit, and remove categories with unique icons.
     - **ID-Based Linking**: Renaming categories preserves links to all existing expenses.
     - **Revisit Onboarding**: Option to restart the welcome tour anytime.
+- **🔔 Daily Reminders**: Configurable daily notification reminders to log your expenses, with time-picker and toggle control.
+- **🆘 Help Section**: In-app help guide covering how to use the app, parsing logic, and data privacy.
 - **✏️ Manage with Ease**:
     - **Swipe-to-Delete**: Quickly remove expenses with a swipe (includes confirmation).
-    - **Bottom Sheet Editing**: Tap any expense to update its details instantly.
+    - **Unified Edit Dialog**: Tap any expense to update its details via a unified form dialog.
 - **🚀 Modern UI/UX**:
-    - **Clean Interface**: Premium dark-mode ready design with smooth transitions.
+    - **Glassmorphism Design**: Premium frosted-glass style with smooth transitions.
     - **Micro-interactions**: Subtle animations for better user feedback.
 - **💾 Local Persistence**: Fast and secure NoSQL storage using Hive—your data never leaves your device.
+- **🧪 CI Pipeline**: Automated regression tests on push via GitHub Actions.
 
 ## 🎙️ Voice Parser Logic
 
@@ -96,21 +100,28 @@ The Poketra-Vy voice parser uses a heuristic-based approach to extract expense d
 - **Data Persistence**: [Hive](https://hivedb.dev)
 - **Voice Recognition**: [speech_to_text](https://pub.dev/packages/speech_to_text)
 - **Charts**: [fl_chart](https://pub.dev/packages/fl_chart)
-- **Utilities**: [intl](https://pub.dev/packages/intl), [uuid](https://pub.dev/packages/uuid)
-- **Testing**: [flutter_test](https://pub.dev/packages/flutter_test)
+- **Notifications**: [flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications)
+- **Utilities**: [intl](https://pub.dev/packages/intl), [uuid](https://pub.dev/packages/uuid), [timezone](https://pub.dev/packages/timezone)
+- **Testing**: [flutter_test](https://pub.dev/packages/flutter_test), [mocktail](https://pub.dev/packages/mocktail)
+- **CI/CD**: [GitHub Actions](https://github.com/features/actions)
 
 ## 🏗️ Project Structure
 
 ```text
 lib/
 ├── core/               # Shared logic, models, services, and navigation
-│   ├── models/         # Data models (Expense)
+│   ├── models/         # Data models (Expense, Category)
 │   ├── navigation/     # App router and shell
-│   ├── services/       # Hive, Voice Parser
-│   └── utils/          # Formatting and helpres
+│   ├── providers/      # Global providers (onboarding, etc.)
+│   ├── services/       # Hive, Voice Parser, Notifications
+│   ├── utils/          # Formatting and helpers
+│   └── widgets/        # Shared widgets (GlassContainer, etc.)
 ├── features/           # Feature-based modules
-│   ├── expenses/       # Expense list, editing, and providers
-│   └── home/           # Dashboard and charts
+│   ├── category/       # Category selection UI
+│   ├── expenses/       # Expense list, voice entry, editing, and providers
+│   ├── home/           # Dashboard and charts
+│   ├── onboarding/     # Onboarding flow
+│   └── settings/       # Settings, reminders, help section
 └── main.dart           # App entry and initialization
 ```
 
