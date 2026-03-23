@@ -5,6 +5,7 @@ import 'features/expenses/screens/voice_expense_screen.dart';
 import 'features/settings/screens/settings_screen.dart';
 import 'core/navigation/main_shell_screen.dart';
 import 'features/onboarding/screens/onboarding_screen.dart';
+import 'features/settings/screens/help_screen.dart';
 import 'core/providers/onboarding_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -27,6 +28,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/onboarding',
         builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: '/help',
+        builder: (context, state) => const HelpScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {

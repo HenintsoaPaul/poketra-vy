@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:poketra_vy/core/models/category.dart';
 import '../../../core/models/expense.dart';
-import '../providers/expenses_provider.dart';
+import '../providers/expense_list_provider.dart';
 import '../providers/expense_filter_provider.dart';
-import '../widgets/expense_tile.dart';
+import '../widgets/expense_list_tile.dart';
 import '../../../core/widgets/glass_container.dart';
 
 class ExpensesListScreen extends ConsumerWidget {
@@ -120,7 +120,7 @@ class ExpensesListScreen extends ConsumerWidget {
                   final isLast = entry.key == groupExpenses.length - 1;
                   return Column(
                     children: [
-                      ExpenseTile(expense: expense),
+                      ExpenseListTile(expense: expense),
                       if (!isLast)
                         Divider(
                           height: 1,

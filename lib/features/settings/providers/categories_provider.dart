@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/services/hive_service.dart';
 import '../../../core/models/category.dart';
-import '../../expenses/providers/expenses_provider.dart';
+import '../../expenses/providers/expense_list_provider.dart';
 
 final categoriesProvider =
     StateNotifierProvider<CategoriesNotifier, List<Category>>((ref) {

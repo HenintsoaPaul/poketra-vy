@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../core/providers/formatter_provider.dart';
-import '../../expenses/providers/expenses_provider.dart';
-import '../../expenses/widgets/expense_tile.dart';
+import '../../expenses/providers/expense_list_provider.dart';
+import '../../expenses/widgets/expense_list_tile.dart';
 import '../widgets/expense_pie_chart.dart';
 
 import '../../../core/widgets/glass_container.dart';
@@ -29,7 +29,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final expenses = ref.watch(expensesProvider);
+    final expenses = ref.watch(expenseListProvider);
 
     // Calculate total amount for all time
     final allTimeTotal = expenses.fold(0.0, (sum, item) => sum + item.amount);
@@ -110,7 +110,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                       itemBuilder: (context, index) {
                         final expense = displayActivities[index];
-                        return ExpenseTile(expense: expense);
+                        return ExpenseListTile(expense: expense);
                       },
                     ),
             ),

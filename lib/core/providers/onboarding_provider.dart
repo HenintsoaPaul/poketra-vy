@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/hive_service.dart';
-import '../../features/expenses/providers/expenses_provider.dart';
+import '../../features/expenses/providers/expense_list_provider.dart';
 
 final onboardingProvider = StateNotifierProvider<OnboardingNotifier, bool>((
   ref,
