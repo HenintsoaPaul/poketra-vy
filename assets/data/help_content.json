@@ -11,6 +11,10 @@
         {
           "title": "Modifying a Record",
           "description": "Go to the \"Expenses\" tab, find the record you want to change, and tap the edit icon (pencil). You can update the amount, description, or category."
+        },
+        {
+          "title": "Exporting Data",
+          "description": "Navigate to the \"Settings\" tab and tap \"Export to Excel\". You can choose a custom date range and filter by specific categories before generating a .xlsx file which you can share or save."
         }
       ]
     },

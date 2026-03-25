@@ -51,6 +51,7 @@ A smart, voice-activated expense tracker built with Flutter. Record your expense
     - **Dynamic Pie Chart**: Visualize spending by category for any specific month and year.
     - **Total Spend Tracking**: Real-time calculation of your total expenses.
     - **Recent Activities**: Quickly view your last 5 expenses from the current week.
+    - **📥 Excel Export**: Export your data to `.xlsx` files with custom date ranges and category filters.
 - **📅 Organized Expense List**:
     - **Date Grouping**: Expenses are neatly grouped by date with clear headers and dividers.
     - **Dynamic Category Filters**: Filter your history using horizontal chips that reflect your custom categories.
@@ -108,6 +109,7 @@ The Poketra-Vy voice parser uses a heuristic-based approach to extract expense d
 - **Notifications**: [flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications)
 - **Utilities**: [intl](https://pub.dev/packages/intl), [uuid](https://pub.dev/packages/uuid), [timezone](https://pub.dev/packages/timezone)
 - **Testing**: [flutter_test](https://pub.dev/packages/flutter_test), [mocktail](https://pub.dev/packages/mocktail)
+- **Exporting**: [excel](https://pub.dev/packages/excel), [share_plus](https://pub.dev/packages/share_plus)
 - **CI/CD**: [GitHub Actions](https://github.com/features/actions)
 
 ## 🏗️ Project Structure
