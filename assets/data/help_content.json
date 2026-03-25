@@ -13,8 +13,16 @@
           "description": "Go to the \"Expenses\" tab, find the record you want to change, and tap the edit icon (pencil). You can update the amount, description, or category."
         },
         {
-          "title": "Exporting Data",
-          "description": "Navigate to the \"Settings\" tab and tap \"Export to Excel\". You can choose a custom date range and filter by specific categories before generating a .xlsx file which you can share or save."
+          "title": "Data Export",
+          "description": "Navigate to the \"Settings\" tab and tap \"Export to Excel\" to generate a .xlsx file. You can choose a custom date range (e.g., this month, this year) and select specific categories to include. Once generated, a share sheet will appear allowing you to save the file to your device, send it via email, or upload it to cloud storage."
+        },
+        {
+          "title": "Data Import & Restore",
+          "description": "Want to restore your backup or import data from another source? Tap \"Import from Excel\" in Settings and select your .xlsx file. The app will automatically scan the file for 'Date', 'Amount', 'Description', and 'Category' headers. It will try to match category names from your file to your current categories; if no match is found, it will default to 'misc'."
+        },
+        {
+          "title": "Deleting Records",
+          "description": "If you need a fresh start, you can delete and clear all your expense records through the Settings screen. Your categories and app settings will be kept safe."
         }
       ]
     },
