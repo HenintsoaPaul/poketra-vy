@@ -38,6 +38,18 @@ class ExpenseListNotifier extends StateNotifier<List<Expense>> {
     await _hiveService.deleteExpense(id);
     state = state.where((expense) => expense.id != id).toList();
   }
+
+  Future<void> deleteAllExpenses() async {
+    await _hiveService.clearAll();
+    state = [];
+  }
+
+  Future<void> addMultipleExpenses(List<Expense> expenses) async {
+    for (final expense in expenses) {
+      await _hiveService.saveExpense(expense);
+    }
+    state = [...state, ...expenses];
+  }
 }
 
 // Provider for HiveService
