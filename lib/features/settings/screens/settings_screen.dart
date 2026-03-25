@@ -5,6 +5,7 @@ import '../../../../core/models/category.dart';
 import '../../../core/providers/onboarding_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:poketra_vy/features/settings/widgets/reminders_tile.dart';
+import '../widgets/export_excel_dialog.dart';
 
 /// Widgets
 import '../widgets/profile_card.dart';
@@ -175,8 +176,49 @@ class _SettingsSection extends StatelessWidget {
 
           /// Help
           const _HelpListTile(),
+
+          /// Divider
+          Divider(
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            height: 1,
+            indent: 64,
+          ),
+
+          /// Export
+          const _ExportListTile(),
         ],
       ),
+    );
+  }
+}
+
+class _ExportListTile extends StatelessWidget {
+  const _ExportListTile();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(
+        Icons.file_download_outlined,
+        color: Theme.of(context).primaryColor,
+      ),
+      title: Text(
+        'Export to Excel',
+        style: TextStyle(
+          color: Theme.of(context).primaryColor,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      subtitle: const Text(
+        'Download your data in .xlsx format',
+        style: TextStyle(color: Colors.black54, fontSize: 13),
+      ),
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) => const ExportExcelDialog(),
+        );
+      },
     );
   }
 }
