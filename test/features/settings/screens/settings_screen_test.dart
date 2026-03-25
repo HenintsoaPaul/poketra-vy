@@ -55,5 +55,32 @@ void main() {
       // Check if dialog is shown
       expect(find.byType(ExportExcelDialog), findsOneWidget);
     });
+
+    testWidgets('shows Import from Excel tile', (tester) async {
+      await tester.pumpWidget(createSettingsScreen());
+      expect(find.text('Import from Excel'), findsOneWidget);
+    });
+
+    testWidgets('shows Delete All Records tile', (tester) async {
+      await tester.pumpWidget(createSettingsScreen());
+      expect(find.text('Delete All Records'), findsOneWidget);
+    });
+
+    testWidgets('confirming deletion calls deleteAllExpenses', (tester) async {
+      when(() => mockHiveService.clearAll()).thenAnswer((_) async {});
+      
+      await tester.pumpWidget(createSettingsScreen());
+      
+      await tester.tap(find.text('Delete All Records'));
+      await tester.pumpAndSettle();
+      
+      expect(find.text('Delete All Data?'), findsOneWidget);
+      
+      await tester.tap(find.text('Delete All'));
+      await tester.pumpAndSettle();
+      
+      verify(() => mockHiveService.clearAll()).called(1);
+      expect(find.text('All records have been deleted.'), findsOneWidget);
+    });
   });
 }
