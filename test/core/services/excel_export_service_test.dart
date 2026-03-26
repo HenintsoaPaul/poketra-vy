@@ -95,5 +95,23 @@ void main() {
       
       await file.delete();
     });
+
+    test('handles empty expenses list gracefully', () async {
+      final startDate = DateTime(2023, 10, 1);
+      final endDate = DateTime(2023, 10, 6);
+
+      final filePath = await service.exportToExcel(
+        expenses: [],
+        categories: categories,
+        startDate: startDate,
+        endDate: endDate,
+      );
+
+      expect(filePath, isNotNull);
+      final file = File(filePath);
+      expect(await file.exists(), isTrue);
+      
+      await file.delete();
+    });
   });
 }
