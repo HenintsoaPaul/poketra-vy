@@ -5,6 +5,9 @@ import '../../../../core/models/category.dart';
 import '../../../core/providers/onboarding_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:poketra_vy/features/settings/widgets/reminders_tile.dart';
+import '../widgets/export_excel_dialog.dart';
+import '../../../core/services/excel_import_service.dart';
+import '../../expenses/providers/expense_list_provider.dart';
 
 /// Widgets
 import '../widgets/profile_card.dart';
@@ -175,6 +178,172 @@ class _SettingsSection extends StatelessWidget {
 
           /// Help
           const _HelpListTile(),
+
+          /// Divider
+          Divider(
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            height: 1,
+            indent: 64,
+          ),
+
+          /// Export
+          const _ExportListTile(),
+
+          /// Divider
+          Divider(
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            height: 1,
+            indent: 64,
+          ),
+
+          /// Import
+          const _ImportListTile(),
+
+          /// Divider
+          Divider(
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            height: 1,
+            indent: 64,
+          ),
+
+          /// Delete All Records
+          const _DeleteDataListTile(),
+        ],
+      ),
+    );
+  }
+}
+
+class _ExportListTile extends StatelessWidget {
+  const _ExportListTile();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(
+        Icons.file_download_outlined,
+        color: Theme.of(context).primaryColor,
+      ),
+      title: Text(
+        'Export to Excel',
+        style: TextStyle(
+          color: Theme.of(context).primaryColor,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      subtitle: const Text(
+        'Download your data in .xlsx format',
+        style: TextStyle(color: Colors.black54, fontSize: 13),
+      ),
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) => const ExportExcelDialog(),
+        );
+      },
+    );
+  }
+}
+
+class _ImportListTile extends ConsumerWidget {
+  const _ImportListTile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ListTile(
+      leading: Icon(
+        Icons.file_upload_outlined,
+        color: Theme.of(context).primaryColor,
+      ),
+      title: Text(
+        'Import from Excel',
+        style: TextStyle(
+          color: Theme.of(context).primaryColor,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      subtitle: const Text(
+        'Restore records from a .xlsx file',
+        style: TextStyle(color: Colors.black54, fontSize: 13),
+      ),
+      onTap: () async {
+        final categories = ref.read(categoriesProvider);
+        final importService = ExcelImportService();
+        final importedExpenses = await importService.importFromExcel(categories);
+
+        if (importedExpenses != null && importedExpenses.isNotEmpty) {
+          await ref
+              .read(expenseListProvider.notifier)
+              .addMultipleExpenses(importedExpenses);
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Successfully imported ${importedExpenses.length} expenses!',
+                ),
+              ),
+            );
+          }
+        } else if (importedExpenses != null && importedExpenses.isEmpty) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('No valid records found in file.')),
+            );
+          }
+        }
+      },
+    );
+  }
+}
+
+class _DeleteDataListTile extends ConsumerWidget {
+  const _DeleteDataListTile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ListTile(
+      leading: const Icon(Icons.delete_forever_outlined, color: Colors.redAccent),
+      title: const Text(
+        'Delete All Records',
+        style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.w500),
+      ),
+      subtitle: const Text(
+        'This will delete all expense records but keep your categories and settings.',
+        style: TextStyle(color: Colors.black45, fontSize: 13),
+      ),
+      onTap: () => _showDeleteConfirmation(context, ref),
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: const Text(
+          'Delete All Data?',
+          style: TextStyle(color: Color(0xFF244B73)),
+        ),
+        content: const Text(
+          'Are you sure you want to delete ALL expense records? This action cannot be undone. Your custom categories and settings will be preserved.',
+          style: TextStyle(color: Colors.black54),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel', style: TextStyle(color: Color(0xFF244B73))),
+          ),
+          TextButton(
+            onPressed: () {
+              ref.read(expenseListProvider.notifier).deleteAllExpenses();
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('All records have been deleted.')),
+              );
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+            child: const Text('Delete All'),
+          ),
         ],
       ),
     );
