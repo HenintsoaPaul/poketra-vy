@@ -60,6 +60,14 @@ void main() {
       expect(state.length, 1); // food existed in setUp
     });
 
+    test('addCategory should not add empty or whitespace-only names', () async {
+      await container.read(categoriesProvider.notifier).addCategory('   ', 0);
+      await container.read(categoriesProvider.notifier).addCategory('', 0);
+
+      final state = container.read(categoriesProvider);
+      expect(state.length, 1); // Only food should exist
+    });
+
     test('removeCategory should save and update state', () async {
       when(
         () => mockHiveService.saveCategories(any()),

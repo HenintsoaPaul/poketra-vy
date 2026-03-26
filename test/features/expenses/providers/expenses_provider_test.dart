@@ -114,6 +114,61 @@ void main() {
       verify(() => mockHiveService.deleteExpense('e1')).called(1);
       testContainer.dispose();
     });
+
+    test('updateExpense updates hive and state', () async {
+      when(() => mockHiveService.getExpenses()).thenReturn(testExpenses);
+      final testContainer = ProviderContainer(
+        overrides: [hiveServiceProvider.overrideWithValue(mockHiveService)],
+      );
+
+      final updatedExpense = testExpenses[0].copyWith(amount: 150, description: 'Big Lunch');
+      when(() => mockHiveService.saveExpense(updatedExpense)).thenAnswer((_) async => {});
+
+      await testContainer.read(expenseListProvider.notifier).updateExpense(updatedExpense);
+
+      final state = testContainer.read(expenseListProvider);
+      expect(state.firstWhere((e) => e.id == 'e1').amount, 150);
+      verify(() => mockHiveService.saveExpense(updatedExpense)).called(1);
+      testContainer.dispose();
+    });
+
+    test('deleteAllExpenses clears hive and state', () async {
+      when(() => mockHiveService.getExpenses()).thenReturn(testExpenses);
+      final testContainer = ProviderContainer(
+        overrides: [hiveServiceProvider.overrideWithValue(mockHiveService)],
+      );
+
+      when(() => mockHiveService.clearAll()).thenAnswer((_) async => {});
+
+      await testContainer.read(expenseListProvider.notifier).deleteAllExpenses();
+
+      final state = testContainer.read(expenseListProvider);
+      expect(state, isEmpty);
+      verify(() => mockHiveService.clearAll()).called(1);
+      testContainer.dispose();
+    });
+
+    test('addMultipleExpenses saves all to hive and state', () async {
+      when(() => mockHiveService.getExpenses()).thenReturn(testExpenses);
+      final testContainer = ProviderContainer(
+        overrides: [hiveServiceProvider.overrideWithValue(mockHiveService)],
+      );
+
+      final newExpenses = [
+        Expense(id: 'e3', amount: 300, categoryId: '1', date: DateTime.now(), description: 'Dinner'),
+        Expense(id: 'e4', amount: 400, categoryId: '2', date: DateTime.now(), description: 'Train'),
+      ];
+
+      when(() => mockHiveService.saveExpense(any())).thenAnswer((_) async => {});
+
+      await testContainer.read(expenseListProvider.notifier).addMultipleExpenses(newExpenses);
+
+      final state = testContainer.read(expenseListProvider);
+      expect(state.length, 4);
+      expect(state.last.id, 'e4');
+      verify(() => mockHiveService.saveExpense(any())).called(2);
+      testContainer.dispose();
+    });
   });
 
   group('filteredExpensesProvider', () {
