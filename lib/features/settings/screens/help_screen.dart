@@ -103,10 +103,12 @@ class HelpScreen extends StatelessWidget {
 
   List<Widget> _buildFooter(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
+    // final appVersion = Package
+
     return [
       Center(
         child: Text(
-          'Poketra Vy v1.0.0',
+          'Poketra Vy BY Henintsoa Paul',
           style: TextStyle(
             color: primaryColor.withValues(alpha: 0.4),
             fontSize: 12,

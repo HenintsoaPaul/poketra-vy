@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     <application
-        android:label="poketra_vy"
+        android:label="Poketra Vy"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
