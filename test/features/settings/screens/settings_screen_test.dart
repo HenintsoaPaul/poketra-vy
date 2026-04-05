@@ -56,9 +56,9 @@ void main() {
       expect(find.byType(ExportDataDialog), findsOneWidget);
     });
 
-    testWidgets('shows Import from Excel tile', (tester) async {
+    testWidgets('shows Import Data tile', (tester) async {
       await tester.pumpWidget(createSettingsScreen());
-      expect(find.text('Import from Excel'), findsOneWidget);
+      expect(find.text('Import Data'), findsOneWidget);
     });
 
     testWidgets('shows Delete All Records tile', (tester) async {
