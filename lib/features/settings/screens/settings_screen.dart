@@ -1,17 +1,13 @@
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:poketra_vy/features/settings/widgets/export_list_tile.dart';
+import 'package:poketra_vy/features/settings/widgets/import_list_tile.dart';
 import '../providers/categories_provider.dart';
 import '../../../../core/models/category.dart';
 import '../../../core/providers/onboarding_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:poketra_vy/features/settings/widgets/reminders_tile.dart';
-import '../widgets/export_data_dialog.dart';
-import '../../../core/services/excel_import_service.dart';
-import '../../../core/services/json_import_service.dart';
 import '../../expenses/providers/expense_list_provider.dart';
-import '../../../../core/models/expense.dart';
 
 /// Widgets
 import '../widgets/profile_card.dart';
@@ -50,7 +46,7 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              const _SettingsSection(),
+              const _SettingsContainer(),
 
               const SizedBox(height: 32),
 
@@ -158,8 +154,8 @@ class SettingsScreen extends ConsumerWidget {
   }
 }
 
-class _SettingsSection extends StatelessWidget {
-  const _SettingsSection();
+class _SettingsContainer extends StatelessWidget {
+  const _SettingsContainer();
 
   @override
   Widget build(BuildContext context) {
@@ -191,7 +187,7 @@ class _SettingsSection extends StatelessWidget {
           ),
 
           /// Export
-          const _ExportListTile(),
+          const ExportListTile(),
 
           /// Divider
           Divider(
@@ -201,7 +197,7 @@ class _SettingsSection extends StatelessWidget {
           ),
 
           /// Import
-          const _ImportListTile(),
+          const ImportListTile(),
 
           /// Divider
           Divider(
@@ -218,115 +214,16 @@ class _SettingsSection extends StatelessWidget {
   }
 }
 
-class _ExportListTile extends StatelessWidget {
-  const _ExportListTile();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(
-        Icons.file_download_outlined,
-        color: Theme.of(context).primaryColor,
-      ),
-      title: Text(
-        'Export Data',
-        style: TextStyle(
-          color: Theme.of(context).primaryColor,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      subtitle: const Text(
-        'Download your data in Excel or JSON format',
-        style: TextStyle(color: Colors.black54, fontSize: 13),
-      ),
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (context) => const ExportDataDialog(),
-        );
-      },
-    );
-  }
-}
-
-class _ImportListTile extends ConsumerWidget {
-  const _ImportListTile();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ListTile(
-      leading: Icon(
-        Icons.file_upload_outlined,
-        color: Theme.of(context).primaryColor,
-      ),
-      title: Text(
-        'Import Data',
-        style: TextStyle(
-          color: Theme.of(context).primaryColor,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      subtitle: const Text(
-        'Restore records from a .xlsx or .json file',
-        style: TextStyle(color: Colors.black54, fontSize: 13),
-      ),
-      onTap: () async {
-        final categories = ref.read(categoriesProvider);
-
-        final result = await FilePicker.platform.pickFiles(
-          type: FileType.custom,
-          allowedExtensions: ['xlsx', 'json'],
-        );
-
-        if (result == null || result.files.single.path == null) return;
-
-        final path = result.files.single.path!;
-        final extension = result.files.single.extension?.toLowerCase();
-
-        List<Expense>? importedExpenses;
-
-        if (extension == 'xlsx') {
-          final bytes = await File(path).readAsBytes();
-          final importService = ExcelImportService();
-          importedExpenses = importService.parseExcel(bytes, categories);
-        } else if (extension == 'json') {
-          final content = await File(path).readAsString();
-          final importService = JsonImportService();
-          importedExpenses = importService.parseJson(content, categories);
-        }
-
-        if (importedExpenses != null && importedExpenses.isNotEmpty) {
-          await ref
-              .read(expenseListProvider.notifier)
-              .addMultipleExpenses(importedExpenses);
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Successfully imported ${importedExpenses.length} expenses!',
-                ),
-              ),
-            );
-          }
-        } else if (importedExpenses != null && importedExpenses.isEmpty) {
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('No valid records found in file.')),
-            );
-          }
-        }
-      },
-    );
-  }
-}
-
 class _DeleteDataListTile extends ConsumerWidget {
   const _DeleteDataListTile();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ListTile(
-      leading: const Icon(Icons.delete_forever_outlined, color: Colors.redAccent),
+      leading: const Icon(
+        Icons.delete_forever_outlined,
+        color: Colors.redAccent,
+      ),
       title: const Text(
         'Delete All Records',
         style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.w500),
@@ -355,7 +252,10 @@ class _DeleteDataListTile extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel', style: TextStyle(color: Color(0xFF244B73))),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Color(0xFF244B73)),
+            ),
           ),
           TextButton(
             onPressed: () {
