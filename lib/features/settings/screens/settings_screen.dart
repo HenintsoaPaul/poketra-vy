@@ -32,124 +32,161 @@ class SettingsScreen extends ConsumerWidget {
               const SizedBox(height: 32),
 
               /// SETTINGS
-              Padding(
-                padding: const EdgeInsets.only(left: 8, bottom: 8),
-                child: Text(
-                  'SETTINGS',
-                  style: TextStyle(
-                    color: Theme.of(
-                      context,
-                    ).primaryColor.withValues(alpha: 0.6),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 1.2,
-                  ),
-                ),
-              ),
+              SettingsHeader(),
               const _SettingsContainer(),
 
               const SizedBox(height: 32),
 
-              /// DAILY REMINDER SECTION
-              Padding(
-                padding: const EdgeInsets.only(left: 8, bottom: 8),
-                child: Text(
-                  'DAILY REMINDER',
-                  style: TextStyle(
-                    color: Theme.of(
-                      context,
-                    ).primaryColor.withValues(alpha: 0.6),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 1.2,
-                  ),
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.1),
-                      blurRadius: 30,
-                      spreadRadius: -5,
-                    ),
-                  ],
-                ),
-                child: const GlassContainer(
-                  opacity: 0.6,
-                  blur: 25,
-                  color: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  border: Border.fromBorderSide(
-                    BorderSide(color: Colors.white, width: 1.5),
-                  ),
-                  child: RemindersTile(),
-                ),
-              ),
+              /// DAILY REMINDER
+              const DailyReminderHeader(),
+              const DailyReminderContainer(),
 
               const SizedBox(height: 32),
 
-              /// CATEGORIES SECTION
-              Padding(
-                padding: const EdgeInsets.only(left: 8, bottom: 8),
-                child: Text(
-                  'EXPENSE CATEGORIES',
-                  style: TextStyle(
-                    color: Theme.of(
-                      context,
-                    ).primaryColor.withValues(alpha: 0.6),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 1.2,
-                  ),
-                ),
-              ),
-              GlassContainer(
-                opacity: 0.4,
-                blur: 20,
-                color: Colors.white,
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const _AddCategoryForm(),
-                    const SizedBox(height: 24),
-                    if (categories.isEmpty)
-                      const Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 24),
-                          child: Text(
-                            'No categories added yet.',
-                            style: TextStyle(color: Colors.black54),
-                          ),
-                        ),
-                      )
-                    else
-                      ListView.separated(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: categories.length,
-                        separatorBuilder: (context, index) => Divider(
-                          color: Theme.of(
-                            context,
-                          ).primaryColor.withValues(alpha: 0.1),
-                          height: 1,
-                          indent: 56,
-                        ),
-                        itemBuilder: (context, index) =>
-                            _CategoryListItem(category: categories[index]),
-                      ),
-                  ],
-                ),
-              ),
+              /// CATEGORIES
+              const CategoriesHeader(),
+              CategoriesContainer(categories: categories),
             ]),
           ),
         ),
       ],
+    );
+  }
+}
+
+class SettingsHeader extends StatelessWidget {
+  const SettingsHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, bottom: 8),
+      child: Text(
+        'SETTINGS',
+        style: TextStyle(
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.6),
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 1.2,
+        ),
+      ),
+    );
+  }
+}
+
+class DailyReminderHeader extends StatelessWidget {
+  const DailyReminderHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, bottom: 8),
+      child: Text(
+        'DAILY REMINDER',
+        style: TextStyle(
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.6),
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 1.2,
+        ),
+      ),
+    );
+  }
+}
+
+class DailyReminderContainer extends StatelessWidget {
+  const DailyReminderContainer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+            blurRadius: 30,
+            spreadRadius: -5,
+          ),
+        ],
+      ),
+      child: const GlassContainer(
+        opacity: 0.6,
+        blur: 25,
+        color: Colors.white,
+        padding: EdgeInsets.symmetric(vertical: 8),
+        border: Border.fromBorderSide(
+          BorderSide(color: Colors.white, width: 1.5),
+        ),
+        child: RemindersTile(),
+      ),
+    );
+  }
+}
+
+class CategoriesHeader extends StatelessWidget {
+  const CategoriesHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, bottom: 8),
+      child: Text(
+        'EXPENSE CATEGORIES',
+        style: TextStyle(
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.6),
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 1.2,
+        ),
+      ),
+    );
+  }
+}
+
+class CategoriesContainer extends StatelessWidget {
+  const CategoriesContainer({super.key, required this.categories});
+
+  final List<Category> categories;
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassContainer(
+      opacity: 0.4,
+      blur: 20,
+      color: Colors.white,
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _AddCategoryForm(),
+          const SizedBox(height: 24),
+          if (categories.isEmpty)
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 24),
+                child: Text(
+                  'No categories added yet.',
+                  style: TextStyle(color: Colors.black54),
+                ),
+              ),
+            )
+          else
+            ListView.separated(
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: categories.length,
+              separatorBuilder: (context, index) => Divider(
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                height: 1,
+                indent: 56,
+              ),
+              itemBuilder: (context, index) =>
+                  _CategoryListItem(category: categories[index]),
+            ),
+        ],
+      ),
     );
   }
 }
