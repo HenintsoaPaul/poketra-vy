@@ -5,7 +5,7 @@ import '../../../../core/models/category.dart';
 import '../../../core/providers/onboarding_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:poketra_vy/features/settings/widgets/reminders_tile.dart';
-import '../widgets/export_excel_dialog.dart';
+import '../widgets/export_data_dialog.dart';
 import '../../../core/services/excel_import_service.dart';
 import '../../expenses/providers/expense_list_provider.dart';
 
@@ -225,20 +225,20 @@ class _ExportListTile extends StatelessWidget {
         color: Theme.of(context).primaryColor,
       ),
       title: Text(
-        'Export to Excel',
+        'Export Data',
         style: TextStyle(
           color: Theme.of(context).primaryColor,
           fontWeight: FontWeight.w500,
         ),
       ),
       subtitle: const Text(
-        'Download your data in .xlsx format',
+        'Download your data in Excel or JSON format',
         style: TextStyle(color: Colors.black54, fontSize: 13),
       ),
       onTap: () {
         showDialog(
           context: context,
-          builder: (context) => const ExportExcelDialog(),
+          builder: (context) => const ExportDataDialog(),
         );
       },
     );

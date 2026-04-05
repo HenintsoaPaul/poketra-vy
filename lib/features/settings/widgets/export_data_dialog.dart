@@ -3,21 +3,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/services/excel_export_service.dart';
+import '../../../core/services/json_export_service.dart';
 import '../../../core/widgets/glass_container.dart';
 import '../../expenses/providers/expense_list_provider.dart';
 import '../providers/categories_provider.dart';
 
-class ExportExcelDialog extends ConsumerStatefulWidget {
-  const ExportExcelDialog({super.key});
+enum ExportFormat { excel, json }
+
+class ExportDataDialog extends ConsumerStatefulWidget {
+  const ExportDataDialog({super.key});
 
   @override
-  ConsumerState<ExportExcelDialog> createState() => _ExportExcelDialogState();
+  ConsumerState<ExportDataDialog> createState() => _ExportDataDialogState();
 }
 
-class _ExportExcelDialogState extends ConsumerState<ExportExcelDialog> {
+class _ExportDataDialogState extends ConsumerState<ExportDataDialog> {
   late DateTime _startDate;
   late DateTime _endDate;
   final Set<String> _selectedCategoryIds = {};
+  ExportFormat _selectedFormat = ExportFormat.excel;
   bool _isExporting = false;
 
   @override
@@ -85,13 +89,24 @@ class _ExportExcelDialogState extends ConsumerState<ExportExcelDialog> {
         return filteredCategoryIds.contains(e.categoryId);
       }).toList();
 
-      final service = ExcelExportService();
-      final filePath = await service.exportToExcel(
-        expenses: filteredExpenses,
-        categories: categories,
-        startDate: _startDate,
-        endDate: _endDate,
-      );
+      String filePath;
+      if (_selectedFormat == ExportFormat.excel) {
+        final service = ExcelExportService();
+        filePath = await service.exportToExcel(
+          expenses: filteredExpenses,
+          categories: categories,
+          startDate: _startDate,
+          endDate: _endDate,
+        );
+      } else {
+        final service = JsonExportService();
+        filePath = await service.exportToJson(
+          expenses: filteredExpenses,
+          categories: categories,
+          startDate: _startDate,
+          endDate: _endDate,
+        );
+      }
 
       if (mounted) {
         await Share.shareXFiles([XFile(filePath)], text: 'My Expenses Export');
@@ -99,9 +114,9 @@ class _ExportExcelDialogState extends ConsumerState<ExportExcelDialog> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Export failed: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Export failed: $e')));
       }
     } finally {
       if (mounted) {
@@ -128,7 +143,7 @@ class _ExportExcelDialogState extends ConsumerState<ExportExcelDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Export to Excel',
+              'Export Data',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -136,10 +151,91 @@ class _ExportExcelDialogState extends ConsumerState<ExportExcelDialog> {
               ),
             ),
             const SizedBox(height: 24),
-            
+
+            // Format Selection
+            Text(
+              'Format',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: primaryColor.withValues(alpha: 0.6),
+                letterSpacing: 1.2,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: InkWell(
+                    onTap: () =>
+                        setState(() => _selectedFormat = ExportFormat.excel),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: _selectedFormat == ExportFormat.excel
+                            ? primaryColor.withValues(alpha: 0.1)
+                            : Colors.transparent,
+                        border: Border.all(
+                          color: _selectedFormat == ExportFormat.excel
+                              ? primaryColor
+                              : Colors.black12,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Excel',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: _selectedFormat == ExportFormat.excel
+                              ? primaryColor
+                              : Colors.black54,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: InkWell(
+                    onTap: () =>
+                        setState(() => _selectedFormat = ExportFormat.json),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: _selectedFormat == ExportFormat.json
+                            ? primaryColor.withValues(alpha: 0.1)
+                            : Colors.transparent,
+                        border: Border.all(
+                          color: _selectedFormat == ExportFormat.json
+                              ? primaryColor
+                              : Colors.black12,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        'JSON',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: _selectedFormat == ExportFormat.json
+                              ? primaryColor
+                              : Colors.black54,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 24),
+
             // Date Range
             Text(
-              'DATE RANGE',
+              'Date Range',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
@@ -152,7 +248,7 @@ class _ExportExcelDialogState extends ConsumerState<ExportExcelDialog> {
               children: [
                 Expanded(
                   child: _DateButton(
-                    label: 'Start Date',
+                    label: 'Start',
                     date: _startDate,
                     onTap: () => _selectDate(context, true),
                   ),
@@ -160,7 +256,7 @@ class _ExportExcelDialogState extends ConsumerState<ExportExcelDialog> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: _DateButton(
-                    label: 'End Date',
+                    label: 'End',
                     date: _endDate,
                     onTap: () => _selectDate(context, false),
                   ),
@@ -172,7 +268,7 @@ class _ExportExcelDialogState extends ConsumerState<ExportExcelDialog> {
 
             // Categories
             Text(
-              'CATEGORIES',
+              'Categories',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
@@ -186,7 +282,7 @@ class _ExportExcelDialogState extends ConsumerState<ExportExcelDialog> {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
-                   FilterChip(
+                  FilterChip(
                     label: const Text('All'),
                     selected: _selectedCategoryIds.contains('all'),
                     onSelected: (selected) {
@@ -200,12 +296,16 @@ class _ExportExcelDialogState extends ConsumerState<ExportExcelDialog> {
                     selectedColor: primaryColor.withValues(alpha: 0.2),
                     checkmarkColor: primaryColor,
                     labelStyle: TextStyle(
-                      color: _selectedCategoryIds.contains('all') ? primaryColor : Colors.black54,
+                      color: _selectedCategoryIds.contains('all')
+                          ? primaryColor
+                          : Colors.black54,
                     ),
                   ),
                   const SizedBox(width: 8),
                   ...categories.map((category) {
-                    final isSelected = _selectedCategoryIds.contains(category.id);
+                    final isSelected = _selectedCategoryIds.contains(
+                      category.id,
+                    );
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: FilterChip(
@@ -243,7 +343,9 @@ class _ExportExcelDialogState extends ConsumerState<ExportExcelDialog> {
               children: [
                 Expanded(
                   child: TextButton(
-                    onPressed: _isExporting ? null : () => Navigator.pop(context),
+                    onPressed: _isExporting
+                        ? null
+                        : () => Navigator.pop(context),
                     child: Text(
                       'Cancel',
                       style: TextStyle(color: primaryColor),
