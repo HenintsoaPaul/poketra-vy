@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/categories_provider.dart';
@@ -7,7 +9,9 @@ import 'package:go_router/go_router.dart';
 import 'package:poketra_vy/features/settings/widgets/reminders_tile.dart';
 import '../widgets/export_data_dialog.dart';
 import '../../../core/services/excel_import_service.dart';
+import '../../../core/services/json_import_service.dart';
 import '../../expenses/providers/expense_list_provider.dart';
+import '../../../../core/models/expense.dart';
 
 /// Widgets
 import '../widgets/profile_card.dart';
@@ -256,20 +260,40 @@ class _ImportListTile extends ConsumerWidget {
         color: Theme.of(context).primaryColor,
       ),
       title: Text(
-        'Import from Excel',
+        'Import Data',
         style: TextStyle(
           color: Theme.of(context).primaryColor,
           fontWeight: FontWeight.w500,
         ),
       ),
       subtitle: const Text(
-        'Restore records from a .xlsx file',
+        'Restore records from a .xlsx or .json file',
         style: TextStyle(color: Colors.black54, fontSize: 13),
       ),
       onTap: () async {
         final categories = ref.read(categoriesProvider);
-        final importService = ExcelImportService();
-        final importedExpenses = await importService.importFromExcel(categories);
+
+        final result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['xlsx', 'json'],
+        );
+
+        if (result == null || result.files.single.path == null) return;
+
+        final path = result.files.single.path!;
+        final extension = result.files.single.extension?.toLowerCase();
+
+        List<Expense>? importedExpenses;
+
+        if (extension == 'xlsx') {
+          final bytes = await File(path).readAsBytes();
+          final importService = ExcelImportService();
+          importedExpenses = importService.parseExcel(bytes, categories);
+        } else if (extension == 'json') {
+          final content = await File(path).readAsString();
+          final importService = JsonImportService();
+          importedExpenses = importService.parseJson(content, categories);
+        }
 
         if (importedExpenses != null && importedExpenses.isNotEmpty) {
           await ref
