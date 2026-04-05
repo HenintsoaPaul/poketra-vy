@@ -6,7 +6,7 @@ import 'package:poketra_vy/core/models/category.dart';
 import 'package:poketra_vy/core/models/expense.dart';
 import 'package:poketra_vy/core/services/hive_service.dart';
 import 'package:poketra_vy/features/expenses/providers/expense_list_provider.dart';
-import 'package:poketra_vy/features/settings/widgets/export_excel_dialog.dart';
+import 'package:poketra_vy/features/settings/widgets/export_data_dialog.dart';
 import 'package:intl/intl.dart';
 
 class MockHiveService extends Mock implements HiveService {}
@@ -30,25 +30,26 @@ void main() {
 
   Widget createDialog() {
     return ProviderScope(
-      overrides: [
-        hiveServiceProvider.overrideWithValue(mockHiveService),
-      ],
-      child: const MaterialApp(
-        home: Scaffold(body: ExportExcelDialog()),
-      ),
+      overrides: [hiveServiceProvider.overrideWithValue(mockHiveService)],
+      child: const MaterialApp(home: Scaffold(body: ExportDataDialog())),
     );
   }
 
-  group('ExportExcelDialog', () {
+  group('ExportDataDialog', () {
     testWidgets('shows title and labels', (tester) async {
       await tester.pumpWidget(createDialog());
-      expect(find.text('Export to Excel'), findsOneWidget);
-      expect(find.text('DATE RANGE'), findsOneWidget);
-      expect(find.text('CATEGORIES'), findsOneWidget);
+      expect(find.text('Export Data'), findsOneWidget);
+      expect(find.text('Format'), findsOneWidget);
+      expect(find.text('Excel'), findsOneWidget);
+      expect(find.text('JSON'), findsOneWidget);
+      expect(find.text('Date Range'), findsOneWidget);
+      expect(find.text('Categories'), findsOneWidget);
       expect(find.text('Export'), findsOneWidget);
     });
 
-    testWidgets('shows correctly selected date ranges initially', (tester) async {
+    testWidgets('shows correctly selected date ranges initially', (
+      tester,
+    ) async {
       await tester.pumpWidget(createDialog());
       final now = DateTime.now();
       final startOfMonth = DateTime(now.year, now.month, 1);
@@ -60,7 +61,10 @@ void main() {
 
     testWidgets('displays category chips and All chip', (tester) async {
       await tester.pumpWidget(createDialog());
-      expect(find.byType(FilterChip), findsNWidgets(3)); // All + Food + Transport
+      expect(
+        find.byType(FilterChip),
+        findsNWidgets(3),
+      ); // All + Food + Transport
       expect(find.text('All'), findsOneWidget);
       expect(find.text('Food'), findsOneWidget);
       expect(find.text('Transport'), findsOneWidget);
@@ -81,11 +85,11 @@ void main() {
       // All should be deselected
       expect((tester.widget<FilterChip>(allChipFinder)).selected, isFalse);
       expect((tester.widget<FilterChip>(foodChipFinder)).selected, isTrue);
-      
+
       // Tap on All again
       await tester.tap(allChipFinder);
       await tester.pump();
-      
+
       expect((tester.widget<FilterChip>(allChipFinder)).selected, isTrue);
       expect((tester.widget<FilterChip>(foodChipFinder)).selected, isFalse);
     });

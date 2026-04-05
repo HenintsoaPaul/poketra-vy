@@ -6,7 +6,7 @@ import 'package:poketra_vy/core/models/category.dart';
 import 'package:poketra_vy/core/services/hive_service.dart';
 import 'package:poketra_vy/features/expenses/providers/expense_list_provider.dart';
 import 'package:poketra_vy/features/settings/screens/settings_screen.dart';
-import 'package:poketra_vy/features/settings/widgets/export_excel_dialog.dart';
+import 'package:poketra_vy/features/settings/widgets/export_data_dialog.dart';
 import 'package:go_router/go_router.dart';
 
 class MockHiveService extends Mock implements HiveService {}
@@ -37,23 +37,23 @@ void main() {
   }
 
   group('SettingsScreen Export Tile', () {
-    testWidgets('shows Export to Excel tile', (tester) async {
+    testWidgets('shows Export Data tile', (tester) async {
       await tester.pumpWidget(createSettingsScreen());
       
-      expect(find.text('Export to Excel'), findsOneWidget);
-      expect(find.text('Download your data in .xlsx format'), findsOneWidget);
+      expect(find.text('Export Data'), findsOneWidget);
+      expect(find.text('Download your data in Excel or JSON format'), findsOneWidget);
       expect(find.byIcon(Icons.file_download_outlined), findsOneWidget);
     });
 
-    testWidgets('tapping Export to Excel opens ExportExcelDialog', (tester) async {
+    testWidgets('tapping Export Data opens ExportDataDialog', (tester) async {
       await tester.pumpWidget(createSettingsScreen());
       
       // Tap the tile
-      await tester.tap(find.text('Export to Excel'));
+      await tester.tap(find.text('Export Data'));
       await tester.pumpAndSettle();
       
       // Check if dialog is shown
-      expect(find.byType(ExportExcelDialog), findsOneWidget);
+      expect(find.byType(ExportDataDialog), findsOneWidget);
     });
 
     testWidgets('shows Import from Excel tile', (tester) async {
