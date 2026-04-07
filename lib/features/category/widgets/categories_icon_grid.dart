@@ -33,22 +33,17 @@ class CategoriesIconGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 6,
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 8,
-      ),
-      itemCount: _iconPresets.length,
-      itemBuilder: (context, index) {
-        final icon = _iconPresets[index];
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: _iconPresets.map((icon) {
         final isSelected = selectedIconCode == icon.codePoint;
         return InkWell(
           onTap: () => onIconSelected(icon.codePoint),
           borderRadius: BorderRadius.circular(8),
           child: Container(
+            width: (MediaQuery.of(context).size.width - 32 - 40) / 6, // Approximate width for 6 columns
+            height: (MediaQuery.of(context).size.width - 32 - 40) / 6,
             decoration: BoxDecoration(
               color: isSelected
                   ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
@@ -68,7 +63,7 @@ class CategoriesIconGrid extends StatelessWidget {
             ),
           ),
         );
-      },
+      }).toList(),
     );
   }
 }
