@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../settings/providers/categories_provider.dart';
+import '../../category/providers/categories_provider.dart';
 import '../../../core/models/category.dart';
 
 // State provider for selected category ID filter (or 'All')

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../settings/providers/categories_provider.dart';
+import '../../category/providers/categories_provider.dart';
 import '../../../../core/models/expense.dart';
 import '../../../../core/models/category.dart';
 
@@ -48,7 +48,8 @@ class _ExpensePieChartState extends ConsumerState<ExpensePieChart> {
                   _touchedIndex = -1;
                   return;
                 }
-                _touchedIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
+                _touchedIndex =
+                    pieTouchResponse.touchedSection!.touchedSectionIndex;
               });
             },
           ),
@@ -59,7 +60,11 @@ class _ExpensePieChartState extends ConsumerState<ExpensePieChart> {
             final categoryId = entry.key;
             final category = categories.firstWhere(
               (c) => c.id == categoryId,
-              orElse: () => Category(id: 'unknown', name: 'Unknown', iconCodePoint: Icons.help.codePoint),
+              orElse: () => Category(
+                id: 'unknown',
+                name: 'Unknown',
+                iconCodePoint: Icons.help.codePoint,
+              ),
             );
 
             final isTouched = i == _touchedIndex;
@@ -71,7 +76,9 @@ class _ExpensePieChartState extends ConsumerState<ExpensePieChart> {
             return PieChartSectionData(
               color: color,
               value: entry.value,
-              title: isTouched ? '${percentage.toStringAsFixed(1)}%' : '${percentage.toStringAsFixed(0)}%',
+              title: isTouched
+                  ? '${percentage.toStringAsFixed(1)}%'
+                  : '${percentage.toStringAsFixed(0)}%',
               radius: radius,
               titleStyle: TextStyle(
                 fontSize: fontSize,
@@ -79,9 +86,9 @@ class _ExpensePieChartState extends ConsumerState<ExpensePieChart> {
                 color: Colors.white,
                 shadows: const [Shadow(color: Colors.black26, blurRadius: 4)],
               ),
-              badgeWidget: isTouched 
-                ? _Badge(category.name, size: 50, borderColor: color)
-                : _Badge(category.name, size: 40, borderColor: color),
+              badgeWidget: isTouched
+                  ? _Badge(category.name, size: 50, borderColor: color)
+                  : _Badge(category.name, size: 40, borderColor: color),
               badgePositionPercentageOffset: 1.3,
             );
           }),

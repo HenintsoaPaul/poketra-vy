@@ -4,7 +4,7 @@ import '../../../../core/models/expense.dart';
 import '../../../../core/models/category.dart';
 import '../../../../core/providers/formatter_provider.dart';
 import '../providers/expense_list_provider.dart';
-import '../../settings/providers/categories_provider.dart';
+import '../../category/providers/categories_provider.dart';
 import 'expense_form_dialog.dart';
 
 class ExpenseListTile extends ConsumerWidget {

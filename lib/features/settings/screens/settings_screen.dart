@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:poketra_vy/features/settings/widgets/categories_container.dart';
 import 'package:poketra_vy/features/settings/widgets/export_list_tile.dart';
 import 'package:poketra_vy/features/settings/widgets/import_list_tile.dart';
-import '../providers/categories_provider.dart';
 import '../../../core/providers/onboarding_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:poketra_vy/features/settings/widgets/reminders_tile.dart';
@@ -16,8 +14,6 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final categories = ref.watch(categoriesProvider);
-
     return CustomScrollView(
       slivers: [
         SliverPadding(
@@ -38,12 +34,6 @@ class SettingsScreen extends ConsumerWidget {
               /// DAILY REMINDER
               const DailyReminderHeader(),
               const DailyReminderContainer(),
-
-              const SizedBox(height: 32),
-
-              /// CATEGORIES
-              const CategoriesHeader(),
-              CategoriesContainer(categories: categories),
             ]),
           ),
         ),
@@ -117,26 +107,6 @@ class DailyReminderContainer extends StatelessWidget {
           BorderSide(color: Colors.white, width: 1.5),
         ),
         child: RemindersTile(),
-      ),
-    );
-  }
-}
-
-class CategoriesHeader extends StatelessWidget {
-  const CategoriesHeader({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 8, bottom: 8),
-      child: Text(
-        'EXPENSE CATEGORIES',
-        style: TextStyle(
-          color: Theme.of(context).primaryColor.withValues(alpha: 0.6),
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 1.2,
-        ),
       ),
     );
   }

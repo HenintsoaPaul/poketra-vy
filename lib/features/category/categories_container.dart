@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:poketra_vy/core/widgets/glass_container.dart';
-import '../providers/categories_provider.dart';
-import '../../../../core/models/category.dart';
+import 'providers/categories_provider.dart';
+import '../../../core/models/category.dart';
 
 class CategoriesContainer extends StatelessWidget {
   const CategoriesContainer({super.key, required this.categories});

@@ -6,7 +6,7 @@ import '../../../core/services/excel_export_service.dart';
 import '../../../core/services/json_export_service.dart';
 import '../../../core/widgets/glass_container.dart';
 import '../../expenses/providers/expense_list_provider.dart';
-import '../providers/categories_provider.dart';
+import '../../category/providers/categories_provider.dart';
 
 enum ExportFormat { excel, json }
 

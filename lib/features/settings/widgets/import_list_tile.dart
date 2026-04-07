@@ -6,7 +6,7 @@ import 'package:poketra_vy/core/models/expense.dart';
 import 'package:poketra_vy/core/services/excel_import_service.dart';
 import 'package:poketra_vy/core/services/json_import_service.dart';
 import 'package:poketra_vy/features/expenses/providers/expense_list_provider.dart';
-import 'package:poketra_vy/features/settings/providers/categories_provider.dart';
+import 'package:poketra_vy/features/category/providers/categories_provider.dart';
 
 class ImportListTile extends ConsumerWidget {
   const ImportListTile({super.key});
