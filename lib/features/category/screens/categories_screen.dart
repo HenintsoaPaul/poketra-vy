@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../categories_container.dart';
+import '../widgets/categories_container.dart';
 import '../providers/categories_provider.dart';
 
 class CategoriesScreen extends ConsumerWidget {
