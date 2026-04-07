@@ -3,6 +3,7 @@ import 'features/home/screens/home_screen.dart';
 import 'features/expenses/screens/expenses_list_screen.dart';
 import 'features/expenses/screens/voice_expense_screen.dart';
 import 'features/settings/screens/settings_screen.dart';
+import 'features/category/screens/categories_screen.dart';
 import 'core/navigation/main_shell_screen.dart';
 import 'features/onboarding/screens/onboarding_screen.dart';
 import 'features/settings/screens/help_screen.dart';
@@ -62,6 +63,15 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/expenses',
                 builder: (context, state) => const ExpensesListScreen(),
+              ),
+            ],
+          ),
+          // Categories branch
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/categories',
+                builder: (context, state) => const CategoriesScreen(),
               ),
             ],
           ),
