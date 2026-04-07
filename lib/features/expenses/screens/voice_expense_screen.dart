@@ -7,7 +7,7 @@ import '../../../core/services/speech_service.dart';
 import '../../../core/services/expense_parser.dart';
 
 // Providers
-import '../../settings/providers/categories_provider.dart';
+import '../../category/providers/categories_provider.dart';
 import '../providers/expense_list_provider.dart';
 
 // Widgets

@@ -14,11 +14,11 @@
         },
         {
           "title": "Data Export",
-          "description": "Navigate to the \"Settings\" tab and tap \"Export to Excel\" to generate a .xlsx file. You can choose a custom date range (e.g., this month, this year) and select specific categories to include. Once generated, a share sheet will appear allowing you to save the file to your device, send it via email, or upload it to cloud storage."
+          "description": "Navigate to the \"Settings\" tab and tap \"Export Data\" to generate an Excel (.xlsx) or JSON (.json) file. You can choose a custom date range (e.g., this month, this year) and select specific categories to include. Once generated, a share sheet will appear allowing you to save the file to your device, send it via email, or upload it to cloud storage."
         },
         {
           "title": "Data Import & Restore",
-          "description": "Want to restore your backup or import data from another source? Tap \"Import from Excel\" in Settings and select your .xlsx file. The app will automatically scan the file for 'Date', 'Amount', 'Description', and 'Category' headers. It will try to match category names from your file to your current categories; if no match is found, it will default to 'misc'."
+          "description": "Want to restore your backup or import data from another source? Tap \"Import Data\" in Settings and select your Excel (.xlsx) or JSON (.json) file. The app will automatically scan the file for 'Date', 'Amount', 'Description', and 'Category' headers. It will try to match category names from your file to your current categories; if no match is found, it will default to 'misc'."
         },
         {
           "title": "Deleting Records",

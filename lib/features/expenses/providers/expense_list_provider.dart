@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/expense.dart';
 import '../../../core/models/category.dart';
-import '../../settings/providers/categories_provider.dart';
+import '../../category/providers/categories_provider.dart';
 import '../../../core/services/hive_service.dart';
 import 'expense_filter_provider.dart';
 
