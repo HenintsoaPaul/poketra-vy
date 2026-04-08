@@ -85,6 +85,8 @@ class ExpenseListTile extends ConsumerWidget {
         /// Expense Description
         title: Text(
           expense.description,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
         ),
 

@@ -145,7 +145,7 @@ class _AppShellState extends ConsumerState<AppShell> {
       /// Floating Glass Bottom Navigation
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
           child: GlassContainer(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
             borderRadius: 32,
