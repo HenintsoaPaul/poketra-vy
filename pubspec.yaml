@@ -2,7 +2,7 @@ name: poketra_vy
 description: "A smart, voice-activated expense tracker. Record expenses naturally using your voice."
 publish_to: 'none'
 
-version: 1.1.0+2
+version: 1.2.0+3
 
 environment:
   sdk: ^3.9.2

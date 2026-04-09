@@ -47,11 +47,13 @@ A smart, voice-activated expense tracker built with Flutter. Record your expense
 - **🎵 Live Voice Visualizer**: Real-time waveform animation while recording to give visual feedback on audio capture.
 - **🧠 Smart Parsing**: Natural language processing extracts amount, category, date, and description from your speech.
 - **✅ Confirmation & Edit Flow**: Validate parsed data before saving and edit any field directly from the confirmation dialog.
-- **📊 Interactive Analytics**:
+- **📥Data Portability**:
+    - **Excel & JSON Export**: Export your data to `.xlsx` or `.json` files for external analysis or secure backup.
+    - **Data Import**: Restore your expense records from previously exported `.xlsx` or `.json` files.
+- **📈 Analytics**:
     - **Dynamic Pie Chart**: Visualize spending by category for any specific month and year.
     - **Total Spend Tracking**: Real-time calculation of your total expenses.
     - **Recent Activities**: Quickly view your last 5 expenses from the current week.
-    - **📥 Excel Export**: Export your data to `.xlsx` files with custom date ranges and category filters.
 - **📅 Organized Expense List**:
     - **Date Grouping**: Expenses are neatly grouped by date with clear headers and dividers.
     - **Dynamic Category Filters**: Filter your history using horizontal chips that reflect your custom categories.
@@ -64,9 +66,7 @@ A smart, voice-activated expense tracker built with Flutter. Record your expense
 - **✏️ Manage with Ease**:
     - **Swipe-to-Delete**: Quickly remove expenses with a swipe (includes confirmation).
     - **Unified Edit Dialog**: Tap any expense to update its details via a unified form dialog.
-- **🚀 Modern UI/UX**:
-    - **Glassmorphism Design**: Premium frosted-glass style with smooth transitions.
-    - **Micro-interactions**: Subtle animations for better user feedback.
+    - **Clear All Records**: Option to delete all expense history while keeping categories for a fresh start.
 - **💾 Local Persistence**: Fast and secure NoSQL storage using Hive—your data never leaves your device.
 - **🧪 CI Pipeline**: Automated regression tests on push via GitHub Actions.
 
@@ -137,7 +137,7 @@ The Poketra-Vy voice parser uses a heuristic-based approach to extract expense d
 - **Notifications**: [flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications)
 - **Utilities**: [intl](https://pub.dev/packages/intl), [uuid](https://pub.dev/packages/uuid), [timezone](https://pub.dev/packages/timezone)
 - **Testing**: [flutter_test](https://pub.dev/packages/flutter_test), [mocktail](https://pub.dev/packages/mocktail)
-- **Exporting**: [excel](https://pub.dev/packages/excel), [share_plus](https://pub.dev/packages/share_plus)
+- **Exporting & Importing**: [excel](https://pub.dev/packages/excel), [share_plus](https://pub.dev/packages/share_plus), [file_picker](https://pub.dev/packages/file_picker)
 - **CI/CD**: [GitHub Actions](https://github.com/features/actions)
 
 ## 🏗️ Project Structure

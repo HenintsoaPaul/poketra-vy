@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [1.2.0] - 2026-04-09
+
+### Added
+- **Data Portability Suite**: Full support for importing and exporting data in both JSON and Excel (.xlsx) formats for easy backup and migration.
+- **JSON Import/Export**: Securely backup your entire expense history to a JSON file or restore it with a single tap.
+- **Excel Import**: Import records directly from Excel files (matching the format of our existing Excel export).
+- **Delete All Records**: New maintenance option in Settings to safely clear all expense data while preserving custom categories.
+- **Production-Grade Test Suite**: Massive expansion of automated tests covering Onboarding, Categories, Home, and Expense management to ensure maximum stability.
+- **Category Management**: Add, edit, and remove categories through a dedicated screen from now on. Making Settings screen more organized.
+
+### Changed
+- **Settings UI Enhancement**: Grouped data management tools under a new "Data Import & Export" section for better organization.
+- **Architecture Refactoring**: Inner-workings cleanup to support robust data parsing during imports.
+
+### Fixed
+- **Minor UI Inconsistencies**: Polished various glassmorphism elements and alignment issues.
+- **Performance Fixes**: Optimized data loading and chart rendering for larger datasets.
+
+---
+
 ## [1.1.0] - 2026-03-23
 
 ### Added
