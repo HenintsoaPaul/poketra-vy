@@ -71,6 +71,9 @@ void main() {
       
       await tester.pumpWidget(createSettingsScreen());
       
+      await tester.scrollUntilVisible(find.text('Delete All Records'), 200.0);
+      await tester.pumpAndSettle();
+
       await tester.tap(find.text('Delete All Records'));
       await tester.pumpAndSettle();
       

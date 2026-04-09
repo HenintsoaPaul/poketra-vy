@@ -11,7 +11,13 @@
         {
           "title": "Modifying a Record",
           "description": "Go to the \"Expenses\" tab, find the record you want to change, and tap the edit icon (pencil). You can update the amount, description, or category."
-        },
+        }
+      ]
+    },
+    {
+      "title": "DATA EXPORT & IMPORT",
+      "icon": "",
+      "subsections": [
         {
           "title": "Data Export",
           "description": "Navigate to the \"Settings\" tab and tap \"Export Data\" to generate an Excel (.xlsx) or JSON (.json) file. You can choose a custom date range (e.g., this month, this year) and select specific categories to include. Once generated, a share sheet will appear allowing you to save the file to your device, send it via email, or upload it to cloud storage."

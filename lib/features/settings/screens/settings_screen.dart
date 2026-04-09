@@ -34,6 +34,10 @@ class SettingsScreen extends ConsumerWidget {
               /// DAILY REMINDER
               const DailyReminderHeader(),
               const DailyReminderContainer(),
+
+              /// DATA IMPORT & EXPORT
+              const DataImportExportHeader(),
+              const DataImportExportContainer(),
             ]),
           ),
         ),
@@ -57,56 +61,6 @@ class SettingsHeader extends StatelessWidget {
           fontWeight: FontWeight.w600,
           letterSpacing: 1.2,
         ),
-      ),
-    );
-  }
-}
-
-class DailyReminderHeader extends StatelessWidget {
-  const DailyReminderHeader({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 8, bottom: 8),
-      child: Text(
-        'DAILY REMINDER',
-        style: TextStyle(
-          color: Theme.of(context).primaryColor.withValues(alpha: 0.6),
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 1.2,
-        ),
-      ),
-    );
-  }
-}
-
-class DailyReminderContainer extends StatelessWidget {
-  const DailyReminderContainer({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-            blurRadius: 30,
-            spreadRadius: -5,
-          ),
-        ],
-      ),
-      child: const GlassContainer(
-        opacity: 0.6,
-        blur: 25,
-        color: Colors.white,
-        padding: EdgeInsets.symmetric(vertical: 8),
-        border: Border.fromBorderSide(
-          BorderSide(color: Colors.white, width: 1.5),
-        ),
-        child: RemindersTile(),
       ),
     );
   }
@@ -136,44 +90,14 @@ class _SettingsContainer extends StatelessWidget {
 
           /// Help
           const _HelpListTile(),
-
-          /// Divider
-          Divider(
-            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-            height: 1,
-            indent: 64,
-          ),
-
-          /// Export
-          const ExportListTile(),
-
-          /// Divider
-          Divider(
-            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-            height: 1,
-            indent: 64,
-          ),
-
-          /// Import
-          const ImportListTile(),
-
-          /// Divider
-          Divider(
-            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-            height: 1,
-            indent: 64,
-          ),
-
-          /// Delete All Records
-          const _DeleteDataListTile(),
         ],
       ),
     );
   }
 }
 
-class _DeleteDataListTile extends ConsumerWidget {
-  const _DeleteDataListTile();
+class _DeleteDataTile extends ConsumerWidget {
+  const _DeleteDataTile();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -279,6 +203,116 @@ class _HelpListTile extends ConsumerWidget {
       onTap: () {
         context.push('/help');
       },
+    );
+  }
+}
+
+class DailyReminderHeader extends StatelessWidget {
+  const DailyReminderHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, bottom: 8),
+      child: Text(
+        'DAILY REMINDER',
+        style: TextStyle(
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.6),
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 1.2,
+        ),
+      ),
+    );
+  }
+}
+
+class DailyReminderContainer extends StatelessWidget {
+  const DailyReminderContainer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+            blurRadius: 30,
+            spreadRadius: -5,
+          ),
+        ],
+      ),
+      child: const GlassContainer(
+        opacity: 0.6,
+        blur: 25,
+        color: Colors.white,
+        padding: EdgeInsets.symmetric(vertical: 8),
+        border: Border.fromBorderSide(
+          BorderSide(color: Colors.white, width: 1.5),
+        ),
+        child: RemindersTile(),
+      ),
+    );
+  }
+}
+
+class DataImportExportHeader extends StatelessWidget {
+  const DataImportExportHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, bottom: 8),
+      child: Text(
+        'DATA IMPORT & EXPORT',
+        style: TextStyle(
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.6),
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 1.2,
+        ),
+      ),
+    );
+  }
+}
+
+class DataImportExportContainer extends StatelessWidget {
+  const DataImportExportContainer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassContainer(
+      opacity: 0.4,
+      blur: 20,
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        children: [
+          /// Export
+          const ExportListTile(),
+
+          /// Divider
+          Divider(
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            height: 1,
+            indent: 64,
+          ),
+
+          /// Import
+          const ImportListTile(),
+
+          /// Divider
+          Divider(
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            height: 1,
+            indent: 64,
+          ),
+
+          /// Delete All Records
+          const _DeleteDataTile(),
+        ],
+      ),
     );
   }
 }
