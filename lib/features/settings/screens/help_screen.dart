@@ -17,6 +17,8 @@ class HelpScreen extends StatelessWidget {
         return Icons.security_rounded;
       case 'tips_and_updates_outlined':
         return Icons.tips_and_updates_outlined;
+      case 'import_export_rounded':
+        return Icons.import_export_rounded;
       default:
         return Icons.help_outline;
     }

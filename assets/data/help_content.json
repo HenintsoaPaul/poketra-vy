@@ -16,7 +16,7 @@
     },
     {
       "title": "DATA EXPORT & IMPORT",
-      "icon": "",
+      "icon": "import_export_rounded",
       "subsections": [
         {
           "title": "Data Export",

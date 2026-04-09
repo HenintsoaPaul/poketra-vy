@@ -35,6 +35,8 @@ class SettingsScreen extends ConsumerWidget {
               const DailyReminderHeader(),
               const DailyReminderContainer(),
 
+              const SizedBox(height: 32),
+
               /// DATA IMPORT & EXPORT
               const DataImportExportHeader(),
               const DataImportExportContainer(),

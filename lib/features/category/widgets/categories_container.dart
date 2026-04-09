@@ -22,8 +22,13 @@ class CategoriesContainer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          /// Add new category
           const AddCategoryForm(),
-          const SizedBox(height: 24),
+
+          /// Divider
+          const SizedBox(height: 32),
+
+          /// Categories List
           if (categories.isEmpty)
             const Center(
               child: Padding(
@@ -84,7 +89,7 @@ class AddCategoryFormState extends ConsumerState<AddCategoryForm> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Choose Icon',
+          'Add new category',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Color(0xFF244B73),
