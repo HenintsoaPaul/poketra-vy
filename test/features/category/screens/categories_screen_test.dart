@@ -13,12 +13,17 @@ class MockHiveService extends Mock implements HiveService {}
 void main() {
   late MockHiveService mockHiveService;
 
+  setUpAll(() {
+    registerFallbackValue([]);
+  });
+
   setUp(() {
     mockHiveService = MockHiveService();
-    when(
-      () => mockHiveService.getCategories(),
-    ).thenReturn([Category(id: '1', name: 'food', iconCodePoint: 0)]);
+    when(() => mockHiveService.getCategories()).thenReturn([
+      Category(id: '1', name: 'food', iconCodePoint: Icons.restaurant.codePoint),
+    ]);
     when(() => mockHiveService.getExpenses()).thenReturn([]);
+    when(() => mockHiveService.saveCategories(any())).thenAnswer((_) async {});
   });
 
   Widget createCategoriesScreen() {
@@ -28,13 +33,40 @@ void main() {
     );
   }
 
-  testWidgets('CategoriesScreen displays CategoriesContainer', (tester) async {
+  testWidgets('CategoriesScreen displays CategoriesContainer and initial category', (tester) async {
     await tester.pumpWidget(createCategoriesScreen());
 
     expect(find.byType(CategoriesContainer), findsOneWidget);
-    expect(
-      find.text('food'),
-      findsOneWidget,
-    ); // CategoriesProvider lowercases names
+    expect(find.text('food'), findsOneWidget);
+  });
+
+  testWidgets('CategoriesScreen allows adding a new category', (tester) async {
+    await tester.pumpWidget(createCategoriesScreen());
+
+    // Find the text field and enter text
+    final textFieldFinder = find.byType(TextField);
+    await tester.ensureVisible(textFieldFinder);
+    await tester.enterText(textFieldFinder, 'Gym');
+    await tester.pumpAndSettle();
+    
+    // Find the add button and tap it
+    final addButtonFinder = find.byIcon(Icons.add);
+    await tester.ensureVisible(addButtonFinder);
+    await tester.tap(addButtonFinder);
+    await tester.pumpAndSettle();
+
+    // Verify category is added to the UI
+    expect(find.text('gym'), findsOneWidget); // Names are lowercased by provider
+    
+    // Verify saveCategories was called
+    verify(() => mockHiveService.saveCategories(any())).called(1);
+  });
+
+  testWidgets('CategoriesScreen displays empty state when no categories', (tester) async {
+    when(() => mockHiveService.getCategories()).thenReturn([]);
+    
+    await tester.pumpWidget(createCategoriesScreen());
+
+    expect(find.text('No categories added yet.'), findsOneWidget);
   });
 }
