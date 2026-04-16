@@ -4,7 +4,7 @@ import '../../../../core/models/expense.dart';
 import '../../../../core/models/category.dart';
 import '../../../../core/providers/formatter_provider.dart';
 import '../providers/expense_list_provider.dart';
-import '../../settings/providers/categories_provider.dart';
+import '../../category/providers/categories_provider.dart';
 import 'expense_form_dialog.dart';
 
 class ExpenseListTile extends ConsumerWidget {
@@ -24,7 +24,7 @@ class ExpenseListTile extends ConsumerWidget {
     final categories = ref.watch(categoriesProvider);
     final category = categories.firstWhere(
       (c) => c.id == expense.categoryId,
-      orElse: () => Category(name: "Unknown", iconCodePoint: 0),
+      orElse: () => Category(name: 'Unknown', iconCodePoint: 0),
     );
 
     return Dismissible(
@@ -85,6 +85,8 @@ class ExpenseListTile extends ConsumerWidget {
         /// Expense Description
         title: Text(
           expense.description,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
         ),
 
@@ -96,10 +98,10 @@ class ExpenseListTile extends ConsumerWidget {
               style: TextStyle(color: Colors.grey[600], fontSize: 13),
             ),
             const SizedBox(width: 8),
-            Text("•", style: TextStyle(color: Colors.grey[400], fontSize: 13)),
+            Text('•', style: TextStyle(color: Colors.grey[400], fontSize: 13)),
             const SizedBox(width: 8),
             Text(
-              "${expense.date.day}/${expense.date.month}/${expense.date.year}",
+              '${expense.date.day}/${expense.date.month}/${expense.date.year}',
               style: TextStyle(color: Colors.grey[600], fontSize: 13),
             ),
           ],
@@ -125,7 +127,9 @@ class ExpenseListTile extends ConsumerWidget {
           );
 
           if (editedExpense != null) {
-            ref.read(expenseListProvider.notifier).updateExpense(editedExpense);
+            await ref
+                .read(expenseListProvider.notifier)
+                .updateExpense(editedExpense);
           }
         },
       ),

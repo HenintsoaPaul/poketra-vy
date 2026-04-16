@@ -27,6 +27,8 @@ class _AppShellState extends ConsumerState<AppShell> {
       case 2:
         return 'Expenses';
       case 3:
+        return 'Categories';
+      case 4:
         return 'Settings';
       default:
         return 'Poketra Vy';
@@ -143,7 +145,7 @@ class _AppShellState extends ConsumerState<AppShell> {
       /// Floating Glass Bottom Navigation
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
           child: GlassContainer(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
             borderRadius: 32,
@@ -152,7 +154,7 @@ class _AppShellState extends ConsumerState<AppShell> {
             color: Colors.white,
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final itemWidth = constraints.maxWidth / 4;
+                final itemWidth = constraints.maxWidth / 5;
                 return Stack(
                   children: [
                     // Sliding Indicator
@@ -190,17 +192,24 @@ class _AppShellState extends ConsumerState<AppShell> {
                           width: itemWidth,
                         ),
                         _NavItem(
-                          icon: Icons.list_alt_rounded,
+                          icon: Icons.attach_money_rounded,
                           label: 'Expenses',
                           isSelected: shell.currentIndex == 2,
                           onTap: () => shell.goBranch(2),
                           width: itemWidth,
                         ),
                         _NavItem(
-                          icon: Icons.settings_rounded,
-                          label: 'Settings',
+                          icon: Icons.category_rounded,
+                          label: 'Categories',
                           isSelected: shell.currentIndex == 3,
                           onTap: () => shell.goBranch(3),
+                          width: itemWidth,
+                        ),
+                        _NavItem(
+                          icon: Icons.settings_rounded,
+                          label: 'Settings',
+                          isSelected: shell.currentIndex == 4,
+                          onTap: () => shell.goBranch(4),
                           width: itemWidth,
                         ),
                       ],

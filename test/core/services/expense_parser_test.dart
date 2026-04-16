@@ -71,5 +71,20 @@ void main() {
       final expense = ExpenseParser.parse('', categories);
       expect(expense, isNull);
     });
+
+    test('parses decimal amounts correctly', () {
+      final expense = ExpenseParser.parse('Spent 10.5 on food', categories);
+      expect(expense!.amount, 10.5);
+    });
+
+    test('handles commas in amounts correctly', () {
+      final expense = ExpenseParser.parse('I spent 10,500.50 on food', categories);
+      expect(expense!.amount, 10500.5);
+    });
+
+    test('ignores words that purely consist of symbols or dots that cannot parse', () {
+      final expense = ExpenseParser.parse('Spent ... on food 500', categories);
+      expect(expense!.amount, 500);
+    });
   });
 }

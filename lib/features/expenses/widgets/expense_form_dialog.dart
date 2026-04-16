@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/models/expense.dart';
-import '../../settings/providers/categories_provider.dart';
+import '../../category/providers/categories_provider.dart';
 
 class ExpenseFormDialog extends ConsumerStatefulWidget {
   final Expense expense;
@@ -100,7 +100,10 @@ class _ExpenseFormDialogState extends ConsumerState<ExpenseFormDialog> {
             if (widget.subtitle != null) ...[
               Text(
                 widget.subtitle!,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               const SizedBox(height: 16),
             ],

@@ -99,7 +99,7 @@ class HiveService {
       }
 
       // Remove old expenses with invalid category IDs
-      if (expense.categoryId.isEmpty || expense.categoryId == "tractor") {
+      if (expense.categoryId.isEmpty || expense.categoryId == 'tractor') {
         await _expensesBox!.delete(expense.id);
         continue;
       }

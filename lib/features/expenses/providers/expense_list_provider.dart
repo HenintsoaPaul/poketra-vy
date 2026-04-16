@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/expense.dart';
 import '../../../core/models/category.dart';
-import '../../settings/providers/categories_provider.dart';
+import '../../category/providers/categories_provider.dart';
 import '../../../core/services/hive_service.dart';
 import 'expense_filter_provider.dart';
 
@@ -37,6 +37,18 @@ class ExpenseListNotifier extends StateNotifier<List<Expense>> {
   Future<void> deleteExpense(String id) async {
     await _hiveService.deleteExpense(id);
     state = state.where((expense) => expense.id != id).toList();
+  }
+
+  Future<void> deleteAllExpenses() async {
+    await _hiveService.clearAll();
+    state = [];
+  }
+
+  Future<void> addMultipleExpenses(List<Expense> expenses) async {
+    for (final expense in expenses) {
+      await _hiveService.saveExpense(expense);
+    }
+    state = [...state, ...expenses];
   }
 }
 

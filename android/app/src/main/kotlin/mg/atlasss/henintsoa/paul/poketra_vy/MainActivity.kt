@@ -1,4 +1,4 @@
-package com.example.poketra_vy
+package mg.atlasss.henintsoa.paul.poketra_vy
 
 import io.flutter.embedding.android.FlutterActivity
 
