@@ -58,8 +58,7 @@ A smart, voice-activated expense tracker built with Flutter. Record your expense
     - **Date Grouping**: Expenses are neatly grouped by date with clear headers and dividers.
     - **Dynamic Category Filters**: Filter your history using horizontal chips that reflect your custom categories.
 - **⚙️ Settings & Customization**:
-    - **Robust Category Management**: Add, edit, and remove categories with unique icons.
-    - **ID-Based Linking**: Renaming categories preserves links to all existing expenses.
+    - **Category Management**: Add, edit, and remove categories with unique icons.
     - **Revisit Onboarding**: Option to restart the welcome tour anytime.
 - **🔔 Daily Reminders**: Configurable daily notification reminders to log your expenses, with time-picker and toggle control.
 - **🆘 Help Section**: In-app help guide covering how to use the app, parsing logic, and data privacy.
@@ -69,34 +68,7 @@ A smart, voice-activated expense tracker built with Flutter. Record your expense
     - **Clear All Records**: Option to delete all expense history while keeping categories for a fresh start.
 - **💾 Local Persistence**: Fast and secure NoSQL storage using Hive—your data never leaves your device.
 - **🧪 CI Pipeline**: Automated regression tests on push via GitHub Actions.
-
-## 🎙️ Voice Parser Logic
-
-The Poketra-Vy voice parser uses a heuristic-based approach to extract expense details from natural language or text input.
-
-### Processing Rules
-
-- **💰 Amount**: The parser identifies the **first** numeric value in the string.
-    - *Example*: "Spent 5000 on food but paid 100 for bag" extracts **5000**.
-- **📁 Category**: It performs a case-insensitive search for your defined category names.
-    - The **first match** found in the text is assigned.
-    - If no match is found, it defaults to the **"misc"** category.
-- **📅 Date**:
-    - If the word **"yesterday"** is present, the expense is dated to the previous day.
-    - Otherwise, it defaults to **today**.
-- **📝 Description**: The full input text is preserved as the expense description.
-
-### Expected Processing Cases
-
-| Input                  | Amount | Category       | Date      | Result         |
-| :--------------------- | :----- | :------------- | :-------- | :------------- |
-| "I spent 5000 on food" | 5000   | food           | Today     | ✅ Success      |
-| "5000 food yesterday"  | 5000   | food           | Yesterday | ✅ Success      |
-| "5000 something"       | 5000   | misc (default) | Today     | ✅ Success      |
-| "10000"                | 10000  | misc (default) | Today     | ✅ Success      |
-| "dinner 20000 food"    | 20000  | food           | Today     | ✅ Success      |
-| "food today"           | None   | N/A            | N/A       | ❌ Fails (Null) |
-| "" (Empty)             | None   | N/A            | N/A       | ❌ Fails (Null) |
+- **🤖 Automated Updates**: Integrated Dependabot for automated security and library updates.
 
 ## 🎙️ Voice Parser Logic
 
