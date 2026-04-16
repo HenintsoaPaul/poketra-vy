@@ -14,24 +14,24 @@ void main() {
 
   setUp(() {
     mockHiveService = MockHiveService();
-    
+
     when(() => mockHiveService.isOnboardingComplete()).thenReturn(false);
-    when(() => mockHiveService.setOnboardingComplete(any())).thenAnswer((_) async {});
+    when(
+      () => mockHiveService.setOnboardingComplete(any()),
+    ).thenAnswer((_) async {});
     when(() => mockHiveService.getExpenses()).thenReturn([]);
   });
 
   Widget createOnboardingScreen(GoRouter router) {
     return ProviderScope(
-      overrides: [
-        hiveServiceProvider.overrideWithValue(mockHiveService),
-      ],
-      child: MaterialApp.router(
-        routerConfig: router,
-      ),
+      overrides: [hiveServiceProvider.overrideWithValue(mockHiveService)],
+      child: MaterialApp.router(routerConfig: router),
     );
   }
 
-  testWidgets('OnboardingScreen flow: welcome -> info -> completion', (tester) async {
+  testWidgets('OnboardingScreen flow: welcome -> info -> completion', (
+    tester,
+  ) async {
     final router = GoRouter(
       initialLocation: '/onboarding',
       routes: [
@@ -41,7 +41,8 @@ void main() {
         ),
         GoRoute(
           path: '/',
-          builder: (context, state) => const Scaffold(body: Text('Home Screen')),
+          builder: (context, state) =>
+              const Scaffold(body: Text('Home Screen')),
         ),
       ],
     );
@@ -51,21 +52,21 @@ void main() {
 
     // 1. Welcome page
     expect(find.text('Welcome to Poketra Vy'), findsOneWidget);
-    
+
     // 2. Tap next -> Info page
     await tester.tap(find.byIcon(Icons.arrow_forward));
     await tester.pumpAndSettle();
     expect(find.text('Effortless Voice Tracking'), findsOneWidget);
-    
+
     // 3. Tap Get Started -> Completion & Navigation
     await tester.tap(find.text('Get Started'));
     await tester.pumpAndSettle();
 
     // Verify completion was saved
     verify(() => mockHiveService.setOnboardingComplete(true)).called(1);
-    
+
     // Verify navigation to home screen
     expect(find.text('Home Screen'), findsOneWidget);
-    expect(router.state?.uri.toString(), '/');
+    expect(router.state.uri.toString(), '/');
   });
 }

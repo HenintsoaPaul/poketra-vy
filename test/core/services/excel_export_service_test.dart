@@ -24,8 +24,9 @@ void main() {
     mockPathProvider = MockPathProviderPlatform();
     PathProviderPlatform.instance = mockPathProvider;
 
-    when(() => mockPathProvider.getTemporaryPath())
-        .thenAnswer((_) async => Directory.systemTemp.path);
+    when(
+      () => mockPathProvider.getTemporaryPath(),
+    ).thenAnswer((_) async => Directory.systemTemp.path);
 
     categories = [
       Category(id: '1', name: 'Food', iconCodePoint: 0),
@@ -72,7 +73,7 @@ void main() {
       expect(filePath, isNotNull);
       final file = File(filePath);
       expect(await file.exists(), isTrue);
-      
+
       // Clean up
       await file.delete();
     });
@@ -92,7 +93,7 @@ void main() {
       expect(filePath, isNotNull);
       final file = File(filePath);
       expect(await file.exists(), isTrue);
-      
+
       await file.delete();
     });
 
@@ -110,7 +111,7 @@ void main() {
       expect(filePath, isNotNull);
       final file = File(filePath);
       expect(await file.exists(), isTrue);
-      
+
       await file.delete();
     });
   });

@@ -36,6 +36,8 @@ dev_dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.4.4
   mocktail: ^1.0.4
+  path_provider_platform_interface: ^2.1.2
+  plugin_platform_interface: ^2.1.8
 
 flutter_launcher_icons:
   android: "launcher_icon"
