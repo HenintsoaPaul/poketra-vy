@@ -6,7 +6,7 @@ import '../../../core/providers/onboarding_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:poketra_vy/features/settings/widgets/reminders_tile.dart';
 import '../../expenses/providers/expense_list_provider.dart';
-import '../widgets/profile_card.dart';
+import '../widgets/app_credit.dart';
 import '../../../core/widgets/glass_container.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -20,11 +20,6 @@ class SettingsScreen extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(16, 24, 16, 120),
           sliver: SliverList(
             delegate: SliverChildListDelegate([
-              /// Profile Card
-              const ProfileCard(),
-
-              const SizedBox(height: 32),
-
               /// SETTINGS
               SettingsHeader(),
               const _SettingsContainer(),
@@ -40,6 +35,11 @@ class SettingsScreen extends ConsumerWidget {
               /// DATA IMPORT & EXPORT
               const DataImportExportHeader(),
               const DataImportExportContainer(),
+
+              const SizedBox(height: 48),
+
+              /// APP CREDIT
+              const AppCredit(),
             ]),
           ),
         ),
