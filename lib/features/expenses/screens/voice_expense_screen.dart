@@ -59,7 +59,7 @@ class _VoiceExpenseScreenState extends ConsumerState<VoiceExpenseScreen> {
         return;
       }
 
-      _processText(_text);
+      await _processText(_text);
     } else {
       bool available = await _speechService.init();
       if (available) {

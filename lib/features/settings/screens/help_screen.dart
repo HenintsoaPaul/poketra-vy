@@ -4,6 +4,21 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import '../../../core/widgets/glass_container.dart';
 
+class Section {
+  String title;
+  String icon;
+  List<SubSection> subsections;
+
+  Section({required this.title, required this.icon, required this.subsections});
+}
+
+class SubSection {
+  String title;
+  String description;
+
+  SubSection({required this.title, required this.description});
+}
+
 class HelpScreen extends StatelessWidget {
   const HelpScreen({super.key});
 
@@ -66,31 +81,22 @@ class HelpScreen extends StatelessWidget {
             return const Center(child: Text('No help data found.'));
           }
 
-          final sections = snapshot.data!['sections'] as List<dynamic>;
+          final sections = snapshot.data!['sections'] as List<Section>;
 
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                /// Sections
                 ...sections.map((section) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 24),
-                    child: _buildSection(
-                      context,
-                      title: section['title'],
-                      icon: _getIconData(section['icon']),
-                      content: (section['subsections'] as List<dynamic>).map((
-                        sub,
-                      ) {
-                        return _buildSubSection(
-                          sub['title'],
-                          sub['description'],
-                        );
-                      }).toList(),
-                    ),
+                    child: _buildSection(context, section),
                   );
                 }),
+
+                /// Divider
                 const SizedBox(height: 16),
 
                 /// Footer
@@ -121,13 +127,11 @@ class HelpScreen extends StatelessWidget {
     ];
   }
 
-  Widget _buildSection(
-    BuildContext context, {
-    required String title,
-    required IconData icon,
-    required List<Widget> content,
-  }) {
+  Widget _buildSection(BuildContext context, Section section) {
     final primaryColor = Theme.of(context).primaryColor;
+
+    final title = section.title;
+    final icon = _getIconData(section.icon);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,7 +177,9 @@ class HelpScreen extends StatelessWidget {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: content,
+              children: (section.subsections).map((sub) {
+                return _buildSubSection(sub);
+              }).toList(),
             ),
           ),
         ),
@@ -181,14 +187,14 @@ class HelpScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSubSection(String title, String description) {
+  Widget _buildSubSection(SubSection sub) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title,
+            sub.title,
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -197,7 +203,7 @@ class HelpScreen extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            description,
+            sub.description,
             style: const TextStyle(
               fontSize: 14,
               color: Colors.black87,

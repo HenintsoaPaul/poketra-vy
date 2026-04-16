@@ -24,7 +24,7 @@ class ExpenseListTile extends ConsumerWidget {
     final categories = ref.watch(categoriesProvider);
     final category = categories.firstWhere(
       (c) => c.id == expense.categoryId,
-      orElse: () => Category(name: "Unknown", iconCodePoint: 0),
+      orElse: () => Category(name: 'Unknown', iconCodePoint: 0),
     );
 
     return Dismissible(
@@ -98,10 +98,10 @@ class ExpenseListTile extends ConsumerWidget {
               style: TextStyle(color: Colors.grey[600], fontSize: 13),
             ),
             const SizedBox(width: 8),
-            Text("•", style: TextStyle(color: Colors.grey[400], fontSize: 13)),
+            Text('•', style: TextStyle(color: Colors.grey[400], fontSize: 13)),
             const SizedBox(width: 8),
             Text(
-              "${expense.date.day}/${expense.date.month}/${expense.date.year}",
+              '${expense.date.day}/${expense.date.month}/${expense.date.year}',
               style: TextStyle(color: Colors.grey[600], fontSize: 13),
             ),
           ],
@@ -127,7 +127,9 @@ class ExpenseListTile extends ConsumerWidget {
           );
 
           if (editedExpense != null) {
-            ref.read(expenseListProvider.notifier).updateExpense(editedExpense);
+            await ref
+                .read(expenseListProvider.notifier)
+                .updateExpense(editedExpense);
           }
         },
       ),

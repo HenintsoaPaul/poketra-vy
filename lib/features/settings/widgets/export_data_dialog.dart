@@ -108,8 +108,8 @@ class _ExportDataDialogState extends ConsumerState<ExportDataDialog> {
         );
       }
 
+      await Share.shareXFiles([XFile(filePath)], text: 'My Expenses Export');
       if (mounted) {
-        await Share.shareXFiles([XFile(filePath)], text: 'My Expenses Export');
         Navigator.pop(context);
       }
     } catch (e) {

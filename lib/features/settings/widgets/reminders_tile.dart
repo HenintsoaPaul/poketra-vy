@@ -86,7 +86,7 @@ class RemindersTileState extends ConsumerState<RemindersTile> {
 
           setState(() {});
 
-          if (mounted) {
+          if (context.mounted) {
             final formattedPicked = picked.format(context);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
